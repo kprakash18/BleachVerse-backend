@@ -310,6 +310,8 @@ model Transformation {
   @@index([type])
 }
 
+// enum for the type of power is being used by the character
+
 enum PowerType {
   OFFENSIVE
   DEFENSIVE
@@ -320,12 +322,24 @@ enum PowerType {
   OTHER
 }
 
+// source of the power
+enum PowerSource {
+  ZANPAKUTO
+  KIDO
+  HOLLOW
+  QUINCY
+  FULLBRING
+  NATURAL
+  OTHER
+}
+
 model Power {
   id String @id @default(uuid())
 
   name String
 
-  type PowerType
+  type   PowerType
+  source PowerSource
 
   description String?
 
