@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Sex {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+enum CharacterStatus {
+  ALIVE
+  DEAD
+  UNKNOWN
+}
+
+model Character {
+  id String @id @default(uuid())
+
+  name String @unique
+
+  sex    Sex             @default(UNKNOWN)
+  status CharacterStatus @default(ALIVE)
+
+  description String?
+  imageUrl    String?
+
+  aliases CharacterAlias[]
+  races   CharacterRace[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([sex])
+}
+
+model CharacterAlias {
+  id String @id @default(uuid())
+
+  characterId String
+  alias       String
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([characterId, alias])
+  @@index([alias])
+}
+
+enum RaceCategory {
+  MAIN
+  HYBRID
+  SPECIAL
+  COSMIC
+}
+
+model Race {
+  id String @id @default(uuid())
+
+  name     String       @unique
+  category RaceCategory
+
+  description String?
+
+  characters CharacterRace[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CharacterRace {
+  characterId String
+  raceId      String
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  race Race @relation(fields: [raceId], references: [id], onDelete: Cascade)
+
+  @@id([characterId, raceId])
+}
