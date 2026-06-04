@@ -29,8 +29,8 @@ model Character {
   description String?
   imageUrl    String?
 
-  aliases CharacterAlias[]
-  races   CharacterRace[]
+  aliases       CharacterAlias[]
+  races         CharacterRace[]
   organizations CharacterOrganization[]
 
   createdAt DateTime @default(now())
@@ -86,7 +86,6 @@ model CharacterRace {
   @@id([characterId, raceId])
 }
 
-
 // organization table creation
 
 enum OrganizationType {
@@ -98,17 +97,17 @@ enum OrganizationType {
 }
 
 model Organization {
-  id          String @id @default(uuid())
+  id String @id @default(uuid())
 
-  name        String @unique
+  name String @unique
 
-  type        OrganizationType
+  type OrganizationType
 
   description String?
 
-  parentId    String?
+  parentId String?
 
-  parent Organization? @relation("OrganizationHierarchy",fields: [parentId],references: [id])
+  parent Organization? @relation("OrganizationHierarchy", fields: [parentId], references: [id])
 
   children Organization[] @relation("OrganizationHierarchy")
 
@@ -125,14 +124,74 @@ model CharacterOrganization {
   characterId    String
   organizationId String
 
-  role           String?
+  role String?
 
-  joinedAt       DateTime?
-  leftAt         DateTime?
+  joinedAt DateTime?
+  leftAt   DateTime?
 
-  character Character @relation(fields: [characterId],references: [id],onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
-  organization Organization @relation(fields: [organizationId],references: [id],onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@id([characterId, organizationId])
+}
+
+// enum for earcs
+enum ArcType {
+  CANON
+  MOVIE
+  FILLER
+  OVA
+}
+
+// episodes arc and episodes
+model Arc {
+  id          String  @id @default(uuid())
+  name        String
+  type        ArcType
+  description String?
+
+  // anime covering
+  startEpisodeNumber Int?
+  endEpisodeNumber   Int?
+
+  // maga covering
+  startChapter Int?
+  endChapter   Int?
+
+  episodes Episode[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+}
+
+// enum for episodes
+enum EpisodeType {
+  FILLER
+  CANON
+  MIXED
+  RECAP
+}
+
+// episode model
+model Episode {
+  id       String      @id @default(uuid())
+  number   Int         @unique
+  title    String
+  type     EpisodeType
+  synopsis String?
+
+  airDate DateTime?
+
+  arcId String
+
+  arc Arc @relation(fields: [arcId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([arcId])
+  @@index([type])
 }
