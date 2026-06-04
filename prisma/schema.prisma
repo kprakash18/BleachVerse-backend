@@ -29,13 +29,15 @@ model Character {
   description String?
   imageUrl    String?
 
-  aliases             CharacterAlias[]
-  races               CharacterRace[]
-  organizations       CharacterOrganization[]
-  fightParticipations FightParticipant[]
+  aliases       CharacterAlias[]
+  races         CharacterRace[]
+  organizations CharacterOrganization[]
 
-  wonFights       Fight[]          @relation("FightWinner")
+  fightParticipations FightParticipant[]
+  wonFights           Fight[]            @relation("FightWinner")
+
   transformations Transformation[]
+  powers          Power[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -298,6 +300,42 @@ model Transformation {
   firstEpisode Episode? @relation(fields: [firstEpisodeId], references: [id], onDelete: SetNull)
 
   firstFight Fight? @relation(fields: [firstFightId], references: [id], onDelete: SetNull)
+
+  powers Power[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([characterId])
+  @@index([type])
+}
+
+enum PowerType {
+  OFFENSIVE
+  DEFENSIVE
+  SUPPORT
+  HEALING
+  MOVEMENT
+  PASSIVE
+  OTHER
+}
+
+model Power {
+  id String @id @default(uuid())
+
+  name String
+
+  type PowerType
+
+  description String?
+
+  characterId String
+
+  transformationId String?
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  transformation Transformation? @relation(fields: [transformationId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
