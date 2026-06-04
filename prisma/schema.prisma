@@ -36,6 +36,9 @@ model Character {
   fightParticipations FightParticipant[]
   wonFights           Fight[]            @relation("FightWinner")
 
+  zanpakutos Zanpakuto[]
+  quotes     Quote[]
+
   transformations Transformation[]
   powers          Power[]
 
@@ -167,6 +170,7 @@ model Arc {
 
   episodes Episode[]
   fights   Fight[]
+  quotes   Quote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -197,6 +201,7 @@ model Episode {
   arc             Arc              @relation(fields: [arcId], references: [id], onDelete: Restrict)
   fights          Fight[]
   transformations Transformation[]
+  quotes          Quote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -217,14 +222,15 @@ enum FightType {
 model Fight {
   id String @id @default(uuid())
 
-  title    String
-  type     FightType @default(DUEL)
-  location String?
+  title String
+  type  FightType @default(DUEL)
 
   summary String?
 
   episodeId String?
   arcId     String?
+
+  locationId String?
 
   winnerId String?
 
@@ -232,8 +238,8 @@ model Fight {
 
   arc Arc? @relation(fields: [arcId], references: [id], onDelete: SetNull)
 
-  winner Character? @relation("FightWinner", fields: [winnerId], references: [id], onDelete: SetNull)
-
+  location             Location?          @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  winner               Character?         @relation("FightWinner", fields: [winnerId], references: [id], onDelete: SetNull)
   participants         FightParticipant[]
   firstTransformations Transformation[]
 
@@ -293,13 +299,14 @@ model Transformation {
   type           TransformationType
   description    String?
   characterId    String
+  zanpakutoId    String?
   firstEpisodeId String?
   firstFightId   String?
-  character      Character          @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
-  firstEpisode Episode? @relation(fields: [firstEpisodeId], references: [id], onDelete: SetNull)
-
-  firstFight Fight? @relation(fields: [firstFightId], references: [id], onDelete: SetNull)
+  character    Character  @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  zanpakuto    Zanpakuto? @relation(fields: [zanpakutoId], references: [id], onDelete: SetNull)
+  firstEpisode Episode?   @relation(fields: [firstEpisodeId], references: [id], onDelete: SetNull)
+  firstFight   Fight?     @relation(fields: [firstFightId], references: [id], onDelete: SetNull)
 
   powers Power[]
 
@@ -314,7 +321,7 @@ model Transformation {
 
 enum PowerType {
   OFFENSIVE
-  DEFENSIVE
+  DEFENSIVE 
   SUPPORT
   HEALING
   MOVEMENT
@@ -356,4 +363,109 @@ model Power {
 
   @@index([characterId])
   @@index([type])
+}
+
+// enum 
+enum ZanpakutoType {
+  NORMAL
+  DUAL
+  HYBRID
+}
+
+model Zanpakuto {
+  id String @id @default(uuid())
+
+  name String
+
+  type ZanpakutoType @default(NORMAL)
+
+  releaseCommand String?
+
+  spiritName String?
+
+  description String?
+
+  characterId String
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  transformations Transformation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([characterId])
+  @@index([name])
+}
+
+// enum for quotes
+enum QuoteCategory {
+  MOTIVATIONAL
+  PHILOSOPHICAL
+  COMEDY
+  THREAT
+  BATTLE
+  EMOTIONAL
+  OTHER
+}
+
+// famous quotes by characters
+model Quote {
+  id String @id @default(uuid())
+
+  text String @db.Text
+
+  category QuoteCategory @default(OTHER)
+
+  characterId String
+
+  episodeId String?
+  arcId     String?
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  episode Episode? @relation(fields: [episodeId], references: [id], onDelete: SetNull)
+
+  arc Arc? @relation(fields: [arcId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([characterId])
+  @@index([episodeId])
+  @@index([arcId])
+  @@index([category])
+}
+
+enum LocationType {
+  WORLD
+  CITY
+  REGION
+  BUILDING
+  DIMENSION
+  OTHER
+}
+
+model Location {
+  id String @id @default(uuid())
+
+  name String @unique
+
+  type LocationType
+
+  description String?
+
+  parentId String?
+
+  parent Location? @relation("LocationHierarchy", fields: [parentId], references: [id])
+
+  children Location[] @relation("LocationHierarchy")
+
+  fights Fight[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([parentId])
 }
