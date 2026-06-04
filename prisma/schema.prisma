@@ -31,6 +31,7 @@ model Character {
 
   aliases CharacterAlias[]
   races   CharacterRace[]
+  organizations CharacterOrganization[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,4 +84,55 @@ model CharacterRace {
   race Race @relation(fields: [raceId], references: [id], onDelete: Cascade)
 
   @@id([characterId, raceId])
+}
+
+
+// organization table creation
+
+enum OrganizationType {
+  MILITARY
+  FACTION
+  ROYAL
+  ACADEMY
+  OTHER
+}
+
+model Organization {
+  id          String @id @default(uuid())
+
+  name        String @unique
+
+  type        OrganizationType
+
+  description String?
+
+  parentId    String?
+
+  parent Organization? @relation("OrganizationHierarchy",fields: [parentId],references: [id])
+
+  children Organization[] @relation("OrganizationHierarchy")
+
+  members CharacterOrganization[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([parentId])
+}
+
+model CharacterOrganization {
+  characterId    String
+  organizationId String
+
+  role           String?
+
+  joinedAt       DateTime?
+  leftAt         DateTime?
+
+  character Character @relation(fields: [characterId],references: [id],onDelete: Cascade)
+
+  organization Organization @relation(fields: [organizationId],references: [id],onDelete: Cascade)
+
+  @@id([characterId, organizationId])
 }
