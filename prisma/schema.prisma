@@ -34,7 +34,8 @@ model Character {
   organizations       CharacterOrganization[]
   fightParticipations FightParticipant[]
 
-  wonFights Fight[] @relation("FightWinner")
+  wonFights       Fight[]          @relation("FightWinner")
+  transformations Transformation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -191,8 +192,9 @@ model Episode {
 
   arcId String
 
-  arc    Arc     @relation(fields: [arcId], references: [id], onDelete: Restrict)
-  fights Fight[]
+  arc             Arc              @relation(fields: [arcId], references: [id], onDelete: Restrict)
+  fights          Fight[]
+  transformations Transformation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -230,7 +232,8 @@ model Fight {
 
   winner Character? @relation("FightWinner", fields: [winnerId], references: [id], onDelete: SetNull)
 
-  participants FightParticipant[]
+  participants         FightParticipant[]
+  firstTransformations Transformation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -265,4 +268,40 @@ model FightParticipant {
 
   @@unique([fightId, characterId])
   @@index([characterId])
+}
+
+// transformation/event 
+// because user searches ichigo first bankai
+
+enum TransformationType {
+  SHIKAI
+  BANKAI
+  RESURRECCION
+  SEGUNDA_ETAPA
+  HOLLOWFICATION
+  VOLLSTANDIG
+  FULLBRING
+  FINAL_FORM
+  OTHER
+}
+
+model Transformation {
+  id             String             @id @default(uuid())
+  name           String
+  type           TransformationType
+  description    String?
+  characterId    String
+  firstEpisodeId String?
+  firstFightId   String?
+  character      Character          @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  firstEpisode Episode? @relation(fields: [firstEpisodeId], references: [id], onDelete: SetNull)
+
+  firstFight Fight? @relation(fields: [firstFightId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([characterId])
+  @@index([type])
 }
