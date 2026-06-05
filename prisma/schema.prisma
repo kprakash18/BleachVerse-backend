@@ -6,6 +6,7 @@ datasource db {
   provider = "postgresql"
 }
 
+// gloabl enums
 enum Sex {
   MALE
   FEMALE
@@ -18,8 +19,22 @@ enum CharacterStatus {
   UNKNOWN
 }
 
+enum SourceMaterial {
+  MANGA
+  ANIME
+  MOVIE
+  OVA
+  NOVEL
+  GAME
+}
+
+// ---------------------------------------------------------------------------
+// Character
+// ---------------------------------------------------------------------------
+
 model Character {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique
 
   name String @unique
 
@@ -27,11 +42,12 @@ model Character {
   status CharacterStatus @default(ALIVE)
 
   description String?
-  imageUrl    String?
 
   aliases       CharacterAlias[]
   races         CharacterRace[]
   organizations CharacterOrganization[]
+
+  images CharacterImage[]
 
   fightParticipations FightParticipant[]
   wonFights           Fight[]            @relation("FightWinner")
@@ -39,8 +55,10 @@ model Character {
   zanpakutos Zanpakuto[]
   quotes     Quote[]
 
-  transformations Transformation[]
-  powers          Power[]
+  transformations   Transformation[]
+  powers            Power[]
+  appearances       CharacterAppearance[]
+  eventParticipants EventParticipant[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,6 +80,10 @@ model CharacterAlias {
   @@unique([characterId, alias])
   @@index([alias])
 }
+
+// ---------------------------------------------------------------------------
+// Race
+// ---------------------------------------------------------------------------
 
 enum RaceCategory {
   MAIN
@@ -89,13 +111,14 @@ model CharacterRace {
   raceId      String
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
-  race Race @relation(fields: [raceId], references: [id], onDelete: Cascade)
+  race      Race      @relation(fields: [raceId], references: [id], onDelete: Cascade)
 
   @@id([characterId, raceId])
 }
 
-// organization table creation
+// ---------------------------------------------------------------------------
+// Organization
+// ---------------------------------------------------------------------------
 
 enum OrganizationType {
   MILITARY
@@ -106,7 +129,8 @@ enum OrganizationType {
 }
 
 model Organization {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique
 
   name String @unique
 
@@ -116,8 +140,7 @@ model Organization {
 
   parentId String?
 
-  parent Organization? @relation("OrganizationHierarchy", fields: [parentId], references: [id])
-
+  parent   Organization?  @relation("OrganizationHierarchy", fields: [parentId], references: [id])
   children Organization[] @relation("OrganizationHierarchy")
 
   members CharacterOrganization[]
@@ -130,6 +153,7 @@ model Organization {
 }
 
 model CharacterOrganization {
+  id             String @id @default(uuid())
   characterId    String
   organizationId String
 
@@ -138,14 +162,19 @@ model CharacterOrganization {
   joinedAt DateTime?
   leftAt   DateTime?
 
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
+  character    Character    @relation(fields: [characterId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@id([characterId, organizationId])
+  @@index([characterId])
+  @@index([organizationId])
+  @@index([characterId, leftAt])
+  @@index([organizationId, leftAt])
 }
 
-// enum for earcs
+// ---------------------------------------------------------------------------
+// Arc & Episode
+// ---------------------------------------------------------------------------
+
 enum ArcType {
   CANON
   MOVIE
@@ -153,10 +182,11 @@ enum ArcType {
   OVA
 }
 
-// episodes arc and episodes
 model Arc {
-  id          String  @id @default(uuid())
-  name        String
+  id   String @id @default(uuid())
+  slug String @unique
+
+  name        String  @unique
   type        ArcType
   description String?
 
@@ -164,13 +194,14 @@ model Arc {
   startEpisodeNumber Int?
   endEpisodeNumber   Int?
 
-  // maga covering
+  // manga covering
   startChapter Int?
   endChapter   Int?
 
   episodes Episode[]
   fights   Fight[]
   quotes   Quote[]
+  events   Event[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -178,7 +209,7 @@ model Arc {
   @@index([type])
 }
 
-// enum for episodes
+// enum for episodes types
 enum EpisodeType {
   FILLER
   CANON
@@ -198,19 +229,25 @@ model Episode {
 
   arcId String
 
-  arc             Arc              @relation(fields: [arcId], references: [id], onDelete: Restrict)
+  arc             Arc                   @relation(fields: [arcId], references: [id], onDelete: Restrict)
   fights          Fight[]
-  transformations Transformation[]
+  transformations Transformation[]      @relation("TransformationFirstEpisode")
   quotes          Quote[]
+  appearances     CharacterAppearance[]
+  events          Event[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([arcId])
   @@index([type])
+  @@index([airDate])
 }
 
-// fight type enum
+// ---------------------------------------------------------------------------
+// Fight
+// ---------------------------------------------------------------------------
+
 enum FightType {
   DUEL
   TEAM_BATTLE
@@ -227,21 +264,18 @@ model Fight {
 
   summary String?
 
-  episodeId String?
-  arcId     String?
-
+  episodeId  String?
+  arcId      String?
   locationId String?
+  winnerId   String?
 
-  winnerId String?
+  episode  Episode?   @relation(fields: [episodeId], references: [id], onDelete: SetNull)
+  arc      Arc?       @relation(fields: [arcId], references: [id], onDelete: SetNull)
+  location Location?  @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  winner   Character? @relation("FightWinner", fields: [winnerId], references: [id], onDelete: SetNull)
 
-  episode Episode? @relation(fields: [episodeId], references: [id], onDelete: SetNull)
-
-  arc Arc? @relation(fields: [arcId], references: [id], onDelete: SetNull)
-
-  location             Location?          @relation(fields: [locationId], references: [id], onDelete: SetNull)
-  winner               Character?         @relation("FightWinner", fields: [winnerId], references: [id], onDelete: SetNull)
   participants         FightParticipant[]
-  firstTransformations Transformation[]
+  firstTransformations Transformation[]   @relation("TransformationFirstFight")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -250,10 +284,10 @@ model Fight {
   @@index([arcId])
   @@index([winnerId])
   @@index([type])
+  @@index([locationId])
 }
 
-// fight outcome type enum
-enum FightOutCome {
+enum FightOutcome {
   WIN
   LOSS
   DRAW
@@ -264,22 +298,22 @@ enum FightOutCome {
 model FightParticipant {
   id String @id @default(uuid())
 
-  fightId String
-
+  fightId     String
   characterId String
 
-  outcome FightOutCome @default(UNKNOWN)
+  outcome FightOutcome @default(UNKNOWN)
 
-  fight Fight @relation(fields: [fightId], references: [id], onDelete: Cascade)
-
+  fight     Fight     @relation(fields: [fightId], references: [id], onDelete: Cascade)
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
   @@unique([fightId, characterId])
   @@index([characterId])
+  @@index([fightId])
 }
 
-// transformation/event 
-// because user searches ichigo first bankai
+// ---------------------------------------------------------------------------
+// Transformation
+// ---------------------------------------------------------------------------
 
 enum TransformationType {
   SHIKAI
@@ -298,6 +332,8 @@ model Transformation {
   name           String
   type           TransformationType
   description    String?
+  isCanonical    Boolean            @default(true)
+  sourceMaterial SourceMaterial     @default(MANGA)
   characterId    String
   zanpakutoId    String?
   firstEpisodeId String?
@@ -305,8 +341,8 @@ model Transformation {
 
   character    Character  @relation(fields: [characterId], references: [id], onDelete: Cascade)
   zanpakuto    Zanpakuto? @relation(fields: [zanpakutoId], references: [id], onDelete: SetNull)
-  firstEpisode Episode?   @relation(fields: [firstEpisodeId], references: [id], onDelete: SetNull)
-  firstFight   Fight?     @relation(fields: [firstFightId], references: [id], onDelete: SetNull)
+  firstEpisode Episode?   @relation("TransformationFirstEpisode", fields: [firstEpisodeId], references: [id], onDelete: SetNull)
+  firstFight   Fight?     @relation("TransformationFirstFight", fields: [firstFightId], references: [id], onDelete: SetNull)
 
   powers Power[]
 
@@ -315,13 +351,18 @@ model Transformation {
 
   @@index([characterId])
   @@index([type])
+  @@index([firstEpisodeId])
+  @@index([firstFightId])
+  @@index([zanpakutoId])
 }
 
-// enum for the type of power is being used by the character
+// ---------------------------------------------------------------------------
+// Power
+// ---------------------------------------------------------------------------
 
 enum PowerType {
   OFFENSIVE
-  DEFENSIVE 
+  DEFENSIVE
   SUPPORT
   HEALING
   MOVEMENT
@@ -343,19 +384,17 @@ enum PowerSource {
 model Power {
   id String @id @default(uuid())
 
-  name String
+  name           String
+  type           PowerType
+  source         PowerSource
+  description    String?
+  isCanonical    Boolean        @default(true)
+  sourceMaterial SourceMaterial @default(MANGA)
 
-  type   PowerType
-  source PowerSource
-
-  description String?
-
-  characterId String
-
+  characterId      String
   transformationId String?
 
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
+  character      Character       @relation(fields: [characterId], references: [id], onDelete: Cascade)
   transformation Transformation? @relation(fields: [transformationId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
@@ -363,9 +402,14 @@ model Power {
 
   @@index([characterId])
   @@index([type])
+  @@index([source])
+  @@index([transformationId])
 }
 
-// enum 
+// ---------------------------------------------------------------------------
+// Zanpakuto
+// ---------------------------------------------------------------------------
+
 enum ZanpakutoType {
   NORMAL
   DUAL
@@ -373,32 +417,47 @@ enum ZanpakutoType {
 }
 
 model Zanpakuto {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique
 
-  name String
+  name String @unique
 
   type ZanpakutoType @default(NORMAL)
 
   releaseCommand String?
-
-  spiritName String?
-
-  description String?
+  spiritName     String?
+  description    String?
 
   characterId String
 
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
+  character       Character        @relation(fields: [characterId], references: [id], onDelete: Cascade)
   transformations Transformation[]
+  aliases         ZanpakutoAlias[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([characterId])
-  @@index([name])
 }
 
-// enum for quotes
+model ZanpakutoAlias {
+  id String @id @default(uuid())
+
+  zanpakutoId String
+  alias       String
+
+  zanpakuto Zanpakuto @relation(fields: [zanpakutoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([zanpakutoId, alias])
+  @@index([alias])
+}
+
+// ---------------------------------------------------------------------------
+// Quote
+// ---------------------------------------------------------------------------
+
 enum QuoteCategory {
   MOTIVATIONAL
   PHILOSOPHICAL
@@ -413,20 +472,18 @@ enum QuoteCategory {
 model Quote {
   id String @id @default(uuid())
 
-  text String @db.Text
-
-  category QuoteCategory @default(OTHER)
+  text           String         @db.Text
+  category       QuoteCategory  @default(OTHER)
+  isCanonical    Boolean        @default(true)
+  sourceMaterial SourceMaterial @default(MANGA)
 
   characterId String
-
-  episodeId String?
-  arcId     String?
+  episodeId   String?
+  arcId       String?
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
-  episode Episode? @relation(fields: [episodeId], references: [id], onDelete: SetNull)
-
-  arc Arc? @relation(fields: [arcId], references: [id], onDelete: SetNull)
+  episode   Episode?  @relation(fields: [episodeId], references: [id], onDelete: SetNull)
+  arc       Arc?      @relation(fields: [arcId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -437,17 +494,20 @@ model Quote {
   @@index([category])
 }
 
+// ---------------------------------------------------------------------------
+// Location
+// ---------------------------------------------------------------------------
+
 enum LocationType {
   WORLD
-  CITY
   REGION
-  BUILDING
-  DIMENSION
+  STRUCTURE
   OTHER
 }
 
 model Location {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique
 
   name String @unique
 
@@ -457,15 +517,129 @@ model Location {
 
   parentId String?
 
-  parent Location? @relation("LocationHierarchy", fields: [parentId], references: [id])
-
+  parent   Location?  @relation("LocationHierarchy", fields: [parentId], references: [id])
   children Location[] @relation("LocationHierarchy")
 
   fights Fight[]
+  events Event[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([type])
   @@index([parentId])
+}
+
+// ---------------------------------------------------------------------------
+// CharacterAppearance & CharacterImage
+// ---------------------------------------------------------------------------
+
+model CharacterAppearance {
+  id String @id @default(uuid())
+
+  characterId String
+  episodeId   String
+
+  isFirstAppearance Boolean @default(false)
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  episode   Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@unique([characterId, episodeId])
+  @@index([characterId])
+  @@index([episodeId])
+}
+
+enum CharacterImageType {
+  PROFILE
+  ANIME
+  MANGA
+  BANKAI
+  SHIKAI
+  TYBW
+  PROMOTIONAL
+  OTHER
+}
+
+model CharacterImage {
+  id String @id @default(uuid())
+
+  characterId String
+  imageUrl    String
+  type        CharacterImageType @default(PROFILE)
+  source      String?
+  altText     String?
+  isPrimary   Boolean            @default(false)
+  sortOrder   Int                @default(0)
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([characterId])
+  @@index([type])
+  @@index([isPrimary])
+  @@index([characterId, isPrimary])
+}
+
+// ---------------------------------------------------------------------------
+// Event
+// ---------------------------------------------------------------------------
+
+enum EventType {
+  BATTLE
+  DEATH
+  REVEAL
+  BETRAYAL
+  TRANSFORMATION
+  POWER_GAIN
+  POWER_LOSS
+  RESCUE
+  INVASION
+  OTHER
+}
+
+model Event {
+  id String @id @default(uuid())
+
+  title          String
+  type           EventType
+  description    String?
+  isCanonical    Boolean        @default(true)
+  sourceMaterial SourceMaterial @default(MANGA)
+
+  episodeId  String?
+  arcId      String?
+  locationId String?
+
+  episode  Episode?  @relation(fields: [episodeId], references: [id], onDelete: SetNull)
+  arc      Arc?      @relation(fields: [arcId], references: [id], onDelete: SetNull)
+  location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+
+  participants EventParticipant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([episodeId])
+  @@index([arcId])
+  @@index([locationId])
+}
+
+model EventParticipant {
+  id String @id @default(uuid())
+
+  eventId     String
+  characterId String
+
+  role String?
+
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, characterId])
+  @@index([characterId])
+  @@index([eventId])
 }
