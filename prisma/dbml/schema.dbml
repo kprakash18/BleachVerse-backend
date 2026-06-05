@@ -1,0 +1,515 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Character {
+  id String [pk]
+  slug String [unique, not null]
+  name String [unique, not null]
+  sex Sex [not null, default: 'UNKNOWN']
+  status CharacterStatus [not null, default: 'ALIVE']
+  description String
+  aliases CharacterAlias [not null]
+  races CharacterRace [not null]
+  organizations CharacterOrganization [not null]
+  images CharacterImage [not null]
+  fightParticipations FightParticipant [not null]
+  wonFights Fight [not null]
+  zanpakutos Zanpakuto [not null]
+  quotes Quote [not null]
+  transformations Transformation [not null]
+  powers Power [not null]
+  appearances CharacterAppearance [not null]
+  eventParticipants EventParticipant [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CharacterAlias {
+  id String [pk]
+  characterId String [not null]
+  alias String [not null]
+  character Character [not null]
+  createdAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (characterId, alias) [unique]
+  }
+}
+
+Table Race {
+  id String [pk]
+  name String [unique, not null]
+  category RaceCategory [not null]
+  description String
+  characters CharacterRace [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CharacterRace {
+  characterId String [not null]
+  raceId String [not null]
+  character Character [not null]
+  race Race [not null]
+
+  indexes {
+    (characterId, raceId) [pk]
+  }
+}
+
+Table Organization {
+  id String [pk]
+  slug String [unique, not null]
+  name String [unique, not null]
+  type OrganizationType [not null]
+  description String
+  parentId String
+  parent Organization
+  children Organization [not null]
+  members CharacterOrganization [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CharacterOrganization {
+  id String [pk]
+  characterId String [not null]
+  organizationId String [not null]
+  role String
+  joinedAt DateTime
+  leftAt DateTime
+  character Character [not null]
+  organization Organization [not null]
+}
+
+Table Arc {
+  id String [pk]
+  slug String [unique, not null]
+  name String [unique, not null]
+  type ArcType [not null]
+  description String
+  startEpisodeNumber Int
+  endEpisodeNumber Int
+  startChapter Int
+  endChapter Int
+  episodes Episode [not null]
+  fights Fight [not null]
+  quotes Quote [not null]
+  events Event [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Episode {
+  id String [pk]
+  number Int [unique, not null]
+  title String [not null]
+  type EpisodeType [not null]
+  synopsis String
+  airDate DateTime
+  arcId String [not null]
+  arc Arc [not null]
+  fights Fight [not null]
+  transformations Transformation [not null]
+  quotes Quote [not null]
+  appearances CharacterAppearance [not null]
+  events Event [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Fight {
+  id String [pk]
+  title String [not null]
+  type FightType [not null, default: 'DUEL']
+  summary String
+  episodeId String
+  arcId String
+  locationId String
+  winnerId String
+  episode Episode
+  arc Arc
+  location Location
+  winner Character
+  participants FightParticipant [not null]
+  firstTransformations Transformation [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table FightParticipant {
+  id String [pk]
+  fightId String [not null]
+  characterId String [not null]
+  outcome FightOutcome [not null, default: 'UNKNOWN']
+  fight Fight [not null]
+  character Character [not null]
+
+  indexes {
+    (fightId, characterId) [unique]
+  }
+}
+
+Table Transformation {
+  id String [pk]
+  name String [not null]
+  type TransformationType [not null]
+  description String
+  isCanonical Boolean [not null, default: true]
+  sourceMaterial SourceMaterial [not null, default: 'MANGA']
+  characterId String [not null]
+  zanpakutoId String
+  firstEpisodeId String
+  firstFightId String
+  character Character [not null]
+  zanpakuto Zanpakuto
+  firstEpisode Episode
+  firstFight Fight
+  powers Power [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Power {
+  id String [pk]
+  name String [not null]
+  type PowerType [not null]
+  source PowerSource [not null]
+  description String
+  isCanonical Boolean [not null, default: true]
+  sourceMaterial SourceMaterial [not null, default: 'MANGA']
+  characterId String [not null]
+  transformationId String
+  character Character [not null]
+  transformation Transformation
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Zanpakuto {
+  id String [pk]
+  slug String [unique, not null]
+  name String [unique, not null]
+  type ZanpakutoType [not null, default: 'NORMAL']
+  releaseCommand String
+  spiritName String
+  description String
+  characterId String [not null]
+  character Character [not null]
+  transformations Transformation [not null]
+  aliases ZanpakutoAlias [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table ZanpakutoAlias {
+  id String [pk]
+  zanpakutoId String [not null]
+  alias String [not null]
+  zanpakuto Zanpakuto [not null]
+  createdAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (zanpakutoId, alias) [unique]
+  }
+}
+
+Table Quote {
+  id String [pk]
+  text String [not null]
+  category QuoteCategory [not null, default: 'OTHER']
+  isCanonical Boolean [not null, default: true]
+  sourceMaterial SourceMaterial [not null, default: 'MANGA']
+  characterId String [not null]
+  episodeId String
+  arcId String
+  character Character [not null]
+  episode Episode
+  arc Arc
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Location {
+  id String [pk]
+  slug String [unique, not null]
+  name String [unique, not null]
+  type LocationType [not null]
+  description String
+  parentId String
+  parent Location
+  children Location [not null]
+  fights Fight [not null]
+  events Event [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CharacterAppearance {
+  id String [pk]
+  characterId String [not null]
+  episodeId String [not null]
+  isFirstAppearance Boolean [not null, default: false]
+  character Character [not null]
+  episode Episode [not null]
+
+  indexes {
+    (characterId, episodeId) [unique]
+  }
+}
+
+Table CharacterImage {
+  id String [pk]
+  characterId String [not null]
+  imageUrl String [not null]
+  type CharacterImageType [not null, default: 'PROFILE']
+  source String
+  altText String
+  isPrimary Boolean [not null, default: false]
+  sortOrder Int [not null, default: 0]
+  character Character [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Event {
+  id String [pk]
+  title String [not null]
+  type EventType [not null]
+  description String
+  isCanonical Boolean [not null, default: true]
+  sourceMaterial SourceMaterial [not null, default: 'MANGA']
+  episodeId String
+  arcId String
+  locationId String
+  episode Episode
+  arc Arc
+  location Location
+  participants EventParticipant [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table EventParticipant {
+  id String [pk]
+  eventId String [not null]
+  characterId String [not null]
+  role String
+  event Event [not null]
+  character Character [not null]
+
+  indexes {
+    (eventId, characterId) [unique]
+  }
+}
+
+Enum Sex {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+Enum CharacterStatus {
+  ALIVE
+  DEAD
+  UNKNOWN
+}
+
+Enum SourceMaterial {
+  MANGA
+  ANIME
+  MOVIE
+  OVA
+  NOVEL
+  GAME
+}
+
+Enum RaceCategory {
+  MAIN
+  HYBRID
+  SPECIAL
+  COSMIC
+}
+
+Enum OrganizationType {
+  MILITARY
+  FACTION
+  ROYAL
+  ACADEMY
+  OTHER
+}
+
+Enum ArcType {
+  CANON
+  MOVIE
+  FILLER
+  OVA
+}
+
+Enum EpisodeType {
+  FILLER
+  CANON
+  MIXED
+  RECAP
+}
+
+Enum FightType {
+  DUEL
+  TEAM_BATTLE
+  WAR
+  TRAINING
+}
+
+Enum FightOutcome {
+  WIN
+  LOSS
+  DRAW
+  INTERRUPTED
+  UNKNOWN
+}
+
+Enum TransformationType {
+  SHIKAI
+  BANKAI
+  RESURRECCION
+  SEGUNDA_ETAPA
+  HOLLOWFICATION
+  VOLLSTANDIG
+  FULLBRING
+  FINAL_FORM
+  OTHER
+}
+
+Enum PowerType {
+  OFFENSIVE
+  DEFENSIVE
+  SUPPORT
+  HEALING
+  MOVEMENT
+  PASSIVE
+  OTHER
+}
+
+Enum PowerSource {
+  ZANPAKUTO
+  KIDO
+  HOLLOW
+  QUINCY
+  FULLBRING
+  NATURAL
+  OTHER
+}
+
+Enum ZanpakutoType {
+  NORMAL
+  DUAL
+  HYBRID
+}
+
+Enum QuoteCategory {
+  MOTIVATIONAL
+  PHILOSOPHICAL
+  COMEDY
+  THREAT
+  BATTLE
+  EMOTIONAL
+  OTHER
+}
+
+Enum LocationType {
+  WORLD
+  REGION
+  STRUCTURE
+  OTHER
+}
+
+Enum CharacterImageType {
+  PROFILE
+  ANIME
+  MANGA
+  BANKAI
+  SHIKAI
+  TYBW
+  PROMOTIONAL
+  OTHER
+}
+
+Enum EventType {
+  BATTLE
+  DEATH
+  REVEAL
+  BETRAYAL
+  TRANSFORMATION
+  POWER_GAIN
+  POWER_LOSS
+  RESCUE
+  INVASION
+  OTHER
+}
+
+Ref: CharacterAlias.characterId > Character.id [delete: Cascade]
+
+Ref: CharacterRace.characterId > Character.id [delete: Cascade]
+
+Ref: CharacterRace.raceId > Race.id [delete: Cascade]
+
+Ref: Organization.parentId - Organization.id
+
+Ref: CharacterOrganization.characterId > Character.id [delete: Cascade]
+
+Ref: CharacterOrganization.organizationId > Organization.id [delete: Cascade]
+
+Ref: Episode.arcId > Arc.id [delete: Restrict]
+
+Ref: Fight.episodeId > Episode.id [delete: Set Null]
+
+Ref: Fight.arcId > Arc.id [delete: Set Null]
+
+Ref: Fight.locationId > Location.id [delete: Set Null]
+
+Ref: Fight.winnerId > Character.id [delete: Set Null]
+
+Ref: FightParticipant.fightId > Fight.id [delete: Cascade]
+
+Ref: FightParticipant.characterId > Character.id [delete: Cascade]
+
+Ref: Transformation.characterId > Character.id [delete: Cascade]
+
+Ref: Transformation.zanpakutoId > Zanpakuto.id [delete: Set Null]
+
+Ref: Transformation.firstEpisodeId > Episode.id [delete: Set Null]
+
+Ref: Transformation.firstFightId > Fight.id [delete: Set Null]
+
+Ref: Power.characterId > Character.id [delete: Cascade]
+
+Ref: Power.transformationId > Transformation.id [delete: Set Null]
+
+Ref: Zanpakuto.characterId > Character.id [delete: Cascade]
+
+Ref: ZanpakutoAlias.zanpakutoId > Zanpakuto.id [delete: Cascade]
+
+Ref: Quote.characterId > Character.id [delete: Cascade]
+
+Ref: Quote.episodeId > Episode.id [delete: Set Null]
+
+Ref: Quote.arcId > Arc.id [delete: Set Null]
+
+Ref: Location.parentId - Location.id
+
+Ref: CharacterAppearance.characterId > Character.id [delete: Cascade]
+
+Ref: CharacterAppearance.episodeId > Episode.id [delete: Cascade]
+
+Ref: CharacterImage.characterId > Character.id [delete: Cascade]
+
+Ref: Event.episodeId > Episode.id [delete: Set Null]
+
+Ref: Event.arcId > Arc.id [delete: Set Null]
+
+Ref: Event.locationId > Location.id [delete: Set Null]
+
+Ref: EventParticipant.eventId > Event.id [delete: Cascade]
+
+Ref: EventParticipant.characterId > Character.id [delete: Cascade]
