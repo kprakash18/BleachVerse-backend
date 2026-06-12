@@ -2,6 +2,7 @@ import prisma from "../../../src/database/prisma.js";
 import locations from "../Data/location.data.js";
 
 export async function seedLocations() {
+  console.log("Seeding location Data......");
   // Create/Update locations
   for (const { parentSlug, ...location } of locations) {
     await prisma.location.upsert({
