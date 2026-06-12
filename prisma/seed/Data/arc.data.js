@@ -142,7 +142,7 @@ const rawArcData = [
     startEpisodeNumber: 380,
     endEpisodeNumber: 392,
     startChapter: 543,
-    endChapter: 608,
+    endChapter: 609,
   },
 
   {
@@ -151,10 +151,21 @@ const rawArcData = [
     description:
       "The war reaches its most intense stage, with decisive battles, major revelations, and the fate of all worlds hanging in the balance.",
     startEpisodeNumber: 393,
-    startChapter: 609,
-    endChapter: 686,
+    endEpisodeNumber: 406,
+    startChapter: 610,
+    endChapter: 661,
   },
 
+  {
+    name: "Thousand-Year Blood War: The Calamity Arc",
+    type: ArcType.CANON,
+    description:
+      "The war reaches its most intense stage, with decisive battles, major revelations, and the fate of all worlds hanging in the balance.",
+    startEpisodeNumber: 407,
+    endEpisodeNumber: 420,
+    startChapter: 662,
+    endChapter: 686,
+  },
   // filler
   {
     name: "The Bount Arc",
