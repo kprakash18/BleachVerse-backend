@@ -26,7 +26,9 @@ export async function seedZanpakuto() {
   for (const item of zanpakutos) {
     const characterId = characterMap.get(item.characterName);
     if (!characterId) {
-      console.warn(`Character with name "${item.characterName}" not found in database. Skipping Zanpakuto "${item.name}".`);
+      console.warn(
+        `Character with name "${item.characterName}" not found in database. Skipping Zanpakuto "${item.name}".`,
+      );
       continue;
     }
 
