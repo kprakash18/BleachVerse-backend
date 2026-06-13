@@ -405,6 +405,7 @@ model Power {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([characterId, name])
   @@index([characterId])
   @@index([type])
   @@index([source])
