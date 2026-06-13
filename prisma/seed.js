@@ -7,6 +7,7 @@ import { seedEpisodes } from "./seed/seeders/episode.seeder.js";
 import { seedCharacter } from "./seed/seeders/character.seeder.js";
 import { seedCharacterRaces } from "./seed/seeders/characterRace.seeder.js";
 import { seedCharacterOrganizations } from "./seed/seeders/characterOrganization.seeder.js";
+import { seedCharacterAliases } from "./seed/seeders/characterAlias.seeder.js";
 
 async function main() {
   await seedOrganization();
@@ -17,6 +18,7 @@ async function main() {
   await seedCharacter();
   await seedCharacterRaces();
   await seedCharacterOrganizations();
+  await seedCharacterAliases();
 }
 
 main()
