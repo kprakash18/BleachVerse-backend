@@ -1,5 +1,6 @@
 import prisma from "../../../src/database/prisma.js";
 import characterRaces from "../Data/characterRace.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedCharacterRaces() {
   console.log("Seeding Character Races...");
@@ -16,7 +17,8 @@ export async function seedCharacterRaces() {
   const characterMap = new Map(characters.map((c) => [c.name, c.id]));
   const raceMap = new Map(races.map((r) => [r.name, r.id]));
 
-  // 3. Loop through your characterRace data and insert relationships
+  // 3. Flatten relationships into tasks
+  const tasks = [];
   for (const item of characterRaces) {
     const characterId = characterMap.get(item.characterName);
     if (!characterId) {
@@ -30,23 +32,26 @@ export async function seedCharacterRaces() {
         console.warn(`Race with name "${raceName}" not found in database.`);
         continue;
       }
+      tasks.push({ characterId, raceId });
+    }
+  }
 
-      // Upsert the relationship in the join table
-      await prisma.characterRace.upsert({
-        where: {
-          characterId_raceId: {
-            characterId,
-            raceId,
-          },
-        },
-        update: {},
-        create: {
+  // 4. Batch run the upsert queries in parallel chunks
+  await batchPromises(tasks, async ({ characterId, raceId }) => {
+    await prisma.characterRace.upsert({
+      where: {
+        characterId_raceId: {
           characterId,
           raceId,
         },
-      });
-    }
-  }
+      },
+      update: {},
+      create: {
+        characterId,
+        raceId,
+      },
+    });
+  });
 
   console.log("Character Races seeded successfully!");
 }

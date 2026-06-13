@@ -1,5 +1,6 @@
 import prisma from "../../../src/database/prisma.js";
 import characterAliases from "../Data/characterAlias.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedCharacterAliases() {
   console.log("Seeding Character Aliases...");
@@ -12,7 +13,8 @@ export async function seedCharacterAliases() {
   // 2. Map names to their corresponding database IDs
   const characterMap = new Map(characters.map((c) => [c.name, c.id]));
 
-  // 3. Loop through your characterAlias data and insert relationships
+  // 3. Map into flat tasks
+  const tasks = [];
   for (const item of characterAliases) {
     const characterId = characterMap.get(item.characterName);
     if (!characterId) {
@@ -21,22 +23,26 @@ export async function seedCharacterAliases() {
     }
 
     for (const alias of item.aliases) {
-      // Upsert the alias relationship using the compound unique key characterId_alias
-      await prisma.characterAlias.upsert({
-        where: {
-          characterId_alias: {
-            characterId,
-            alias,
-          },
-        },
-        update: {},
-        create: {
+      tasks.push({ characterId, alias });
+    }
+  }
+
+  // 4. Batch query in parallel chunks
+  await batchPromises(tasks, async ({ characterId, alias }) => {
+    await prisma.characterAlias.upsert({
+      where: {
+        characterId_alias: {
           characterId,
           alias,
         },
-      });
-    }
-  }
+      },
+      update: {},
+      create: {
+        characterId,
+        alias,
+      },
+    });
+  });
 
   console.log("Character Aliases seeded successfully!");
 }

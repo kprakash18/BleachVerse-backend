@@ -1,5 +1,6 @@
 import prisma from "../../../src/database/prisma.js";
 import EpisodeData from "../Data/episode.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedEpisodes() {
   console.log(" Seeding Episodes Data...");
@@ -15,7 +16,7 @@ export async function seedEpisodes() {
   // Create slug -> id map
   const arcMap = new Map(arcs.map((arc) => [arc.slug, arc.id]));
 
-  for (const episode of EpisodeData) {
+  await batchPromises(EpisodeData, async (episode) => {
     const arcId = arcMap.get(episode.arcSlug);
 
     if (!arcId) {
@@ -36,7 +37,7 @@ export async function seedEpisodes() {
         arcId,
       },
     });
-  }
+  });
 
   console.log("Episodes seeded");
 }

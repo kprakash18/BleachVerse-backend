@@ -1,6 +1,7 @@
 import prisma from "../../../src/database/prisma.js";
 import slugify from "slugify";
 import zanpakutos from "../Data/zanpakuto.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedZanpakuto() {
   console.log("Seeding Zanpakuto Data...");
@@ -22,7 +23,8 @@ export async function seedZanpakuto() {
 
   const characterMap = new Map(characters.map((c) => [c.name, c.id]));
 
-  // 2. Loop through the zanpakuto data
+  // 2. Map into tasks
+  const tasks = [];
   for (const item of zanpakutos) {
     const characterId = characterMap.get(item.characterName);
     if (!characterId) {
@@ -33,9 +35,12 @@ export async function seedZanpakuto() {
     }
 
     const slug = slugify(item.name, { lower: true, strict: true });
+    tasks.push({ item, characterId, slug });
+  }
 
-    // Upsert the Zanpakuto record
-    const zanpakuto = await prisma.zanpakuto.upsert({
+  // 3. Batch query in parallel chunks
+  await batchPromises(tasks, async ({ item, characterId, slug }) => {
+    await prisma.zanpakuto.upsert({
       where: {
         name: item.name,
       },
@@ -57,7 +62,7 @@ export async function seedZanpakuto() {
         characterId,
       },
     });
-  }
+  });
 
   console.log("Zanpakuto seeded successfully!");
 }

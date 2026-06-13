@@ -1,5 +1,6 @@
 import prisma from "../../../src/database/prisma.js";
 import characterOrganizations from "../Data/characterOrganization.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedCharacterOrganizations() {
   console.log("Seeding Character Organizations...");
@@ -16,7 +17,8 @@ export async function seedCharacterOrganizations() {
   const characterMap = new Map(characters.map((c) => [c.name, c.id]));
   const organizationMap = new Map(organizations.map((o) => [o.slug, o.id]));
 
-  // 3. Loop through organization relationships and create them
+  // 3. Map into tasks
+  const tasks = [];
   for (const item of characterOrganizations) {
     const characterId = characterMap.get(item.characterName);
     if (!characterId) {
@@ -30,12 +32,16 @@ export async function seedCharacterOrganizations() {
       continue;
     }
 
-    // 4. Check if the relationship already exists to prevent duplicate seeds
+    tasks.push({ characterId, organizationId, role: item.role });
+  }
+
+  // 4. Batch query in parallel chunks
+  await batchPromises(tasks, async ({ characterId, organizationId, role }) => {
     const existingRelation = await prisma.characterOrganization.findFirst({
       where: {
         characterId,
         organizationId,
-        role: item.role,
+        role,
       },
     });
 
@@ -44,11 +50,11 @@ export async function seedCharacterOrganizations() {
         data: {
           characterId,
           organizationId,
-          role: item.role,
+          role,
         },
       });
     }
-  }
+  });
 
   console.log("Character Organizations seeded successfully!");
 }

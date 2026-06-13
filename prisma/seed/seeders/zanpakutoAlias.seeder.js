@@ -1,5 +1,6 @@
 import prisma from "../../../src/database/prisma.js";
 import zanpakutoAliases from "../Data/zanpakutoAlias.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedZanpakutoAliases() {
   console.log("Seeding Zanpakuto Aliases...");
@@ -12,7 +13,8 @@ export async function seedZanpakutoAliases() {
   // 2. Map names to their corresponding database IDs
   const zanpakutoMap = new Map(zanpakutos.map((z) => [z.name, z.id]));
 
-  // 3. Loop through your zanpakutoAlias data and insert relationships
+  // 3. Map into flat tasks
+  const tasks = [];
   for (const item of zanpakutoAliases) {
     const zanpakutoId = zanpakutoMap.get(item.zanpakutoName);
     if (!zanpakutoId) {
@@ -21,22 +23,26 @@ export async function seedZanpakutoAliases() {
     }
 
     for (const alias of item.aliases) {
-      // Upsert the alias relationship using the compound unique key zanpakutoId_alias
-      await prisma.zanpakutoAlias.upsert({
-        where: {
-          zanpakutoId_alias: {
-            zanpakutoId,
-            alias,
-          },
-        },
-        update: {},
-        create: {
+      tasks.push({ zanpakutoId, alias });
+    }
+  }
+
+  // 4. Batch query in parallel chunks
+  await batchPromises(tasks, async ({ zanpakutoId, alias }) => {
+    await prisma.zanpakutoAlias.upsert({
+      where: {
+        zanpakutoId_alias: {
           zanpakutoId,
           alias,
         },
-      });
-    }
-  }
+      },
+      update: {},
+      create: {
+        zanpakutoId,
+        alias,
+      },
+    });
+  });
 
   console.log("Zanpakuto Aliases seeded successfully!");
 }

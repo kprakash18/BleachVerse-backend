@@ -1,10 +1,12 @@
 import prisma from "../../../src/database/prisma.js";
 import locations from "../Data/location.data.js";
+import { batchPromises } from "../utils.js";
 
 export async function seedLocations() {
   console.log("Seeding location Data......");
+  
   // Create/Update locations
-  for (const { parentSlug, ...location } of locations) {
+  await batchPromises(locations, async ({ parentSlug, ...location }) => {
     await prisma.location.upsert({
       where: {
         slug: location.slug,
@@ -16,11 +18,11 @@ export async function seedLocations() {
       },
       create: location,
     });
-  }
+  });
 
   // Create hierarchy
-  for (const location of locations) {
-    if (!location.parentSlug) continue;
+  await batchPromises(locations, async (location) => {
+    if (!location.parentSlug) return;
 
     const parent = await prisma.location.findUnique({
       where: {
@@ -43,7 +45,7 @@ export async function seedLocations() {
         parentId: parent.id,
       },
     });
-  }
+  });
 
   console.log("Locations seeded");
 }
