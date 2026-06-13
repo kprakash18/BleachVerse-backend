@@ -8,17 +8,19 @@ import { seedCharacter } from "./seed/seeders/character.seeder.js";
 import { seedCharacterRaces } from "./seed/seeders/characterRace.seeder.js";
 import { seedCharacterOrganizations } from "./seed/seeders/characterOrganization.seeder.js";
 import { seedCharacterAliases } from "./seed/seeders/characterAlias.seeder.js";
+import { seedZanpakuto } from "./seed/seeders/zanpakuto.seeder.js";
 
 async function main() {
-  await seedOrganization();
-  await seedRace();
-  await seedLocations();
-  await seedArcs();
-  await seedEpisodes();
+  // await seedOrganization();
+  // await seedRace();
+  // await seedLocations();
+  // await seedArcs();
+  // await seedEpisodes();
   await seedCharacter();
-  await seedCharacterRaces();
-  await seedCharacterOrganizations();
-  await seedCharacterAliases();
+  // await seedCharacterRaces();
+  // await seedCharacterOrganizations();
+  // await seedCharacterAliases();
+  await seedZanpakuto();
 }
 
 main()
