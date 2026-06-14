@@ -18,7 +18,7 @@ const characterOrganizations = [
   {
     characterName: "Tessai Tsukabishi",
     organizationSlug: "kido-corps",
-    role: "Former Captain-Commander",
+    role: "Former Commander of the Kido Corps",
   },
   {
     characterName: "Yoruichi Shihoin",
@@ -161,9 +161,19 @@ const characterOrganizations = [
     role: "Co-3rd Seat (Squad 4)",
   },
   {
+    characterName: "Nanao Ise",
+    organizationSlug: "gotei-13",
+    role: "Lieutenant (Squad 8)",
+  },
+  {
+    characterName: "Yumichika Ayasegawa",
+    organizationSlug: "gotei-13",
+    role: "5th Seat (Squad 11)",
+  },
+  {
     characterName: "Jidanbo Ikkanzaka",
-    organizationSlug: "stealth-force",
-    role: "Gatekeeper of the Seireitei",
+    organizationSlug: "seireitei-gate-guards",
+    role: "West Gate Guardian",
   },
   {
     characterName: "Ganju Shiba",
@@ -193,12 +203,12 @@ const characterOrganizations = [
   {
     characterName: "Sentaro Kotsubaki",
     organizationSlug: "gotei-13",
-    role: "Lieutenant (Squad 13)",
+    role: "Co-3rd Seat Officer (Squad 13)",
   },
   {
     characterName: "Kiyone Kotetsu",
     organizationSlug: "gotei-13",
-    role: "Lieutenant (Squad 13)",
+    role: "Co-3rd Seat Officer (Squad 13)",
   },
   {
     characterName: "Kaien Shiba",
@@ -256,38 +266,38 @@ const characterOrganizations = [
   // Bounts
   {
     characterName: "Jin Kariya",
-    organizationSlug: "soul-society",
-    role: "Leader of the Bounts",
+    organizationSlug: "bounts",
+    role: "Leader",
   },
   {
     characterName: "Yoshino Soma",
-    organizationSlug: "soul-society",
-    role: "Bount Member",
+    organizationSlug: "bounts",
+    role: "Member",
   },
   {
     characterName: "Koga Go",
-    organizationSlug: "soul-society",
-    role: "Bount Member",
+    organizationSlug: "bounts",
+    role: "Member",
   },
   {
     characterName: "Sawatari",
-    organizationSlug: "soul-society",
-    role: "Bount Member",
+    organizationSlug: "bounts",
+    role: "Member",
   },
   {
     characterName: "Mabashi",
-    organizationSlug: "soul-society",
-    role: "Bount Member",
+    organizationSlug: "bounts",
+    role: "Member",
   },
   {
     characterName: "Yoshi",
-    organizationSlug: "soul-society",
-    role: "Bount Member",
+    organizationSlug: "bounts",
+    role: "Member",
   },
   {
     characterName: "Ugaki",
-    organizationSlug: "soul-society",
-    role: "Bount Member",
+    organizationSlug: "bounts",
+    role: "Member",
   },
 
   // Arrancar Army / Espada / Las Noches
@@ -631,6 +641,26 @@ const characterOrganizations = [
     characterName: "Moe Shishigawara",
     organizationSlug: "xcution",
     role: "Associate",
+  },
+  {
+    characterName: "Uryu Ishida",
+    organizationSlug: "wandenreich",
+    role: "Designated Successor",
+  },
+  {
+    characterName: "Masaki Kurosaki",
+    organizationSlug: "ishida-family",
+    role: "Member",
+  },
+  {
+    characterName: "Ryuken Ishida",
+    organizationSlug: "ishida-family",
+    role: "Head",
+  },
+  {
+    characterName: "Uryu Ishida",
+    organizationSlug: "ishida-family",
+    role: "Heir",
   },
 ];
 

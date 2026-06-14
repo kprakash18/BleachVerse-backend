@@ -183,6 +183,14 @@ const characterRaces = [
     races: ["Soul Reaper"],
   },
   {
+    characterName: "Nanao Ise",
+    races: ["Soul Reaper"],
+  },
+  {
+    characterName: "Yumichika Ayasegawa",
+    races: ["Soul Reaper"],
+  },
+  {
     characterName: "Jidanbo Ikkanzaka",
     races: ["Soul Reaper"],
   },

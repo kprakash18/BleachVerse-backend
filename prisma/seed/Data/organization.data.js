@@ -153,6 +153,27 @@ const organizations = [
     description:
       "An organization of Fullbringers led by Kugo Ginjo operating in the Human World.",
   },
+  {
+    slug: "seireitei-gate-guards",
+    name: "Seireitei Gate Guards",
+    type: OrganizationType.MILITARY,
+    description:
+      "The four giant guardians responsible for protecting the four main gates of the Seireitei in Soul Society.",
+  },
+  {
+    slug: "bounts",
+    name: "Bounts",
+    type: OrganizationType.FACTION,
+    description:
+      "A clan of humans created through a Soul Society research accident who feed on human souls to gain power and longevity.",
+  },
+  {
+    slug: "ishida-family",
+    name: "Ishida Family",
+    type: OrganizationType.OTHER,
+    description:
+      "A prominent, pure-blood Quincy family residing in the Human World.",
+  },
 ];
 
 export default organizations;

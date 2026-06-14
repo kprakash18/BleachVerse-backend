@@ -322,6 +322,20 @@ const character = [
   },
 
   {
+    name: "Nanao Ise",
+    sex: Sex.FEMALE,
+    status: CharacterStatus.ALIVE,
+    description: "Lieutenant of Squad 8 who later serves under Captain-Commander Kyoraku",
+  },
+
+  {
+    name: "Yumichika Ayasegawa",
+    sex: Sex.MALE,
+    status: CharacterStatus.ALIVE,
+    description: "5th Seat of Squad 11 and close friend of Ikkaku Madarame",
+  },
+
+  {
     name: "Jidanbo Ikkanzaka",
     sex: Sex.MALE,
     status: CharacterStatus.ALIVE,

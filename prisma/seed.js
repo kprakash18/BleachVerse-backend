@@ -11,6 +11,7 @@ import { seedCharacterAliases } from "./seed/seeders/characterAlias.seeder.js";
 import { seedZanpakuto } from "./seed/seeders/zanpakuto.seeder.js";
 import { seedZanpakutoAliases } from "./seed/seeders/zanpakutoAlias.seeder.js";
 import { seedTransformation } from "./seed/seeders/transformation.seeder.js";
+import { seedPower } from "./seed/seeders/power.seeder.js";
 
 async function main() {
   await seedOrganization();
@@ -25,6 +26,7 @@ async function main() {
   await seedZanpakuto();
   await seedZanpakutoAliases();
   await seedTransformation();
+  await seedPower();
 }
 
 main()

@@ -185,6 +185,10 @@ Table Power {
   transformation Transformation
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+
+  indexes {
+    (characterId, name) [unique]
+  }
 }
 
 Table Zanpakuto {
