@@ -6,7 +6,7 @@ export async function seedLocations() {
   console.log("Seeding location Data......");
   
   // Create/Update locations
-  await batchPromises(locations, async ({ parentSlug, ...location }) => {
+  await batchPromises(locations, async ({ parentSlug, parentName, ...location }) => {
     await prisma.location.upsert({
       where: {
         slug: location.slug,

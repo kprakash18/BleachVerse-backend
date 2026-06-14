@@ -1146,6 +1146,18 @@ const character = [
     status: CharacterStatus.DEAD,
     description: "Arrancar Number 14 in Grimmjow's Fracción.",
   },
+  {
+    name: "Kazui Kurosaki",
+    sex: Sex.MALE,
+    status: CharacterStatus.ALIVE,
+    description: "Son of Ichigo Kurosaki and Orihime Inoue who possesses hybrid spiritual powers.",
+  },
+  {
+    name: "Mimihagi",
+    sex: Sex.UNKNOWN,
+    status: CharacterStatus.DEAD,
+    description: "The fallen right arm of the Soul King representing stillness.",
+  },
 ];
 
 // slug

@@ -1,32 +1,29 @@
+import slugify from "slugify";
 import { OrganizationType } from "@prisma/client";
 
 const organizations = [
   {
     // soul society
-    slug: "soul-society",
     name: "Soul Society",
     type: OrganizationType.FACTION,
     description:
       "Soul Society is the spiritual afterworld in Bleach where deceased humans souls go after death, and where the Shinigami (Soul Reapers) live and operate.",
   },
   {
-    slug: "gotei-13",
-    name: "Gotei 13 (Thirteen Court Guard Squads)",
+    name: "Gotei 13",
     type: OrganizationType.MILITARY,
     description:
       "The primary military force of Soul Society, consisting of 13 divisions of Shinigami led by captains and lieutenants. Most Shinigami characters belong to this organization.",
   },
 
   {
-    slug: "stealth-force",
-    name: "Onmitsukidō (Stealth Force)",
+    name: "Stealth Force",
     type: OrganizationType.OTHER,
     description:
       "The covert operations unit of Soul Society, handling espionage, assassination, and security, including the gatekeepers of the Seireitei.",
   },
 
   {
-    slug: "central-46",
     name: "Central 46",
     type: OrganizationType.OTHER,
     description:
@@ -34,7 +31,6 @@ const organizations = [
   },
 
   {
-    slug: "kido-corps",
     name: "Kidō Corps",
     type: OrganizationType.MILITARY,
     description:
@@ -42,15 +38,13 @@ const organizations = [
   },
 
   {
-    slug: "royal-guard",
-    name: "Royal Guard / Zero Division",
+    name: "Royal Guard",
     type: OrganizationType.ROYAL,
     description:
       "Also called Squad 0, this elite group protects the Soul King, the Royal Family, and the Soul King Palace.",
   },
 
   {
-    slug: "shino-academy",
     name: "Shin'ō Academy",
     type: OrganizationType.ACADEMY,
     description:
@@ -59,14 +53,12 @@ const organizations = [
 
   // arrancars
   {
-    slug: "arrancar-army",
     name: "Arrancar Army",
     type: OrganizationType.MILITARY,
     description:
       "The military force of Arrancars assembled under Sosuke Aizen in Hueco Mundo.",
   },
   {
-    slug: "espada",
     name: "Espada",
     type: OrganizationType.MILITARY,
     description:
@@ -74,7 +66,6 @@ const organizations = [
   },
 
   {
-    slug: "numeros",
     name: "Numeros",
     type: OrganizationType.MILITARY,
     description:
@@ -82,7 +73,6 @@ const organizations = [
   },
 
   {
-    slug: "privaron-espada",
     name: "Privaron Espada",
     type: OrganizationType.MILITARY,
     description:
@@ -90,7 +80,6 @@ const organizations = [
   },
 
   {
-    slug: "fraccion",
     name: "Fraccion",
     type: OrganizationType.MILITARY,
     description:
@@ -98,7 +87,6 @@ const organizations = [
   },
 
   {
-    slug: "exequias",
     name: "Exequias",
     type: OrganizationType.MILITARY,
     description:
@@ -107,21 +95,18 @@ const organizations = [
 
   // quincies
   {
-    slug: "wandenreich",
     name: "Wandenreich",
     type: OrganizationType.MILITARY,
     description: "The hidden Quincy empire founded and ruled by Yhwach.",
   },
 
   {
-    slug: "sternritter",
     name: "Sternritter",
     type: OrganizationType.MILITARY,
     description: "Elite Quincy warriors granted Schrifts by Yhwach.",
   },
 
   {
-    slug: "schutzstaffel",
     name: "Schutzstaffel",
     type: OrganizationType.MILITARY,
     description:
@@ -129,7 +114,6 @@ const organizations = [
   },
 
   {
-    slug: "jagdarmee",
     name: "Jagdarmee",
     type: OrganizationType.MILITARY,
     description:
@@ -139,7 +123,6 @@ const organizations = [
   // human world
 
   {
-    slug: "visored",
     name: "Visored",
     type: OrganizationType.FACTION,
     description:
@@ -147,28 +130,24 @@ const organizations = [
   },
 
   {
-    slug: "xcution",
     name: "Xcution",
     type: OrganizationType.FACTION,
     description:
       "An organization of Fullbringers led by Kugo Ginjo operating in the Human World.",
   },
   {
-    slug: "seireitei-gate-guards",
     name: "Seireitei Gate Guards",
     type: OrganizationType.MILITARY,
     description:
       "The four giant guardians responsible for protecting the four main gates of the Seireitei in Soul Society.",
   },
   {
-    slug: "bounts",
     name: "Bounts",
     type: OrganizationType.FACTION,
     description:
       "A clan of humans created through a Soul Society research accident who feed on human souls to gain power and longevity.",
   },
   {
-    slug: "ishida-family",
     name: "Ishida Family",
     type: OrganizationType.OTHER,
     description:
@@ -176,4 +155,10 @@ const organizations = [
   },
 ];
 
-export default organizations;
+const OrganizationData = organizations.map((org) => ({
+  ...org,
+  slug: slugify(org.name, { lower: true, strict: true }),
+}));
+
+export default OrganizationData;
+

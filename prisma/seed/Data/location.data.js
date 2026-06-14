@@ -5,31 +5,26 @@ const locations = [
   // WORLDS
   {
     name: "World of the Living",
-    slug: "world-of-the-living",
     type: LocationType.WORLD,
     description: "The human world where ordinary humans reside.",
   },
   {
     name: "Soul Society",
-    slug: "soul-society",
     type: LocationType.WORLD,
     description: "The spiritual realm governed by the Gotei 13.",
   },
   {
     name: "Hueco Mundo",
-    slug: "hueco-mundo",
     type: LocationType.WORLD,
     description: "The realm inhabited by Hollows and Arrancar.",
   },
   {
     name: "Royal Palace",
-    slug: "royal-palace",
     type: LocationType.WORLD,
     description: "The residence of the Soul King.",
   },
   {
     name: "Wandenreich",
-    slug: "wandenreich",
     type: LocationType.WORLD,
     description: "The hidden Quincy empire.",
   },
@@ -37,124 +32,111 @@ const locations = [
   // REGIONS
   {
     name: "Karakura Town",
-    slug: "karakura-town",
     type: LocationType.REGION,
-    parentSlug: "world-of-the-living",
+    parentName: "World of the Living",
   },
   {
     name: "Fake Karakura Town",
-    slug: "fake-karakura-town",
     type: LocationType.REGION,
-    parentSlug: "world-of-the-living",
+    parentName: "World of the Living",
   },
   {
     name: "Seireitei",
-    slug: "seireitei",
     type: LocationType.REGION,
-    parentSlug: "soul-society",
+    parentName: "Soul Society",
   },
   {
     name: "Rukongai",
-    slug: "rukongai",
     type: LocationType.REGION,
-    parentSlug: "soul-society",
+    parentName: "Soul Society",
   },
   {
     name: "Dangai",
-    slug: "dangai",
     type: LocationType.REGION,
   },
   {
     name: "Valley of Screams",
-    slug: "valley-of-screams",
     type: LocationType.REGION,
   },
 
   // STRUCTURES
   {
     name: "Las Noches",
-    slug: "las-noches",
     type: LocationType.STRUCTURE,
-    parentSlug: "hueco-mundo",
+    parentName: "Hueco Mundo",
   },
   {
     name: "Central 46 Chambers",
-    slug: "central-46-chambers",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Squad 1 Barracks",
-    slug: "squad-1-barracks",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Squad 4 Barracks",
-    slug: "squad-4-barracks",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Squad 6 Barracks",
-    slug: "squad-6-barracks",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Squad 10 Barracks",
-    slug: "squad-10-barracks",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Squad 11 Barracks",
-    slug: "squad-11-barracks",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Squad 13 Barracks",
-    slug: "squad-13-barracks",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Sokyoku Hill",
-    slug: "sokyoku-hill",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Underground Training Ground",
-    slug: "underground-training-ground",
     type: LocationType.STRUCTURE,
-    parentSlug: "seireitei",
+    parentName: "Seireitei",
   },
   {
     name: "Kirinden",
-    slug: "kirinden",
     type: LocationType.STRUCTURE,
-    parentSlug: "royal-palace",
+    parentName: "Royal Palace",
   },
   {
     name: "Hoohden",
-    slug: "hoohden",
     type: LocationType.STRUCTURE,
-    parentSlug: "royal-palace",
+    parentName: "Royal Palace",
   },
   {
     name: "Senjumaru Palace",
-    slug: "senjumaru-palace",
     type: LocationType.STRUCTURE,
-    parentSlug: "royal-palace",
+    parentName: "Royal Palace",
   },
   {
     name: "Silbern",
-    slug: "silbern",
     type: LocationType.STRUCTURE,
-    parentSlug: "wandenreich",
+    parentName: "Wandenreich",
   },
 ];
 
-export default locations;
+const LocationData = locations.map((loc) => ({
+  ...loc,
+  slug: slugify(loc.name, { lower: true, strict: true }),
+  parentSlug: loc.parentName ? slugify(loc.parentName, { lower: true, strict: true }) : undefined,
+}));
+
+export default LocationData;
+
