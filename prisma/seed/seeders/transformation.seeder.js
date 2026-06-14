@@ -31,6 +31,11 @@ export async function seedTransformation() {
   });
   const episodeMap = new Map(episodes.map((e) => [e.number, e.id]));
 
+  const fights = await prisma.fight.findMany({
+    select: { id: true, slug: true },
+  });
+  const fightMap = new Map(fights.map((f) => [f.slug, f.id]));
+
   // 2. Loop through the transformation data and build tasks
   const tasks = [];
   for (const item of transformations) {
@@ -62,11 +67,21 @@ export async function seedTransformation() {
       );
     }
 
-    tasks.push({ item, characterId, zanpakutoId, firstEpisodeId });
+    const firstFightId = item.firstFightSlug
+      ? fightMap.get(item.firstFightSlug) || null
+      : null;
+
+    if (item.firstFightSlug && !firstFightId) {
+      console.warn(
+        `Fight with slug "${item.firstFightSlug}" not found in database for Transformation "${item.name}". Proceeding with null firstFightId.`
+      );
+    }
+
+    tasks.push({ item, characterId, zanpakutoId, firstEpisodeId, firstFightId });
   }
 
   // 3. Batch run the upsert queries in parallel chunks
-  await batchPromises(tasks, async ({ item, characterId, zanpakutoId, firstEpisodeId }) => {
+  await batchPromises(tasks, async ({ item, characterId, zanpakutoId, firstEpisodeId, firstFightId }) => {
     // Check if the transformation already exists for this character
     const existing = await prisma.transformation.findFirst({
       where: {
@@ -82,6 +97,7 @@ export async function seedTransformation() {
       sourceMaterial: item.sourceMaterial,
       zanpakutoId,
       firstEpisodeId,
+      firstFightId,
     };
 
     if (existing) {

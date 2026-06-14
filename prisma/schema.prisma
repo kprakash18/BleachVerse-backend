@@ -266,7 +266,8 @@ model Fight {
   slug String @unique
 
   title String
-  type  FightType @default(DUEL)
+
+  type FightType @default(DUEL)
 
   summary String?
 

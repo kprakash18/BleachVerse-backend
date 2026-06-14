@@ -1062,6 +1062,90 @@ const character = [
     description:
       "The linchpin of reality who maintains the balance between the Human World, Soul Society, and Hueco Mundo.",
   },
+  {
+    name: "Di Roy Rinker",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 16 in Grimmjow's Fracción.",
+  },
+  {
+    name: "Shrieker",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "A bat-winged Hollow who commits cruel acts.",
+  },
+  {
+    name: "Gantenbainne Mosqueda",
+    sex: Sex.MALE,
+    status: CharacterStatus.ALIVE,
+    description: "Former Privaron Espada Number 107.",
+  },
+  {
+    name: "Jirobo Ikkanzaka",
+    sex: Sex.MALE,
+    status: CharacterStatus.ALIVE,
+    description: "The Fourth Seat of Squad 7 and younger brother of Jidanbo.",
+  },
+  {
+    name: "Ayon",
+    sex: Sex.UNKNOWN,
+    status: CharacterStatus.DEAD,
+    description: "A chimera monster created by Emilou Apacci, Franceska Mila Rose, and Cyan Sung-Sun.",
+  },
+  {
+    name: "Choe Neng Poww",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 25 and Fracción of Baraggan Louisenbairn.",
+  },
+  {
+    name: "Shawlong Koufang",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 11 and leader of Grimmjow's Fracción.",
+  },
+  {
+    name: "Ggio Vega",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 26 and Fracción of Baraggan Louisenbairn.",
+  },
+  {
+    name: "Abirama Redder",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 22 and Fracción of Baraggan Louisenbairn.",
+  },
+  {
+    name: "Findorr Calius",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 24 and Fracción of Baraggan Louisenbairn.",
+  },
+  {
+    name: "Nirgge Parduoc",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 27 and Fracción of Baraggan Louisenbairn.",
+  },
+  {
+    name: "Edrad Liones",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 13 and Fracción of Grimmjow Jaegerjaquez.",
+  },
+  {
+    name: "Loly Aivirrne",
+    sex: Sex.FEMALE,
+    status: CharacterStatus.ALIVE,
+    description: "An Arrancar who serves under Sosuke Aizen in Las Noches.",
+  },
+  {
+    name: "Nakeem Grindina",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description: "Arrancar Number 14 in Grimmjow's Fracción.",
+  },
 ];
 
 // slug

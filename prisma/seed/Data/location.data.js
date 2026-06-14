@@ -42,6 +42,12 @@ const locations = [
     parentSlug: "world-of-the-living",
   },
   {
+    name: "Fake Karakura Town",
+    slug: "fake-karakura-town",
+    type: LocationType.REGION,
+    parentSlug: "world-of-the-living",
+  },
+  {
     name: "Seireitei",
     slug: "seireitei",
     type: LocationType.REGION,

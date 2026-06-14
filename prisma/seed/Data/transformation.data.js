@@ -1,7 +1,6 @@
 import { SourceMaterial, TransformationType } from "@prisma/client";
 
 const transformations = [
-  // Ichigo Kurosaki
   {
     name: "Shikai: Zangetsu",
     type: TransformationType.SHIKAI,
@@ -10,7 +9,7 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ichigo Kurosaki",
     zanpakutoName: "Zangetsu",
-    firstEpisodeNumber: 20
+    firstEpisodeNumber: 20,
   },
   {
     name: "Bankai: Tensa Zangetsu",
@@ -20,7 +19,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ichigo Kurosaki",
     zanpakutoName: "Zangetsu",
-    firstEpisodeNumber: 58
+    firstEpisodeNumber: 58,
+    firstFightSlug: "ichigo-vs-byakuya-sokyoku-hill",
   },
   {
     name: "Hollow Mask",
@@ -29,7 +29,8 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ichigo Kurosaki",
-    firstEpisodeNumber: 59
+    firstEpisodeNumber: 59,
+    firstFightSlug: "ichigo-vs-byakuya-sokyoku-hill",
   },
   {
     name: "Saigo no Getsuga Tenshō",
@@ -39,7 +40,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ichigo Kurosaki",
     zanpakutoName: "Zangetsu",
-    firstEpisodeNumber: 309
+    firstEpisodeNumber: 309,
+    firstFightSlug: "ichigo-vs-aizen-fake-karakura-town",
   },
   {
     name: "Fullbring: Clad-Type",
@@ -48,10 +50,9 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ichigo Kurosaki",
-    firstEpisodeNumber: 352
+    firstEpisodeNumber: 352,
+    firstFightSlug: "ichigo-vs-ginjo-final",
   },
-
-  // Rukia Kuchiki
   {
     name: "Shikai: Sode no Shirayuki",
     type: TransformationType.SHIKAI,
@@ -60,7 +61,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Rukia Kuchiki",
     zanpakutoName: "Sode no Shirayuki",
-    firstEpisodeNumber: 117
+    firstEpisodeNumber: 117,
+    firstFightSlug: "rukia-vs-di-roy",
   },
   {
     name: "Bankai: Hakka no Togame",
@@ -70,10 +72,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Rukia Kuchiki",
     zanpakutoName: "Sode no Shirayuki",
-    firstEpisodeNumber: 385
+    firstEpisodeNumber: 385,
+    firstFightSlug: "rukia-vs-as-nodt",
   },
-
-  // Byakuya Kuchiki
   {
     name: "Shikai: Senbonzakura",
     type: TransformationType.SHIKAI,
@@ -82,7 +83,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Byakuya Kuchiki",
     zanpakutoName: "Senbonzakura",
-    firstEpisodeNumber: 16
+    firstEpisodeNumber: 16,
+    firstFightSlug: "byakuya-vs-ganju",
   },
   {
     name: "Bankai: Senbonzakura Kageyoshi",
@@ -92,10 +94,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Byakuya Kuchiki",
     zanpakutoName: "Senbonzakura",
-    firstEpisodeNumber: 52
+    firstEpisodeNumber: 52,
+    firstFightSlug: "byakuya-vs-renji-duel",
   },
-
-  // Renji Abarai
   {
     name: "Shikai: Zabimaru",
     type: TransformationType.SHIKAI,
@@ -104,7 +105,7 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Renji Abarai",
     zanpakutoName: "Zabimaru",
-    firstEpisodeNumber: 16
+    firstEpisodeNumber: 16,
   },
   {
     name: "Bankai: Hikō Zabimaru",
@@ -114,7 +115,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Renji Abarai",
     zanpakutoName: "Zabimaru",
-    firstEpisodeNumber: 52
+    firstEpisodeNumber: 52,
+    firstFightSlug: "byakuya-vs-renji-duel",
   },
   {
     name: "Bankai: Sōō Zabimaru",
@@ -124,10 +126,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Renji Abarai",
     zanpakutoName: "Zabimaru",
-    firstEpisodeNumber: 384
+    firstEpisodeNumber: 384,
+    firstFightSlug: "renji-vs-mask",
   },
-
-  // Toshiro Hitsugaya
   {
     name: "Shikai: Hyorinmaru",
     type: TransformationType.SHIKAI,
@@ -136,7 +137,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Toshiro Hitsugaya",
     zanpakutoName: "Hyorinmaru",
-    firstEpisodeNumber: 48
+    firstEpisodeNumber: 48,
+    firstFightSlug: "hitsugaya-vs-gin",
   },
   {
     name: "Bankai: Daiguren Hyorinmaru",
@@ -146,10 +148,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Toshiro Hitsugaya",
     zanpakutoName: "Hyorinmaru",
-    firstEpisodeNumber: 121
+    firstEpisodeNumber: 121,
+    firstFightSlug: "hitsugaya-vs-shawlong",
   },
-
-  // Kisuke Urahara
   {
     name: "Shikai: Benihime",
     type: TransformationType.SHIKAI,
@@ -158,7 +159,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kisuke Urahara",
     zanpakutoName: "Benihime",
-    firstEpisodeNumber: 114
+    firstEpisodeNumber: 114,
+    firstFightSlug: "urahara-vs-yammy",
   },
   {
     name: "Bankai: Kannonbiraki Benihime Aratame",
@@ -168,10 +170,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kisuke Urahara",
     zanpakutoName: "Benihime",
-    firstEpisodeNumber: 389
+    firstEpisodeNumber: 389,
+    firstFightSlug: "urahara-vs-askin",
   },
-
-  // Genryusai Shigekuni Yamamoto
   {
     name: "Shikai: Ryujin Jakka",
     type: TransformationType.SHIKAI,
@@ -180,7 +181,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Genryusai Shigekuni Yamamoto",
     zanpakutoName: "Ryujin Jakka",
-    firstEpisodeNumber: 55
+    firstEpisodeNumber: 55,
+    firstFightSlug: "yamamoto-vs-shunsui-ukitake",
   },
   {
     name: "Bankai: Zanka no Tachi",
@@ -190,10 +192,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Genryusai Shigekuni Yamamoto",
     zanpakutoName: "Ryujin Jakka",
-    firstEpisodeNumber: 373
+    firstEpisodeNumber: 373,
+    firstFightSlug: "yamamoto-vs-fake-yhwach",
   },
-
-  // Shunsui Kyoraku
   {
     name: "Shikai: Katen Kyokotsu",
     type: TransformationType.SHIKAI,
@@ -202,7 +203,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Shunsui Kyoraku",
     zanpakutoName: "Katen Kyokotsu",
-    firstEpisodeNumber: 55
+    firstEpisodeNumber: 55,
+    firstFightSlug: "yamamoto-vs-shunsui-ukitake",
   },
   {
     name: "Bankai: Katen Kyōkotsu: Karamatsu Shinjū",
@@ -212,10 +214,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Shunsui Kyoraku",
     zanpakutoName: "Katen Kyokotsu",
-    firstEpisodeNumber: 395
+    firstEpisodeNumber: 395,
+    firstFightSlug: "shunsui-vs-lille-barro",
   },
-
-  // Soi Fon
   {
     name: "Shikai: Suzumebachi",
     type: TransformationType.SHIKAI,
@@ -224,7 +225,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Soi Fon",
     zanpakutoName: "Suzumebachi",
-    firstEpisodeNumber: 56
+    firstEpisodeNumber: 56,
+    firstFightSlug: "soifon-vs-yoruichi",
   },
   {
     name: "Bankai: Jakuhō Raikōben",
@@ -234,10 +236,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Soi Fon",
     zanpakutoName: "Suzumebachi",
-    firstEpisodeNumber: 278
+    firstEpisodeNumber: 278,
+    firstFightSlug: "soifon-omaeda-vs-baraggan",
   },
-
-  // Gin Ichimaru
   {
     name: "Shikai: Shinsō",
     type: TransformationType.SHIKAI,
@@ -246,7 +247,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Gin Ichimaru",
     zanpakutoName: "Shinsō",
-    firstEpisodeNumber: 22
+    firstEpisodeNumber: 22,
+    firstFightSlug: "gin-vs-jidanbo",
   },
   {
     name: "Bankai: Kamishini no Yari",
@@ -256,10 +258,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Gin Ichimaru",
     zanpakutoName: "Shinsō",
-    firstEpisodeNumber: 300
+    firstEpisodeNumber: 300,
+    firstFightSlug: "gin-vs-aizen",
   },
-
-  // Retsu Unohana
   {
     name: "Shikai: Minazuki",
     type: TransformationType.SHIKAI,
@@ -268,7 +269,7 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Retsu Unohana",
     zanpakutoName: "Minazuki",
-    firstEpisodeNumber: 54
+    firstEpisodeNumber: 54,
   },
   {
     name: "Bankai: Minazuki (Bankai)",
@@ -278,10 +279,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Retsu Unohana",
     zanpakutoName: "Minazuki",
-    firstEpisodeNumber: 382
+    firstEpisodeNumber: 382,
+    firstFightSlug: "kenpachi-vs-unohana-final",
   },
-
-  // Sajin Komamura
   {
     name: "Shikai: Tenken",
     type: TransformationType.SHIKAI,
@@ -290,7 +290,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Sajin Komamura",
     zanpakutoName: "Tenken",
-    firstEpisodeNumber: 53
+    firstEpisodeNumber: 53,
+    firstFightSlug: "komamura-tosen-vs-kenpachi",
   },
   {
     name: "Bankai: Kokujō Tengen Myō'ō",
@@ -300,10 +301,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Sajin Komamura",
     zanpakutoName: "Tenken",
-    firstEpisodeNumber: 53
+    firstEpisodeNumber: 53,
+    firstFightSlug: "komamura-tosen-vs-kenpachi",
   },
-
-  // Kaname Tosen
   {
     name: "Shikai: Suzumushi",
     type: TransformationType.SHIKAI,
@@ -312,7 +312,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kaname Tosen",
     zanpakutoName: "Suzumushi",
-    firstEpisodeNumber: 53
+    firstEpisodeNumber: 53,
+    firstFightSlug: "komamura-tosen-vs-kenpachi",
   },
   {
     name: "Bankai: Suzumushi Tsuishiki: Enma Kōro",
@@ -322,10 +323,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kaname Tosen",
     zanpakutoName: "Suzumushi",
-    firstEpisodeNumber: 53
+    firstEpisodeNumber: 53,
+    firstFightSlug: "komamura-tosen-vs-kenpachi",
   },
-
-  // Kenpachi Zaraki
   {
     name: "Shikai: Nozarashi",
     type: TransformationType.SHIKAI,
@@ -334,7 +334,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kenpachi Zaraki",
     zanpakutoName: "Nozarashi",
-    firstEpisodeNumber: 386
+    firstEpisodeNumber: 386,
+    firstFightSlug: "kenpachi-vs-gremmy",
   },
   {
     name: "Bankai: Kenpachi Bankai",
@@ -344,10 +345,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.MANGA,
     characterName: "Kenpachi Zaraki",
     zanpakutoName: "Nozarashi",
-    firstEpisodeNumber: null
+    firstEpisodeNumber: null,
+    firstFightSlug: "captains-vs-gerard",
   },
-
-  // Mayuri Kurotsuchi
   {
     name: "Shikai: Ashisogi Jizō",
     type: TransformationType.SHIKAI,
@@ -356,7 +356,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Mayuri Kurotsuchi",
     zanpakutoName: "Ashisogi Jizō",
-    firstEpisodeNumber: 43
+    firstEpisodeNumber: 43,
+    firstFightSlug: "uryu-vs-mayuri",
   },
   {
     name: "Bankai: Konjiki Ashisogi Jizō",
@@ -366,10 +367,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Mayuri Kurotsuchi",
     zanpakutoName: "Ashisogi Jizō",
-    firstEpisodeNumber: 44
+    firstEpisodeNumber: 44,
+    firstFightSlug: "uryu-vs-mayuri",
   },
-
-  // Sosuke Aizen
   {
     name: "Shikai: Kyōka Suigetsu",
     type: TransformationType.SHIKAI,
@@ -378,10 +378,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Sosuke Aizen",
     zanpakutoName: "Kyōka Suigetsu",
-    firstEpisodeNumber: 60
+    firstEpisodeNumber: 60,
+    firstFightSlug: "komamura-vs-aizen",
   },
-
-  // Shinji Hirako
   {
     name: "Shikai: Sakanade",
     type: TransformationType.SHIKAI,
@@ -390,7 +389,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Shinji Hirako",
     zanpakutoName: "Sakanade",
-    firstEpisodeNumber: 291
+    firstEpisodeNumber: 291,
+    firstFightSlug: "shinji-vs-aizen",
   },
   {
     name: "Hollow Mask (Shinji)",
@@ -399,7 +399,8 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Shinji Hirako",
-    firstEpisodeNumber: 121
+    firstEpisodeNumber: 121,
+    firstFightSlug: "shinji-vs-grimmjow",
   },
   {
     name: "Bankai: Sakasama Yokoshima Happō Fugarisagari",
@@ -409,10 +410,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Shinji Hirako",
     zanpakutoName: "Sakanade",
-    firstEpisodeNumber: 382
+    firstEpisodeNumber: 382,
   },
-
-  // Grimmjow Jaegerjaquez
   {
     name: "Resurrección: Pantera",
     type: TransformationType.RESURRECCION,
@@ -421,10 +420,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Grimmjow Jaegerjaquez",
     zanpakutoName: "Pantera",
-    firstEpisodeNumber: 165
+    firstEpisodeNumber: 165,
+    firstFightSlug: "ichigo-vs-grimmjow-final-battle",
   },
-
-  // Ulquiorra Cifer
   {
     name: "Resurrección: Murciélago",
     type: TransformationType.RESURRECCION,
@@ -433,7 +431,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ulquiorra Cifer",
     zanpakutoName: "Murciélago",
-    firstEpisodeNumber: 269
+    firstEpisodeNumber: 269,
+    firstFightSlug: "ichigo-vs-ulquiorra-final-las-noches",
   },
   {
     name: "Segunda Etapa",
@@ -443,10 +442,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Ulquiorra Cifer",
     zanpakutoName: "Murciélago",
-    firstEpisodeNumber: 270
+    firstEpisodeNumber: 270,
+    firstFightSlug: "ichigo-vs-ulquiorra-final-las-noches",
   },
-
-  // Nelliel Tu Odelschwanck
   {
     name: "Resurrección: Gamuza",
     type: TransformationType.RESURRECCION,
@@ -455,10 +453,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Nelliel Tu Odelschwanck",
     zanpakutoName: "Gamuza",
-    firstEpisodeNumber: 194
+    firstEpisodeNumber: 194,
   },
-
-  // Tier Harribel
   {
     name: "Resurrección: Tiburón",
     type: TransformationType.RESURRECCION,
@@ -467,10 +463,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Tier Harribel",
     zanpakutoName: "Tiburón",
-    firstEpisodeNumber: 275
+    firstEpisodeNumber: 275,
   },
-
-  // Coyote Starrk
   {
     name: "Resurrección: Los Lobos",
     type: TransformationType.RESURRECCION,
@@ -479,10 +473,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Coyote Starrk",
     zanpakutoName: "Los Lobos",
-    firstEpisodeNumber: 277
+    firstEpisodeNumber: 277,
+    firstFightSlug: "shunsui-ukitake-vs-starrk",
   },
-
-  // Baraggan Louisenbairn
   {
     name: "Resurrección: Arrogante",
     type: TransformationType.RESURRECCION,
@@ -491,10 +484,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Baraggan Louisenbairn",
     zanpakutoName: "Arrogante",
-    firstEpisodeNumber: 275
+    firstEpisodeNumber: 275,
+    firstFightSlug: "soifon-omaeda-vs-baraggan",
   },
-
-  // Nnoitra Gilga
   {
     name: "Resurrección: Santa Teresa",
     type: TransformationType.RESURRECCION,
@@ -503,10 +495,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Nnoitra Gilga",
     zanpakutoName: "Santa Teresa",
-    firstEpisodeNumber: 195
+    firstEpisodeNumber: 195,
   },
-
-  // Szayelaporro Granz
   {
     name: "Resurrección: Fornicarás",
     type: TransformationType.RESURRECCION,
@@ -515,10 +505,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Szayelaporro Granz",
     zanpakutoName: "Fornicarás",
-    firstEpisodeNumber: 191
+    firstEpisodeNumber: 191,
+    firstFightSlug: "uryu-renji-vs-szayelaporro",
   },
-
-  // Zommari Rureaux
   {
     name: "Resurrección: Brujería",
     type: TransformationType.RESURRECCION,
@@ -527,10 +516,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Zommari Rureaux",
     zanpakutoName: "Brujería",
-    firstEpisodeNumber: 196
+    firstEpisodeNumber: 196,
+    firstFightSlug: "byakuya-vs-zommari",
   },
-
-  // Aaroniero Arruruerie
   {
     name: "Resurrección: Glotonería",
     type: TransformationType.RESURRECCION,
@@ -539,10 +527,9 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Aaroniero Arruruerie",
     zanpakutoName: "Glotonería",
-    firstEpisodeNumber: 159
+    firstEpisodeNumber: 159,
+    firstFightSlug: "rukia-vs-aaroniero",
   },
-
-  // Yammy Llargo
   {
     name: "Resurrección: Ira",
     type: TransformationType.RESURRECCION,
@@ -551,10 +538,8 @@ const transformations = [
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Yammy Llargo",
     zanpakutoName: "Ira",
-    firstEpisodeNumber: 275
+    firstEpisodeNumber: 275,
   },
-
-  // Kugo Ginjo
   {
     name: "Fullbring: Cross of Scaffold",
     type: TransformationType.FULLBRING,
@@ -562,7 +547,8 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kugo Ginjo",
-    firstEpisodeNumber: 347
+    firstEpisodeNumber: 347,
+    firstFightSlug: "ichigo-vs-ginjo-final",
   },
   {
     name: "Bankai: Ginjo",
@@ -571,10 +557,9 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Kugo Ginjo",
-    firstEpisodeNumber: 363
+    firstEpisodeNumber: 363,
+    firstFightSlug: "ichigo-vs-ginjo-final",
   },
-
-  // Yhwach
   {
     name: "The Almighty",
     type: TransformationType.OTHER,
@@ -582,10 +567,9 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Yhwach",
-    firstEpisodeNumber: 385
+    firstEpisodeNumber: 385,
+    firstFightSlug: "ichigo-vs-yhwach-final-battle",
   },
-
-  // Quilge Opie
   {
     name: "Vollständig: Biskiel",
     type: TransformationType.VOLLSTANDIG,
@@ -593,7 +577,8 @@ const transformations = [
     isCanonical: true,
     sourceMaterial: SourceMaterial.ANIME,
     characterName: "Quilge Opie",
-    firstEpisodeNumber: 369
+    firstEpisodeNumber: 369,
+    firstFightSlug: "ichigo-vs-quilge-opie",
   }
 ];
 
