@@ -262,7 +262,8 @@ enum FightType {
 
 // fight model 
 model Fight {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique
 
   title String
   type  FightType @default(DUEL)
@@ -607,7 +608,8 @@ enum EventType {
 }
 
 model Event {
-  id String @id @default(uuid())
+  id   String @id @default(uuid())
+  slug String @unique
 
   title          String
   type           EventType

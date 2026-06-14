@@ -121,6 +121,7 @@ Table Episode {
 
 Table Fight {
   id String [pk]
+  slug String [unique, not null]
   title String [not null]
   type FightType [not null, default: 'DUEL']
   summary String
@@ -279,6 +280,7 @@ Table CharacterImage {
 
 Table Event {
   id String [pk]
+  slug String [unique, not null]
   title String [not null]
   type EventType [not null]
   description String
