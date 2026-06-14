@@ -662,6 +662,35 @@ const characterOrganizations = [
     organizationSlug: "ishida-family",
     role: "Heir",
   },
+  // Sternritter members missing from data
+  {
+    characterName: "James",
+    organizationSlug: "sternritter",
+    role: "Member",
+  },
+  {
+    characterName: "James",
+    organizationSlug: "wandenreich",
+    role: "Sternritter",
+  },
+  // Next-gen Soul Reapers
+  {
+    characterName: "Ichika Abarai",
+    organizationSlug: "gotei-13",
+    role: "Soul Reaper",
+  },
+  // Shiba Clan / misc
+  {
+    characterName: "Kukaku Shiba",
+    organizationSlug: "soul-society",
+    role: "Shiba Clan Head",
+  },
+  // Arrancar
+  {
+    characterName: "Menoly Mallia",
+    organizationSlug: "arrancar-army",
+    role: "Fraccion",
+  },
 ];
 
 export default characterOrganizations;

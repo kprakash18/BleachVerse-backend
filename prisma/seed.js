@@ -16,6 +16,7 @@ import { seedFights } from "./seed/seeders/fight.seeder.js";
 import { seedFightParticipants } from "./seed/seeders/fightParticipant.seeder.js";
 import { seedEvents } from "./seed/seeders/event.seeder.js";
 import { seedEventParticipants } from "./seed/seeders/eventParticipant.seeder.js";
+import { seedQuotes } from "./seed/seeders/quote.seeder.js";
 
 async function main() {
   await seedOrganization();
@@ -33,6 +34,7 @@ async function main() {
   await seedFightParticipants();
   await seedEvents();
   await seedEventParticipants();
+  await seedQuotes();
   await seedTransformation();
   await seedPower();
 }

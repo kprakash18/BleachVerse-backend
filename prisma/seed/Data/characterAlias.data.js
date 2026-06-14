@@ -125,7 +125,12 @@ const characterAliases = [
   },
   {
     characterName: "Toshiro Hitsugaya",
-    aliases: ["Shiro-chan", "Frost Captain", "Hitsugaya-taicho", "Chibi-captain"],
+    aliases: [
+      "Shiro-chan",
+      "Frost Captain",
+      "Hitsugaya-taicho",
+      "Chibi-captain",
+    ],
   },
   {
     characterName: "Kenpachi Zaraki",
@@ -445,7 +450,12 @@ const characterAliases = [
   },
   {
     characterName: "Ichibe Hyosube",
-    aliases: ["Oshō", "Manako Oshō", "Monk of the Eyeball", "Leader of Squad Zero"],
+    aliases: [
+      "Oshō",
+      "Manako Oshō",
+      "Monk of the Eyeball",
+      "Leader of Squad Zero",
+    ],
   },
   {
     characterName: "Oetsu Nimaiya",
@@ -587,14 +597,6 @@ const characterAliases = [
     characterName: "Soul King",
     aliases: ["Reiō"],
   },
-  {
-    characterName: "Kukaku",
-    aliases: ["Kukaku-san"],
-  },
-  {
-    characterName: "Jidanbo",
-    aliases: ["Jidanbo"],
-  }
 ];
 
 export default characterAliases;

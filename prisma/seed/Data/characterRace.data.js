@@ -608,6 +608,38 @@ const characterRaces = [
     characterName: "Soul King",
     races: ["Soul King Fragment"],
   },
+  {
+    characterName: "James",
+    races: ["Quincy"],
+  },
+  {
+    characterName: "Mimihagi",
+    races: ["Soul King Fragment"],
+  },
+  {
+    characterName: "Kazui Kurosaki",
+    races: ["Soul Reaper", "Human", "Quincy", "Hollow"],
+  },
+  {
+    characterName: "Ichika Abarai",
+    races: ["Soul Reaper"],
+  },
+  {
+    characterName: "Kukaku Shiba",
+    races: ["Soul Reaper"],
+  },
+  {
+    characterName: "Jidanbo Ikkanzaka",
+    races: ["Soul Reaper"],
+  },
+  {
+    characterName: "Hikone Ubuginu",
+    races: ["Soul Reaper", "Hollow"],
+  },
+  {
+    characterName: "Menoly Mallia",
+    races: ["Hollow", "Arrancar"],
+  },
 ];
 
 export default characterRaces;

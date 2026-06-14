@@ -579,7 +579,251 @@ const transformations = [
     characterName: "Quilge Opie",
     firstEpisodeNumber: 369,
     firstFightSlug: "ichigo-vs-quilge-opie",
-  }
+  },
+
+  // ── Orihime Inoue ─────────────────────────────────────────────────────────
+  {
+    name: "Shun Shun Rikka: Santen Kesshun",
+    type: TransformationType.OTHER,
+    description: "Orihime's defensive Shun Shun Rikka technique forming a triangular shield that rejects phenomena and blocks spiritual attacks.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Orihime Inoue",
+    firstEpisodeNumber: 8,
+  },
+  {
+    name: "Shun Shun Rikka: Koten Zanshun",
+    type: TransformationType.OTHER,
+    description: "Orihime's offensive technique launching a single fairy that rejects and pierces through a target.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Orihime Inoue",
+    firstEpisodeNumber: 9,
+  },
+  {
+    name: "Shun Shun Rikka: Sōten Kisshun",
+    type: TransformationType.OTHER,
+    description: "Orihime's healing technique, forming a dome that rejects all phenomena including wounds and death.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Orihime Inoue",
+    firstEpisodeNumber: 45,
+  },
+
+  // ── Uryu Ishida ───────────────────────────────────────────────────────────
+  {
+    name: "Letzt Stil",
+    type: TransformationType.OTHER,
+    description: "Uryu's forbidden last form sacrificing his Quincy powers for a massive temporary boost to spiritual energy.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Uryu Ishida",
+    firstEpisodeNumber: 17,
+  },
+  {
+    name: "Vollständig: Antithese",
+    type: TransformationType.VOLLSTANDIG,
+    description: "Uryu's Quincy Vollständig granted by Yhwach, reversing the ratio of damage exchanged between two targets.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Uryu Ishida",
+  },
+
+  // ── Yasutora Sado ─────────────────────────────────────────────────────────
+  {
+    name: "Brazo Derecha de Gigante",
+    type: TransformationType.OTHER,
+    description: "Chad's right arm Fullbring granting enhanced offense with El Directo energy blasts.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Yasutora Sado",
+    firstEpisodeNumber: 37,
+  },
+  {
+    name: "Brazo Izquierda del Diablo",
+    type: TransformationType.OTHER,
+    description: "Chad's left arm Fullbring serving as a shield capable of absorbing and repelling attacks.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Yasutora Sado",
+    firstEpisodeNumber: 152,
+  },
+
+  // ── Yoruichi Shihoin ──────────────────────────────────────────────────────
+  {
+    name: "Shunkō",
+    type: TransformationType.OTHER,
+    description: "Yoruichi's advanced technique combining hakuda and kidō, firing compressed air from her back and shoulders.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Yoruichi Shihoin",
+    firstEpisodeNumber: 51,
+  },
+  {
+    name: "Raijin Senkei",
+    type: TransformationType.OTHER,
+    description: "Yoruichi's ultimate thunderclap Shunkō form, coating her body in lightning and morphing into an armored deity-like war form.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Yoruichi Shihoin",
+  },
+
+  // ── Jushiro Ukitake ───────────────────────────────────────────────────────
+  {
+    name: "Shikai: Sōgyo no Kotowari",
+    type: TransformationType.SHIKAI,
+    description: "Ukitake's twin-blade Shikai that absorbs energy-based attacks and fires them back with increased power.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Jushiro Ukitake",
+    firstEpisodeNumber: 42,
+  },
+
+  // ── Kensei Muguruma ───────────────────────────────────────────────────────
+  {
+    name: "Shikai: Tachikaze",
+    type: TransformationType.SHIKAI,
+    description: "Kensei's Shikai transforming his blade into a combat knife that generates wind-based cutting pressures.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Kensei Muguruma",
+    firstEpisodeNumber: 204,
+  },
+  {
+    name: "Bankai: Tekken Tachikaze",
+    type: TransformationType.BANKAI,
+    description: "Kensei's Bankai manifesting as knuckle-dusters that generate explosive wind blasts on impact.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Kensei Muguruma",
+  },
+
+  // ── Rojuro Otoribashi ─────────────────────────────────────────────────────
+  {
+    name: "Shikai: Kinshara",
+    type: TransformationType.SHIKAI,
+    description: "Rose's Shikai releasing as a golden whip that generates illusions through music.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Rojuro Otoribashi",
+    firstEpisodeNumber: 228,
+  },
+  {
+    name: "Bankai: Kinshara Butodan",
+    type: TransformationType.BANKAI,
+    description: "Rose's Bankai summoning a troupe of dancers who weave deadly illusions synchronized to music.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Rojuro Otoribashi",
+  },
+
+  // ── Love Aikawa ───────────────────────────────────────────────────────────
+  {
+    name: "Shikai: Tengumaru",
+    type: TransformationType.SHIKAI,
+    description: "Love's Shikai summoning a massive iron club covered in spikes capable of devastating blunt strikes.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Love Aikawa",
+    firstEpisodeNumber: 229,
+  },
+
+  // ── Isshin Kurosaki ───────────────────────────────────────────────────────
+  {
+    name: "Shikai: Engetsu",
+    type: TransformationType.SHIKAI,
+    description: "Isshin's fire-type Shikai capable of producing large-scale flame-based attacks.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Isshin Kurosaki",
+    firstEpisodeNumber: 259,
+  },
+
+  // ── Masaki Kurosaki ───────────────────────────────────────────────────────
+  {
+    name: "Quincy Combat Form",
+    type: TransformationType.OTHER,
+    description: "Masaki's pure-blood Quincy combat state utilizing Hirenkyaku and Heilig Pfeil with exceptional precision.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Masaki Kurosaki",
+  },
+
+  // ── Ryuken Ishida ─────────────────────────────────────────────────────────
+  {
+    name: "Quincy Combat Form",
+    type: TransformationType.OTHER,
+    description: "Ryuken's pure-blood Quincy combat state demonstrating mastery of Hirenkyaku, Ransōtengai, and high-precision Heilig Pfeil.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Ryuken Ishida",
+  },
+
+  // ── Ichibe Hyosube ────────────────────────────────────────────────────────
+  {
+    name: "Shikai: Ichimonji",
+    type: TransformationType.SHIKAI,
+    description: "Ichibe's calligraphy brush Shikai that erases the name — and thus power — of anything it blackens.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Ichibe Hyosube",
+  },
+  {
+    name: "Bankai: Shirafude Ichimonji",
+    type: TransformationType.BANKAI,
+    description: "Ichibe's white brush Bankai that overwrites an enemy's name with a weaker one, stripping all original power.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Ichibe Hyosube",
+  },
+
+  // ── Jugram Haschwalth ─────────────────────────────────────────────────────
+  {
+    name: "Freund Schild",
+    type: TransformationType.OTHER,
+    description: "Haschwalth's ability to redistribute accumulated misfortune to any target he touches.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Jugram Haschwalth",
+  },
+  {
+    name: "Vollständig: Hagel Regen",
+    type: TransformationType.VOLLSTANDIG,
+    description: "Haschwalth's Quincy Vollständig granting colossal reishi wings and amplifying The Balance to devastating levels.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Jugram Haschwalth",
+  },
+
+  // ── Lille Barro ───────────────────────────────────────────────────────────
+  {
+    name: "Vollständig: Jilliel",
+    type: TransformationType.VOLLSTANDIG,
+    description: "Lille's divine bird-like Vollständig whose light beams cannot be blocked or deflected.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Lille Barro",
+  },
+
+  // ── Gerard Valkyrie ───────────────────────────────────────────────────────
+  {
+    name: "Vollständig: Aschetonig",
+    type: TransformationType.VOLLSTANDIG,
+    description: "Gerard's giant armored Vollständig powered by The Miracle — wounds regenerate as amplified strength.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Gerard Valkyrie",
+  },
+
+  // ── Pernida Parnkgjas ─────────────────────────────────────────────────────
+  {
+    name: "Vollständig: Wahrscheinlichkeit",
+    type: TransformationType.VOLLSTANDIG,
+    description: "Pernida's Vollständig extending nerves across vast areas via The Compulsory to compress and destroy targets.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Pernida Parnkgjas",
+  },
 ];
 
 export default transformations;

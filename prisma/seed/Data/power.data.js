@@ -1231,6 +1231,70 @@ const powers = [
     sourceMaterial: SourceMaterial.MANGA,
     characterName: "Pernida Parnkgjas",
   },
+
+  // Masaki Kurosaki
+  {
+    name: "Heilig Pfeil",
+    type: PowerType.OFFENSIVE,
+    source: PowerSource.QUINCY,
+    description:
+      "Masaki's pure-blood Quincy arrows formed from gathered Reishi, fired with exceptional precision.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Masaki Kurosaki",
+  },
+  {
+    name: "Hirenkyaku",
+    type: PowerType.MOVEMENT,
+    source: PowerSource.QUINCY,
+    description:
+      "A high-speed Quincy movement technique using a platform of Reishi under the feet.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Masaki Kurosaki",
+  },
+  {
+    name: "Blut Vene",
+    type: PowerType.DEFENSIVE,
+    source: PowerSource.QUINCY,
+    description:
+      "Circulates Reishi through the blood vessels to grant exceptional defensive durability.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Masaki Kurosaki",
+  },
+
+  // Ryuken Ishida
+  {
+    name: "Heilig Pfeil",
+    type: PowerType.OFFENSIVE,
+    source: PowerSource.QUINCY,
+    description:
+      "Ryuken's high-precision sacred arrows fired as a pure-blood Quincy.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Ryuken Ishida",
+  },
+  {
+    name: "Hirenkyaku",
+    type: PowerType.MOVEMENT,
+    source: PowerSource.QUINCY,
+    description:
+      "The Quincy high-speed movement technique used by Ryuken with master-level proficiency.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.ANIME,
+    characterName: "Ryuken Ishida",
+  },
+  {
+    name: "Ransōtengai",
+    type: PowerType.SUPPORT,
+    source: PowerSource.QUINCY,
+    description:
+      "A technique allowing Ryuken to control his body with Reishi threads even if his limbs are immobilized.",
+    isCanonical: true,
+    sourceMaterial: SourceMaterial.MANGA,
+    characterName: "Ryuken Ishida",
+  },
 ];
 
 export default powers;

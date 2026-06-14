@@ -325,7 +325,8 @@ const character = [
     name: "Nanao Ise",
     sex: Sex.FEMALE,
     status: CharacterStatus.ALIVE,
-    description: "Lieutenant of Squad 8 who later serves under Captain-Commander Kyoraku",
+    description:
+      "Lieutenant of Squad 8 who later serves under Captain-Commander Kyoraku",
   },
 
   {
@@ -1090,7 +1091,8 @@ const character = [
     name: "Ayon",
     sex: Sex.UNKNOWN,
     status: CharacterStatus.DEAD,
-    description: "A chimera monster created by Emilou Apacci, Franceska Mila Rose, and Cyan Sung-Sun.",
+    description:
+      "A chimera monster created by Emilou Apacci, Franceska Mila Rose, and Cyan Sung-Sun.",
   },
   {
     name: "Choe Neng Poww",
@@ -1150,13 +1152,44 @@ const character = [
     name: "Kazui Kurosaki",
     sex: Sex.MALE,
     status: CharacterStatus.ALIVE,
-    description: "Son of Ichigo Kurosaki and Orihime Inoue who possesses hybrid spiritual powers.",
+    description:
+      "Son of Ichigo Kurosaki and Orihime Inoue who possesses hybrid spiritual powers.",
   },
   {
     name: "Mimihagi",
     sex: Sex.UNKNOWN,
     status: CharacterStatus.DEAD,
-    description: "The fallen right arm of the Soul King representing stillness.",
+    description:
+      "The fallen right arm of the Soul King representing stillness.",
+  },
+  {
+    name: "James",
+    sex: Sex.MALE,
+    status: CharacterStatus.DEAD,
+    description:
+      "Sternritter Superstar James, loyal partner and cheerleader of Mask De Masculine who empowers him through his cheers.",
+  },
+  {
+    name: "Ichika Abarai",
+    sex: Sex.FEMALE,
+    status: CharacterStatus.ALIVE,
+    description:
+      "Daughter of Renji Abarai and Rukia Kuchiki, a young Soul Reaper of the next generation.",
+  },
+
+  {
+    name: "Hikone Ubuginu",
+    sex: Sex.UNKNOWN,
+    status: CharacterStatus.ALIVE,
+    description:
+      "A mysterious Soul Reaper artificially created by Tokinada Tsunayashiro, wielding the monstrous Zanpakuto Ikomikidomoe.",
+  },
+  {
+    name: "Menoly Mallia",
+    sex: Sex.FEMALE,
+    status: CharacterStatus.ALIVE,
+    description:
+      "An Arrancar serving under Sosuke Aizen in Hueco Mundo, one of the Fraccion assigned to Las Noches.",
   },
 ];
 
