@@ -1,5 +1,5 @@
-import { errorResponse } from "../responses/errorResponse.js";
-import { errorCodes } from "./errorCodes.js";
+import errorResponse from "../responses/errorResponse.js";
+import errorCodes from "./errorCodes.js";
 import { ApiError } from "./ApiError.js";
 
 export const errorHandler = (err, req, res, next) => {

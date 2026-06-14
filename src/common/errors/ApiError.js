@@ -1,4 +1,4 @@
-import { errorCodes } from "./errorCodes.js";
+import errorCodes from "./errorCodes.js";
 
 export class ApiError extends Error {
   constructor(
@@ -17,3 +17,4 @@ export class ApiError extends Error {
     Error.captureStackTrace?.(this, this.constructor);
   }
 }
+export default ApiError;
