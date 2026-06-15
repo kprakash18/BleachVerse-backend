@@ -14,3 +14,27 @@ export const count = async (where) => {
     where,
   });
 };
+
+// get character by slug, including aliases, races, and organization data
+export const findCharacterDetailsBySlug = async (slug) => {
+  return prisma.character.findUnique({
+    where: {
+      slug,
+    },
+    include: {
+      aliases: true,
+
+      races: {
+        include: {
+          race: true,
+        },
+      },
+
+      organizations: {
+        include: {
+          organization: true,
+        },
+      },
+    },
+  });
+};

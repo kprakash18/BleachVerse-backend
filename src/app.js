@@ -1,6 +1,7 @@
 import express from "express";
 import { errorHandler } from "./common/errors/errorHandler.js";
 import characterRoute from "./modules/character/character.routes.js";
+import { validateRequest } from "./common/middleware/validateRequest.js";
 const app = express();
 
 app.use(express.json());

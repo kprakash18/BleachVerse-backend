@@ -1,4 +1,6 @@
 import * as characterRepository from "./character.repository.js";
+import ApiError from "../../common/errors/ApiError.js";
+import errorCodes from "../../common/errors/errorCodes.js";
 export const getCharacters = async (query) => {
   const { page, limit, search, status, sex, sortBy, sortOrder } = query;
 
@@ -46,4 +48,25 @@ export const getCharacters = async (query) => {
       totalPages: Math.ceil(total / limit),
     },
   };
+};
+
+// format slug
+const normalizeSlug = (slug) => slug.trim().toLowerCase().replace(/\s+/g, "-");
+
+//  404 error if user doesn't exist
+export const getCharacterBySlug = async (slug) => {
+  const normalizedSlug = normalizeSlug(slug);
+
+  const character =
+    await characterRepository.findCharacterDetailsBySlug(normalizedSlug);
+
+  if (!character) {
+    throw new ApiError(
+      404,
+      errorCodes.RESOURCE_NOT_FOUND,
+      "Character not found",
+    );
+  }
+
+  return character;
 };

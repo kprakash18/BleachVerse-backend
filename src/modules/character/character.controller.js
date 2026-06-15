@@ -8,3 +8,12 @@ export const getCharacters = asyncHandler(async (req, res) => {
 
   return successResponse(res, result.data, 200, result.meta);
 });
+
+// get character detailss using their unique slug
+export const getCharacterBySlug = asyncHandler(async (req, res) => {
+  const { slug } = req.validatedData.params;
+
+  const character = await characterService.getCharacterBySlug(slug);
+
+  return successResponse(res, character);
+});

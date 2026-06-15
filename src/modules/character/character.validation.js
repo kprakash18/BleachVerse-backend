@@ -17,3 +17,17 @@ export const getCharactersSchema = z.object({
     sortOrder: z.enum(["asc", "desc"]).default("asc"),
   }),
 });
+
+// validate the slug
+export const getCharacterBySlugSchema = z.object({
+  params: z.object({
+    slug: z
+      .string()
+      .trim()
+      .min(1, "Slug is required")
+      .regex(
+        /^[a-zA-Z0-9\s-]+$/,
+        "Slug can only contain letters, numbers, spaces and hyphens",
+      ),
+  }),
+});
