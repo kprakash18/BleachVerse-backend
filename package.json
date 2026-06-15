@@ -25,7 +25,8 @@
     "helmet": "^8.2.0",
     "morgan": "^1.10.1",
     "pg": "^8.21.0",
-    "slugify": "^1.6.9"
+    "slugify": "^1.6.9",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

@@ -1,11 +1,12 @@
 import express from "express";
 import { errorHandler } from "./common/errors/errorHandler.js";
-
+import characterRoute from "./modules/character/character.routes.js";
 const app = express();
 
 app.use(express.json());
 
 // routes here
+app.use("/api/v1", characterRoute);
 
 app.use(errorHandler); // must come after routes
 
