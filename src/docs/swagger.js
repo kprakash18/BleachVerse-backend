@@ -1,4 +1,7 @@
-import { characterPaths, characterSchemas } from "../modules/character/character.swagger.js";
+import {
+  characterPaths,
+  characterSchemas,
+} from "../modules/character/character.swagger.js";
 import { arcPaths, arcSchemas } from "../modules/arc/arc.swagger.js";
 
 const swaggerSpec = {
@@ -6,7 +9,8 @@ const swaggerSpec = {
   info: {
     title: "BleachVerse API Documentation",
     version: "1.0.0",
-    description: "Comprehensive API endpoints for BleachVerse, exposing character and story arc resources.",
+    description:
+      "Comprehensive API endpoints for BleachVerse, exposing character and story arc resources.",
   },
   servers: [
     {
