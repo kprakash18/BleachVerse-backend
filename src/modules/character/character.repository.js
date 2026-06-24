@@ -1,3 +1,4 @@
+import { OrganizationType } from "@prisma/client";
 import prisma from "../../database/prisma.js";
 
 export const findMany = async ({ where, orderBy, skip, take }) => {
@@ -21,18 +22,39 @@ export const findCharacterDetailsBySlug = async (slug) => {
     where: {
       slug,
     },
-    include: {
-      aliases: true,
+
+    select: {
+      name: true,
+      sex: true,
+      status: true,
+      description: true,
+
+      aliases: {
+        select: {
+          alias: true,
+        },
+      },
 
       races: {
-        include: {
-          race: true,
+        select: {
+          race: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
 
       organizations: {
-        include: {
-          organization: true,
+        select: {
+          role: true,
+
+          organization: {
+            select: {
+              name: true,
+              description: true,
+            },
+          },
         },
       },
     },
