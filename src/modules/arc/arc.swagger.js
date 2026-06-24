@@ -21,7 +21,8 @@ export const arcSchemas = {
       description: {
         type: "string",
         nullable: true,
-        example: "Ichigo Kurosaki gains Soul Reaper powers and begins protecting Karakura Town.",
+        example:
+          "Ichigo Kurosaki gains Soul Reaper powers and begins protecting Karakura Town.",
       },
       episodeCount: {
         type: "integer",
@@ -62,7 +63,8 @@ export const arcSchemas = {
       description: {
         type: "string",
         nullable: true,
-        example: "Ichigo Kurosaki gains Soul Reaper powers and begins protecting Karakura Town.",
+        example:
+          "Ichigo Kurosaki gains Soul Reaper powers and begins protecting Karakura Town.",
       },
       coverage: {
         type: "object",
@@ -126,14 +128,107 @@ export const arcSchemas = {
       },
     },
   },
+  Fight: {
+    type: "object",
+    properties: {
+      title: {
+        type: "string",
+        example: "Ichigo Kurosaki vs. Byakuya Kuchiki",
+      },
+      slug: {
+        type: "string",
+        example: "ichigo-kurosaki-vs-byakuya-kuchiki",
+      },
+      type: {
+        type: "string",
+        enum: ["DUEL", "TEAM_BATTLE", "WAR", "TRAINING"],
+        example: "DUEL",
+      },
+    },
+  },
+  ArcFightsResponse: {
+    type: "object",
+    properties: {
+      data: {
+        type: "array",
+        items: {
+          $ref: "#/components/schemas/Fight",
+        },
+      },
+      pagination: {
+        $ref: "#/components/schemas/PaginationMeta",
+      },
+    },
+  },
+  Event: {
+    type: "object",
+    properties: {
+      title: {
+        type: "string",
+        example: "Aizen's Betrayal",
+      },
+      slug: {
+        type: "string",
+        example: "aizens-betrayal",
+      },
+      type: {
+        type: "string",
+        enum: ["BATTLE", "DEATH", "REVEAL", "BETRAYAL", "TRANSFORMATION", "POWER_GAIN", "POWER_LOSS", "RESCUE", "INVASION", "OTHER"],
+        example: "BETRAYAL",
+      },
+    },
+  },
+  ArcEventsResponse: {
+    type: "object",
+    properties: {
+      data: {
+        type: "array",
+        items: {
+          $ref: "#/components/schemas/Event",
+        },
+      },
+      pagination: {
+        $ref: "#/components/schemas/PaginationMeta",
+      },
+    },
+  },
+  ArcCharacter: {
+    type: "object",
+    properties: {
+      name: {
+        type: "string",
+        example: "Ichigo Kurosaki",
+      },
+      slug: {
+        type: "string",
+        example: "ichigo-kurosaki",
+      },
+    },
+  },
+  ArcCharactersResponse: {
+    type: "object",
+    properties: {
+      data: {
+        type: "array",
+        items: {
+          $ref: "#/components/schemas/ArcCharacter",
+        },
+      },
+      pagination: {
+        $ref: "#/components/schemas/PaginationMeta",
+      },
+    },
+  },
 };
+
 
 export const arcPaths = {
   "/api/v1/arcs": {
     get: {
       tags: ["Arcs"],
       summary: "Get all arcs",
-      description: "Retrieve a paginated list of all story arcs with optional search and type filtering.",
+      description:
+        "Retrieve a paginated list of all story arcs with optional search and type filtering.",
       parameters: [
         {
           name: "page",
@@ -152,7 +247,8 @@ export const arcPaths = {
         {
           name: "search",
           in: "query",
-          description: "Search arc by name or slug (case-insensitive substring)",
+          description:
+            "Search arc by name or slug (case-insensitive substring)",
           required: false,
           schema: { type: "string" },
         },
@@ -227,12 +323,14 @@ export const arcPaths = {
     get: {
       tags: ["Arcs"],
       summary: "Get arc details by slug",
-      description: "Retrieve details and coverage information for a single story arc by its unique slug.",
+      description:
+        "Retrieve details and coverage information for a single story arc by its unique slug.",
       parameters: [
         {
           name: "slug",
           in: "path",
-          description: "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+          description:
+            "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
           required: true,
           schema: {
             type: "string",
@@ -294,12 +392,14 @@ export const arcPaths = {
     get: {
       tags: ["Arcs"],
       summary: "Get episodes of an arc",
-      description: "Retrieve a paginated list of episodes belonging to a specific story arc.",
+      description:
+        "Retrieve a paginated list of episodes belonging to a specific story arc.",
       parameters: [
         {
           name: "slug",
           in: "path",
-          description: "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+          description:
+            "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
           required: true,
           schema: {
             type: "string",
@@ -371,4 +471,250 @@ export const arcPaths = {
       },
     },
   },
+  "/api/v1/arcs/{slug}/fights": {
+    get: {
+      tags: ["Arcs"],
+      summary: "Get fights of an arc",
+      description:
+        "Retrieve a paginated list of fights belonging to a specific story arc, ordered by title ascending.",
+      parameters: [
+        {
+          name: "slug",
+          in: "path",
+          description:
+            "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "page",
+          in: "query",
+          description: "Page number",
+          required: false,
+          schema: { type: "integer", default: 1 },
+        },
+        {
+          name: "limit",
+          in: "query",
+          description: "Number of records per page (max: 100)",
+          required: false,
+          schema: { type: "integer", default: 10 },
+        },
+      ],
+      responses: {
+        200: {
+          description: "A paginated list of fights belonging to the arc",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ArcFightsResponse",
+              },
+            },
+          },
+        },
+        400: {
+          description: "Validation failed / Invalid parameters",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
+        404: {
+          description: "Arc not found",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+                example: {
+                  error: {
+                    code: "RESOURCE_NOT_FOUND",
+                    message: "Arc not found",
+                    details: null,
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/v1/arcs/{slug}/events": {
+    get: {
+      tags: ["Arcs"],
+      summary: "Get events of an arc",
+      description: "Retrieve a paginated list of events belonging to a specific story arc, ordered by title ascending.",
+      parameters: [
+        {
+          name: "slug",
+          in: "path",
+          description: "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "page",
+          in: "query",
+          description: "Page number",
+          required: false,
+          schema: { type: "integer", default: 1 },
+        },
+        {
+          name: "limit",
+          in: "query",
+          description: "Number of records per page (max: 100)",
+          required: false,
+          schema: { type: "integer", default: 10 },
+        },
+      ],
+      responses: {
+        200: {
+          description: "A paginated list of events belonging to the arc",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ArcEventsResponse",
+              },
+            },
+          },
+        },
+        400: {
+          description: "Validation failed / Invalid parameters",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
+        404: {
+          description: "Arc not found",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+                example: {
+                  error: {
+                    code: "RESOURCE_NOT_FOUND",
+                    message: "Arc not found",
+                    details: null,
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/api/v1/arcs/{slug}/characters": {
+    get: {
+      tags: ["Arcs"],
+      summary: "Get distinct characters of an arc",
+      description: "Retrieve a paginated list of distinct characters appearing in the episodes of a specific story arc, ordered alphabetically by name.",
+      parameters: [
+        {
+          name: "slug",
+          in: "path",
+          description: "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+          required: true,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "page",
+          in: "query",
+          description: "Page number",
+          required: false,
+          schema: { type: "integer", default: 1 },
+        },
+        {
+          name: "limit",
+          in: "query",
+          description: "Number of records per page (max: 100)",
+          required: false,
+          schema: { type: "integer", default: 10 },
+        },
+      ],
+      responses: {
+        200: {
+          description: "A paginated list of distinct characters belonging to the arc",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ArcCharactersResponse",
+              },
+            },
+          },
+        },
+        400: {
+          description: "Validation failed / Invalid parameters",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
+        404: {
+          description: "Arc not found",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+                example: {
+                  error: {
+                    code: "RESOURCE_NOT_FOUND",
+                    message: "Arc not found",
+                    details: null,
+                  },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: "Internal server error",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
+

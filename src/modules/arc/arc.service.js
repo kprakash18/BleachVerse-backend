@@ -138,3 +138,94 @@ export const getEpisodesByArcSlug = async ({ slug, page, limit }) => {
     },
   };
 };
+
+// Child nodes of Arc: Retrieve paginated fights associated with a parent Arc (identified by slug)
+export const getFightsByArcSlug = async ({ slug, page, limit }) => {
+  const arc = await arcRepository.findIdBySlug(slug);
+
+  if (!arc) {
+    throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [fights, totalItems] = await Promise.all([
+    arcRepository.findFightsByArcId({
+      arcId: arc.id,
+      skip,
+      take: limit,
+    }),
+    arcRepository.countFightsByArcId(arc.id),
+  ]);
+
+  return {
+    data: fights,
+    pagination: {
+      page,
+      limit,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+    },
+  };
+};
+
+// Child nodes of Arc: Retrieve paginated events associated with a parent Arc (identified by slug)
+export const getEventsByArcSlug = async ({ slug, page, limit }) => {
+  const arc = await arcRepository.findIdBySlug(slug);
+
+  if (!arc) {
+    throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [events, totalItems] = await Promise.all([
+    arcRepository.findEventsByArcId({
+      arcId: arc.id,
+      skip,
+      take: limit,
+    }),
+    arcRepository.countEventsByArcId(arc.id),
+  ]);
+
+  return {
+    data: events,
+    pagination: {
+      page,
+      limit,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+    },
+  };
+};
+
+// Child nodes of Arc: Retrieve paginated distinct characters associated with a parent Arc (identified by slug)
+export const getCharactersByArcSlug = async ({ slug, page, limit }) => {
+  const arc = await arcRepository.findIdBySlug(slug);
+
+  if (!arc) {
+    throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [characters, totalItems] = await Promise.all([
+    arcRepository.findDistinctCharactersByArcId({
+      arcId: arc.id,
+      skip,
+      take: limit,
+    }),
+    arcRepository.countDistinctCharactersByArcId(arc.id),
+  ]);
+
+  return {
+    data: characters,
+    pagination: {
+      page,
+      limit,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+    },
+  };
+};
+
