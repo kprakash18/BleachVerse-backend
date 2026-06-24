@@ -43,3 +43,43 @@ export const findBySlug = async (slug) => {
     },
   });
 };
+// we need id. all future child endpoints need id
+export const findIdBySlug = async (slug) => {
+  return prisma.arc.findUnique({
+    where: {
+      slug,
+    },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+    },
+  });
+};
+
+// Child node helper: Fetch a paginated list of episodes belonging to a specific parent Arc ID
+export const findEpisodesByArcId = async ({ arcId, skip, take }) => {
+  return prisma.episode.findMany({
+    where: {
+      arcId,
+    },
+    skip,
+    take,
+    orderBy: {
+      number: "asc",
+    },
+    select: {
+      title: true,
+      number: true,
+    },
+  });
+};
+
+// Child node helper: Count the total number of episodes belonging to a specific parent Arc ID
+export const countEpisodesByArcId = async (arcId) => {
+  return prisma.episode.count({
+    where: {
+      arcId,
+    },
+  });
+};

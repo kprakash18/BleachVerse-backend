@@ -36,3 +36,15 @@ export const getArcBySlugSchema = z.object({
     slug: z.string().trim().min(1, "Arc slug is required"),
   }),
 });
+// Child node validation: Schema for validating request parameters and query for episodes of an Arc
+export const getEpisodesByArcSlugSchema = z.object({
+  params: z.object({
+    slug: z.string().trim().min(1, "Arc slug is required"),
+  }),
+
+  query: z.object({
+    page: z.coerce.number().int().min(1).default(1),
+
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+  }),
+});

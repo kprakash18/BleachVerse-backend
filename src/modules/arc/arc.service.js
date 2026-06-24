@@ -108,3 +108,33 @@ export const getArcBySlug = async (slug) => {
 
   return response;
 };
+
+// Child nodes of Arc: Retrieve paginated episodes associated with a parent Arc (identified by slug)
+export const getEpisodesByArcSlug = async ({ slug, page, limit }) => {
+  const arc = await arcRepository.findIdBySlug(slug);
+
+  if (!arc) {
+    throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [episodes, totalItems] = await Promise.all([
+    arcRepository.findEpisodesByArcId({
+      arcId: arc.id,
+      skip,
+      take: limit,
+    }),
+    arcRepository.countEpisodesByArcId(arc.id),
+  ]);
+
+  return {
+    data: episodes,
+    pagination: {
+      page,
+      limit,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+    },
+  };
+};

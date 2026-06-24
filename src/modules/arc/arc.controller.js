@@ -14,3 +14,13 @@ export const getArcBySlug = asyncHandler(async (req, res) => {
 
   return successResponse(res, arc);
 });
+
+// Child nodes of Arc: GET /api/v1/arcs/:slug/episodes
+export const getEpisodesByArcSlug = asyncHandler(async (req, res) => {
+  const result = await arcService.getEpisodesByArcSlug({
+    slug: req.validatedData.params.slug,
+    ...req.validatedData.query,
+  });
+
+  return successResponse(res, result.data, 200, result.pagination);
+});
