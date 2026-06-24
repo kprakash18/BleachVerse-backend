@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CHARACTER } from "./character.constant.js";
 
 export const getCharactersSchema = z.object({
   query: z.object({
@@ -8,13 +9,13 @@ export const getCharactersSchema = z.object({
 
     search: z.string().trim().optional(),
 
-    status: z.enum(["ALIVE", "DEAD", "UNKNOWN"]).optional(),
+    status: z.enum(CHARACTER.STATUSES).optional(),
 
-    sex: z.enum(["MALE", "FEMALE", "UNKNOWN"]).optional(),
+    sex: z.enum(CHARACTER.SEXES).optional(),
 
-    sortBy: z.enum(["name", "createdAt", "updatedAt"]).default("name"),
+    sortBy: z.enum(CHARACTER.SORT_FIELDS).default("name"),
 
-    sortOrder: z.enum(["asc", "desc"]).default("asc"),
+    sortOrder: z.enum(CHARACTER.SORT_ORDERS).default("asc"),
   }),
 });
 
