@@ -24,3 +24,34 @@ export const getEpisodesByArcSlug = asyncHandler(async (req, res) => {
 
   return successResponse(res, result.data, 200, result.pagination);
 });
+
+// Child nodes of Arc: GET /api/v1/arcs/:slug/fights
+export const getFightsByArcSlug = asyncHandler(async (req, res) => {
+  const result = await arcService.getFightsByArcSlug({
+    slug: req.validatedData.params.slug,
+    ...req.validatedData.query,
+  });
+
+  return successResponse(res, result.data, 200, result.pagination);
+});
+
+// Child nodes of Arc: GET /api/v1/arcs/:slug/events
+export const getEventsByArcSlug = asyncHandler(async (req, res) => {
+  const result = await arcService.getEventsByArcSlug({
+    slug: req.validatedData.params.slug,
+    ...req.validatedData.query,
+  });
+
+  return successResponse(res, result.data, 200, result.pagination);
+});
+
+// Child nodes of Arc: GET /api/v1/arcs/:slug/characters
+export const getCharactersByArcSlug = asyncHandler(async (req, res) => {
+  const result = await arcService.getCharactersByArcSlug({
+    slug: req.validatedData.params.slug,
+    ...req.validatedData.query,
+  });
+
+  return successResponse(res, result.data, 200, result.pagination);
+});
+
