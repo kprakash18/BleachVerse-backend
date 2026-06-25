@@ -43,7 +43,7 @@ export const findBySlug = async (slug) => {
     },
   });
 };
-// we need id. all future child endpoints need id
+// Lightweight lookup returning the arc id (child endpoints need it to query relations)
 export const findIdBySlug = async (slug) => {
   return prisma.arc.findUnique({
     where: {

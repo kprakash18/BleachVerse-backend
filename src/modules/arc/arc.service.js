@@ -2,6 +2,7 @@ import * as arcRepository from "./arc.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
 
+// List arcs: filter by search/type, sort, paginate; add episodeCount when both episode bounds exist
 export const getArcs = async ({
   page,
   limit,
@@ -75,6 +76,7 @@ export const getArcs = async ({
   };
 };
 
+// Get one arc by slug with anime/manga coverage; 404 if not found
 export const getArcBySlug = async (slug) => {
   const arc = await arcRepository.findBySlug(slug);
 

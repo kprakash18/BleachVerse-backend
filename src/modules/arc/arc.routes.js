@@ -17,8 +17,11 @@ import {
 } from "./arc.validation.js";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
 const router = Router();
+
+// List arcs (filter, sort, paginate)
 router.get("/", validateRequest(getArcsSchema), getArcs);
 
+// Get a single arc by slug
 router.get("/:slug", validateRequest(getArcBySlugSchema), getArcBySlug);
 
 // Child nodes of Arc: Fetch all episodes belonging to a specific parent Arc

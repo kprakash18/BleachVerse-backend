@@ -1,11 +1,13 @@
 import * as characterRepository from "./character.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+
+// List characters: build Prisma filters from the query, then fetch the page and total in parallel
 export const getCharacters = async (query) => {
   const { page, limit, search, status, sex, sortBy, sortOrder } = query;
 
+  // build the Prisma `where` filter from the optional query params
   const where = {};
-  console.log(query);
   if (status) {
     where.status = status;
   }
@@ -40,8 +42,7 @@ export const getCharacters = async (query) => {
 
   return {
     data: characters,
-
-    meta: {
+    pagination: {
       page,
       limit,
       total,
@@ -50,10 +51,10 @@ export const getCharacters = async (query) => {
   };
 };
 
-// format slug
+// Normalize a slug for lookup (trim, lowercase, spaces -> hyphens)
 const normalizeSlug = (slug) => slug.trim().toLowerCase().replace(/\s+/g, "-");
 
-//  404 error if user doesn't exist
+// Get a character's details by slug; 404 if it doesn't exist
 export const getCharacterBySlug = async (slug) => {
   const normalizedSlug = normalizeSlug(slug);
 
