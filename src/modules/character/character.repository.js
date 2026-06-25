@@ -1,6 +1,6 @@
-import { OrganizationType } from "@prisma/client";
 import prisma from "../../database/prisma.js";
 
+// Paginated, filtered, sorted list of characters
 export const findMany = async ({ where, orderBy, skip, take }) => {
   return prisma.character.findMany({
     where,
@@ -10,6 +10,7 @@ export const findMany = async ({ where, orderBy, skip, take }) => {
   });
 };
 
+// Total characters matching the same filter (used for pagination)
 export const count = async (where) => {
   return prisma.character.count({
     where,

@@ -2,6 +2,7 @@ import * as arcService from "./arc.service.js";
 import successResponse from "../../common/responses/successResponse.js";
 import asyncHandler from "../../common/utils/asyncHandler.js";
 
+// List arcs with filtering, sorting and pagination
 export const getArcs = asyncHandler(async (req, res) => {
   const result = await arcService.getArcs(req.validatedData.query);
 

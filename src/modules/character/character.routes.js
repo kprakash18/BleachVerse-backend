@@ -9,8 +9,10 @@ import {
 
 const router = Router();
 
+// List characters (filter, sort, paginate)
 router.get("/characters", validateRequest(getCharactersSchema), getCharacters);
-// Get a character by slug
+
+// Get a single character by slug
 router.get(
   "/character/:slug",
   validateRequest(getCharacterBySlugSchema),

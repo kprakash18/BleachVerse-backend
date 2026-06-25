@@ -3,13 +3,14 @@ import successResponse from "../../common/responses/successResponse.js";
 
 import * as characterService from "./character.service.js";
 
+// List characters with filtering, sorting and pagination
 export const getCharacters = asyncHandler(async (req, res) => {
   const result = await characterService.getCharacters(req.validatedData.query);
 
-  return successResponse(res, result.data, 200, result.meta);
+  return successResponse(res, result.data, 200, result.pagination);
 });
 
-// get character detailss using their unique slug
+// Get one character's full details by their unique slug
 export const getCharacterBySlug = asyncHandler(async (req, res) => {
   const { slug } = req.validatedData.params;
 
