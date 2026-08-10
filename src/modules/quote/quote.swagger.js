@@ -229,6 +229,16 @@ export const quotePaths = {
             },
           },
         },
+        404: {
+          description: "Character not found",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/ErrorResponse",
+              },
+            },
+          },
+        },
         500: {
           description: "Internal server error",
           content: {
