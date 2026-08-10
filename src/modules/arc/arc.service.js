@@ -131,7 +131,11 @@ export const getEpisodesByArcSlug = async ({ slug, page, limit }) => {
   ]);
 
   return {
-    data: episodes,
+    data: episodes.map((ep) => ({
+      title: ep.title,
+      slug: ep.slug,
+      episodeNumber: ep.number,
+    })),
     pagination: {
       page,
       limit,
