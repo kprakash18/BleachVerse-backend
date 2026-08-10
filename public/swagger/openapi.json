@@ -141,7 +141,7 @@
         }
       }
     },
-    "/api/v1/character/{slug}": {
+    "/api/v1/characters/{slug}": {
       "get": {
         "tags": [
           "Characters"

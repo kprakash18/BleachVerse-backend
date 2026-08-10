@@ -14,7 +14,7 @@ router.get("/characters", validateRequest(getCharactersSchema), getCharacters);
 
 // Get a single character by slug
 router.get(
-  "/character/:slug",
+  "/characters/:slug",
   validateRequest(getCharacterBySlugSchema),
   getCharacterBySlug,
 );

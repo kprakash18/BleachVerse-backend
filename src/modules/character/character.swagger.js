@@ -391,7 +391,7 @@ export const characterPaths = {
       },
     },
   },
-  "/api/v1/character/{slug}": {
+  "/api/v1/characters/{slug}": {
     get: {
       tags: ["Characters"],
       summary: "Get character details by slug",
