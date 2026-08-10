@@ -22,8 +22,7 @@ describe("Common Infrastructure — Pagination Contract & Boundaries", () => {
     describe(`Endpoint: ${endpoint}`, () => {
       it("should return page=1, limit=10 by default", async () => {
         const res = await request(app).get(endpoint);
-        const totalKey = endpoint === "/api/v1/characters" ? "total" : "totalItems";
-        expectPaginationContract(res, 1, 10, totalKey);
+        expectPaginationContract(res, 1, 10, "totalItems");
       });
 
       it("should accept limit=1 (minimum page size)", async () => {

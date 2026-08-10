@@ -29,7 +29,7 @@ export const getCharacters = async (query) => {
 
   const skip = (page - 1) * limit;
 
-  const [characters, total] = await Promise.all([
+  const [characters, totalItems] = await Promise.all([
     characterRepository.findMany({
       where,
       orderBy,
@@ -45,8 +45,8 @@ export const getCharacters = async (query) => {
     pagination: {
       page,
       limit,
-      total,
-      totalPages: Math.ceil(total / limit),
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
     },
   };
 };

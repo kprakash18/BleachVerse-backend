@@ -5,7 +5,7 @@ import { CHARACTER } from "../../../src/modules/character/character.constant.js"
 describe("Characters Module — GET /api/v1/characters (Collection)", () => {
   it("should return paginated list of characters with defaults", async () => {
     const res = await request(app).get("/api/v1/characters");
-    expectPaginationContract(res, 1, 10, "total");
+    expectPaginationContract(res, 1, 10, "totalItems");
   });
 
   it("should filter by valid status enum from CHARACTER.STATUSES and verify returned records", async () => {
