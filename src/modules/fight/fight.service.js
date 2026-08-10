@@ -1,6 +1,8 @@
 import * as fightRepository from "./fight.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
+import { normalizeSlug } from "../../common/utils/slug.js";
 
 const formatFightDetail = (fight) => ({
   title: fight.title,
@@ -25,8 +27,6 @@ const formatFightDetail = (fight) => ({
 
 export const getFights = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     type,
     winnerSlug,
@@ -35,6 +35,7 @@ export const getFights = async (query) => {
     sortBy = "title",
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -67,8 +68,6 @@ export const getFights = async (query) => {
     };
   }
 
-  const skip = (page - 1) * limit;
-
   const orderBy = {
     [sortBy]: sortOrder,
   };
@@ -83,19 +82,16 @@ export const getFights = async (query) => {
     fightRepository.countFights(where),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: fights,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getFightBySlug = async (slug) => {
-  const normalizedSlug = slug.trim().toLowerCase();
+  const normalizedSlug = normalizeSlug(slug);
 
   const fight = await fightRepository.findFightBySlug(normalizedSlug);
 

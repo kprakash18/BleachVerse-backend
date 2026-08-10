@@ -1,15 +1,10 @@
 import { z } from "zod";
+import { basePaginationSchema } from "../../common/utils/commonValidation.js";
 
 export const getAppearancesSchema = z.object({
-  query: z.object({
-    page: z.coerce.number().int().positive().default(1),
-
-    limit: z.coerce.number().int().positive().max(100).default(10),
-
+  query: basePaginationSchema.extend({
     characterSlug: z.string().trim().optional(),
-
     episodeSlug: z.string().trim().optional(),
-
     isFirstAppearance: z
       .string()
       .toLowerCase()

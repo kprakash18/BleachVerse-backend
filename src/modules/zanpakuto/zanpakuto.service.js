@@ -1,6 +1,8 @@
 import * as zanpakutoRepository from "./zanpakuto.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
+import { normalizeSlug } from "../../common/utils/slug.js";
 
 const formatZanpakutoDetail = (zanpakuto) => ({
   name: zanpakuto.name,
@@ -16,14 +18,13 @@ const formatZanpakutoDetail = (zanpakuto) => ({
 
 export const getZanpakutos = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     type,
     wielderSlug,
     sortBy = "name",
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -44,8 +45,6 @@ export const getZanpakutos = async (query) => {
     };
   }
 
-  const skip = (page - 1) * limit;
-
   const orderBy = {
     [sortBy]: sortOrder,
   };
@@ -60,26 +59,25 @@ export const getZanpakutos = async (query) => {
     zanpakutoRepository.countZanpakutos(where),
   ]);
 
-  return {
-    data: zanpakutos.map((z) => ({
-      name: z.name,
-      slug: z.slug,
-      type: z.type,
-      releaseCommand: z.releaseCommand,
-      spiritName: z.spiritName,
-      wielder: z.character,
-    })),
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+  const data = zanpakutos.map((z) => ({
+    name: z.name,
+    slug: z.slug,
+    type: z.type,
+    releaseCommand: z.releaseCommand,
+    spiritName: z.spiritName,
+    wielder: z.character,
+  }));
+
+  return buildPaginatedResponse({
+    data,
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getZanpakutoBySlug = async (slug) => {
-  const normalizedSlug = slug.trim().toLowerCase();
+  const normalizedSlug = normalizeSlug(slug);
 
   const zanpakuto = await zanpakutoRepository.findZanpakutoBySlug(normalizedSlug);
 

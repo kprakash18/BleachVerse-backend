@@ -5,7 +5,7 @@ import { validateRequest } from "../../common/middleware/validateRequest.js";
 import {
   getCharactersSchema,
   getCharacterBySlugSchema,
-} from "./character.validation.js";
+} from "./character.validator.js";
 
 const router = Router();
 

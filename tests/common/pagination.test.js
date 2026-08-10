@@ -1,5 +1,66 @@
 import { describe, it, expect } from "vitest";
 import { request, app, expectPaginationContract, expectErrorContract } from "../helpers/test-helpers.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../src/common/utils/pagination.js";
+import { normalizeSlug } from "../../src/common/utils/slug.js";
+import { basePaginationSchema, baseSearchSchema, createSortSchema } from "../../src/common/utils/commonValidation.js";
+
+describe("Pagination Utility Helpers (Unit Tests)", () => {
+  it("should calculate page=1, limit=10, skip=0 by default", () => {
+    const result = calculatePaginationParams({ page: 1, limit: 10 });
+    expect(result).toEqual({ page: 1, limit: 10, skip: 0 });
+  });
+
+  it("should calculate correct skip for page=2, limit=10", () => {
+    const result = calculatePaginationParams({ page: 2, limit: 10 });
+    expect(result).toEqual({ page: 2, limit: 10, skip: 10 });
+  });
+
+  it("should format standardized pagination response envelope", () => {
+    const data = [{ id: 1 }];
+    const result = buildPaginatedResponse({ data, totalItems: 169, page: 1, limit: 10 });
+    expect(result).toEqual({
+      data,
+      pagination: {
+        page: 1,
+        limit: 10,
+        totalItems: 169,
+        totalPages: 17,
+      },
+    });
+  });
+});
+
+describe("Slug Utility Helper (Unit Tests)", () => {
+  it("should normalize Ichigo Kurosaki to ichigo-kurosaki", () => {
+    expect(normalizeSlug("Ichigo Kurosaki")).toBe("ichigo-kurosaki");
+  });
+
+  it("should handle leading and trailing whitespace", () => {
+    expect(normalizeSlug("  Ichigo Kurosaki  ")).toBe("ichigo-kurosaki");
+  });
+
+  it("should handle multiple spaces between words", () => {
+    expect(normalizeSlug("  SOUL   SOCIETY  ")).toBe("soul-society");
+  });
+});
+
+describe("Common Zod Validation Schemas (Unit Tests)", () => {
+  it("should coerce and validate default pagination query parameters", () => {
+    const parsed = basePaginationSchema.parse({});
+    expect(parsed).toEqual({ page: 1, limit: 10 });
+  });
+
+  it("should reject invalid limit over 100", () => {
+    const result = basePaginationSchema.safeParse({ limit: 150 });
+    expect(result.success).toBe(false);
+  });
+
+  it("should validate allowed sort fields and sortOrder", () => {
+    const schema = createSortSchema(["name", "createdAt"], "name");
+    const parsed = schema.parse({ sortBy: "name", sortOrder: "desc" });
+    expect(parsed).toEqual({ sortBy: "name", sortOrder: "desc" });
+  });
+});
 
 describe("Common Infrastructure — Pagination Contract & Boundaries", () => {
   const endpoints = [

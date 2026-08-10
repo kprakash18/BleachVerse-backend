@@ -14,7 +14,7 @@ import {
   getFightsByArcSlugSchema,
   getEventsByArcSlugSchema,
   getCharactersByArcSlugSchema,
-} from "./arc.validation.js";
+} from "./arc.validator.js";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
 const router = Router();
 

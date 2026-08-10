@@ -1,10 +1,13 @@
 import * as characterRepository from "./character.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
+import { normalizeSlug } from "../../common/utils/slug.js";
 
 // List characters: build Prisma filters from the query, then fetch the page and total in parallel
 export const getCharacters = async (query) => {
-  const { page, limit, search, status, sex, sortBy, sortOrder } = query;
+  const { search, status, sex, sortBy, sortOrder } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   // build the Prisma `where` filter from the optional query params
   const where = {};
@@ -27,8 +30,6 @@ export const getCharacters = async (query) => {
     [sortBy]: sortOrder,
   };
 
-  const skip = (page - 1) * limit;
-
   const [characters, totalItems] = await Promise.all([
     characterRepository.findMany({
       where,
@@ -40,19 +41,13 @@ export const getCharacters = async (query) => {
     characterRepository.count(where),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: characters,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
-
-// Normalize a slug for lookup (trim, lowercase, spaces -> hyphens)
-const normalizeSlug = (slug) => slug.trim().toLowerCase().replace(/\s+/g, "-");
 
 // Get a character's details by slug; 404 if it doesn't exist
 export const getCharacterBySlug = async (slug) => {

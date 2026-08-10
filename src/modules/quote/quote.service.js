@@ -1,6 +1,7 @@
 import * as quoteRepository from "./quote.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 
 const formatQuoteDetail = (quote) => ({
   id: quote.id,
@@ -21,14 +22,13 @@ const formatQuoteDetail = (quote) => ({
 
 export const getQuotes = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     category,
     characterSlug,
     arcSlug,
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -54,8 +54,6 @@ export const getQuotes = async (query) => {
       slug: arcSlug,
     };
   }
-
-  const skip = (page - 1) * limit;
 
   const orderBy = {
     createdAt: sortOrder,
@@ -87,15 +85,12 @@ export const getQuotes = async (query) => {
     arc: q.arc,
   }));
 
-  return {
+  return buildPaginatedResponse({
     data,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getQuoteById = async (id) => {
@@ -112,9 +107,10 @@ export const getQuoteById = async (id) => {
   return formatQuoteDetail(quote);
 };
 
-export const getQuotesByCharacterSlug = async ({ characterSlug, page = 1, limit = 10 }) => {
+export const getQuotesByCharacterSlug = async (query) => {
+  const { characterSlug } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
   const normalizedSlug = characterSlug.trim().toLowerCase();
-  const skip = (page - 1) * limit;
 
   const [quotes, totalItems] = await Promise.all([
     quoteRepository.findQuotesByCharacterSlug({
@@ -141,13 +137,10 @@ export const getQuotesByCharacterSlug = async ({ characterSlug, page = 1, limit 
     arc: q.arc,
   }));
 
-  return {
+  return buildPaginatedResponse({
     data,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };

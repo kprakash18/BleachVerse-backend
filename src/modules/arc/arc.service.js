@@ -1,16 +1,12 @@
 import * as arcRepository from "./arc.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 
 // List arcs: filter by search/type, sort, paginate; add episodeCount when both episode bounds exist
-export const getArcs = async ({
-  page,
-  limit,
-  search,
-  type,
-  sortBy,
-  sortOrder,
-}) => {
+export const getArcs = async (query = {}) => {
+  const { search, type, sortBy = "startEpisodeNumber", sortOrder = "asc" } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
   const where = {};
 
   if (search) {
@@ -33,8 +29,6 @@ export const getArcs = async ({
   if (type) {
     where.type = type;
   }
-
-  const skip = (page - 1) * limit;
 
   const orderBy = {
     [sortBy]: sortOrder,
@@ -65,15 +59,12 @@ export const getArcs = async ({
     return response;
   });
 
-  return {
+  return buildPaginatedResponse({
     data,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 // Get one arc by slug with anime/manga coverage; 404 if not found
@@ -112,7 +103,9 @@ export const getArcBySlug = async (slug) => {
 };
 
 // Child nodes of Arc: Retrieve paginated (or all) episodes associated with a parent Arc (identified by slug)
-export const getEpisodesByArcSlug = async ({ slug, page, limit, all }) => {
+export const getEpisodesByArcSlug = async (query) => {
+  const { slug, all } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
   const arc = await arcRepository.findIdBySlug(slug);
 
   if (!arc) {
@@ -139,8 +132,6 @@ export const getEpisodesByArcSlug = async ({ slug, page, limit, all }) => {
     };
   }
 
-  const skip = (page - 1) * limit;
-
   const [episodes, totalItems] = await Promise.all([
     arcRepository.findEpisodesByArcId({
       arcId: arc.id,
@@ -150,30 +141,29 @@ export const getEpisodesByArcSlug = async ({ slug, page, limit, all }) => {
     arcRepository.countEpisodesByArcId(arc.id),
   ]);
 
-  return {
-    data: episodes.map((ep) => ({
-      title: ep.title,
-      slug: ep.slug,
-      episodeNumber: ep.number,
-    })),
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+  const data = episodes.map((ep) => ({
+    title: ep.title,
+    slug: ep.slug,
+    episodeNumber: ep.number,
+  }));
+
+  return buildPaginatedResponse({
+    data,
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 // Child nodes of Arc: Retrieve paginated fights associated with a parent Arc (identified by slug)
-export const getFightsByArcSlug = async ({ slug, page, limit }) => {
+export const getFightsByArcSlug = async (query) => {
+  const { slug } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
   const arc = await arcRepository.findIdBySlug(slug);
 
   if (!arc) {
     throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
   }
-
-  const skip = (page - 1) * limit;
 
   const [fights, totalItems] = await Promise.all([
     arcRepository.findFightsByArcId({
@@ -184,26 +174,23 @@ export const getFightsByArcSlug = async ({ slug, page, limit }) => {
     arcRepository.countFightsByArcId(arc.id),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: fights,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 // Child nodes of Arc: Retrieve paginated events associated with a parent Arc (identified by slug)
-export const getEventsByArcSlug = async ({ slug, page, limit }) => {
+export const getEventsByArcSlug = async (query) => {
+  const { slug } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
   const arc = await arcRepository.findIdBySlug(slug);
 
   if (!arc) {
     throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
   }
-
-  const skip = (page - 1) * limit;
 
   const [events, totalItems] = await Promise.all([
     arcRepository.findEventsByArcId({
@@ -214,26 +201,23 @@ export const getEventsByArcSlug = async ({ slug, page, limit }) => {
     arcRepository.countEventsByArcId(arc.id),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: events,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 // Child nodes of Arc: Retrieve paginated distinct characters associated with a parent Arc (identified by slug)
-export const getCharactersByArcSlug = async ({ slug, page, limit }) => {
+export const getCharactersByArcSlug = async (query) => {
+  const { slug } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
   const arc = await arcRepository.findIdBySlug(slug);
 
   if (!arc) {
     throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
   }
-
-  const skip = (page - 1) * limit;
 
   const [characters, totalItems] = await Promise.all([
     arcRepository.findDistinctCharactersByArcId({
@@ -244,14 +228,11 @@ export const getCharactersByArcSlug = async ({ slug, page, limit }) => {
     arcRepository.countDistinctCharactersByArcId(arc.id),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: characters,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 

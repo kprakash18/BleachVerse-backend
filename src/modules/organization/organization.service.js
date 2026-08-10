@@ -1,6 +1,8 @@
 import * as organizationRepository from "./organization.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
+import { normalizeSlug } from "../../common/utils/slug.js";
 
 const formatOrganizationDetail = (organization) => ({
   name: organization.name,
@@ -17,13 +19,12 @@ const formatOrganizationDetail = (organization) => ({
 
 export const getOrganizations = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     type,
     sortBy = "name",
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -37,8 +38,6 @@ export const getOrganizations = async (query) => {
   if (type) {
     where.type = type.toUpperCase();
   }
-
-  const skip = (page - 1) * limit;
 
   const orderBy = {
     [sortBy]: sortOrder,
@@ -54,19 +53,16 @@ export const getOrganizations = async (query) => {
     organizationRepository.countOrganizations(where),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: organizations,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getOrganizationBySlug = async (slug) => {
-  const normalizedSlug = slug.trim().toLowerCase();
+  const normalizedSlug = normalizeSlug(slug);
 
   const organization = await organizationRepository.findOrganizationBySlug(
     normalizedSlug,

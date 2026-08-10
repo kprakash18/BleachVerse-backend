@@ -1,6 +1,7 @@
 import * as appearanceRepository from "./appearance.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 
 const formatAppearanceDetail = (appearance) => ({
   id: appearance.id,
@@ -20,12 +21,11 @@ const formatAppearanceDetail = (appearance) => ({
 
 export const getAppearances = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     characterSlug,
     episodeSlug,
     isFirstAppearance,
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -44,8 +44,6 @@ export const getAppearances = async (query) => {
   if (typeof isFirstAppearance === "boolean") {
     where.isFirstAppearance = isFirstAppearance;
   }
-
-  const skip = (page - 1) * limit;
 
   const [appearances, totalItems] = await Promise.all([
     appearanceRepository.findAppearances({
@@ -69,15 +67,12 @@ export const getAppearances = async (query) => {
       : null,
   }));
 
-  return {
+  return buildPaginatedResponse({
     data,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getAppearanceById = async (id) => {

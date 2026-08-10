@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ARC_TYPES, ARC_SORT_FIELDS, SORT_ORDERS } from "./arc.constants.js";
+import { basePaginationSchema } from "../../common/utils/commonValidation.js";
 
 export const getArcsSchema = z.object({
   query: z
@@ -36,17 +37,14 @@ export const getArcBySlugSchema = z.object({
     slug: z.string().trim().min(1, "Arc slug is required"),
   }),
 });
+
 // Child node validation: Schema for validating request parameters and query for episodes of an Arc
 export const getEpisodesByArcSlugSchema = z.object({
   params: z.object({
     slug: z.string().trim().min(1, "Arc slug is required"),
   }),
 
-  query: z.object({
-    page: z.coerce.number().int().min(1).default(1),
-
-    limit: z.coerce.number().int().min(1).max(100).default(10),
-
+  query: basePaginationSchema.extend({
     all: z.preprocess((val) => {
       if (typeof val === "string") return val.toLowerCase() === "true";
       return Boolean(val);
@@ -60,11 +58,7 @@ export const getFightsByArcSlugSchema = z.object({
     slug: z.string().trim().min(1, "Arc slug is required"),
   }),
 
-  query: z.object({
-    page: z.coerce.number().int().min(1).default(1),
-
-    limit: z.coerce.number().int().min(1).max(100).default(10),
-  }),
+  query: basePaginationSchema,
 });
 
 // Child node validation: Schema for validating request parameters and query for events of an Arc
@@ -73,11 +67,7 @@ export const getEventsByArcSlugSchema = z.object({
     slug: z.string().trim().min(1, "Arc slug is required"),
   }),
 
-  query: z.object({
-    page: z.coerce.number().int().min(1).default(1),
-
-    limit: z.coerce.number().int().min(1).max(100).default(10),
-  }),
+  query: basePaginationSchema,
 });
 
 // Child node validation: Schema for validating request parameters and query for characters of an Arc
@@ -86,10 +76,6 @@ export const getCharactersByArcSlugSchema = z.object({
     slug: z.string().trim().min(1, "Arc slug is required"),
   }),
 
-  query: z.object({
-    page: z.coerce.number().int().min(1).default(1),
-
-    limit: z.coerce.number().int().min(1).max(100).default(10),
-  }),
+  query: basePaginationSchema,
 });
 

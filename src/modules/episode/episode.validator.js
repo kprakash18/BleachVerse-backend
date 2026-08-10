@@ -1,10 +1,9 @@
 import { z } from "zod";
 import { EPISODE } from "./episode.constant.js";
+import { basePaginationSchema, slugParamSchema } from "../../common/utils/commonValidation.js";
 
 export const getEpisodesSchema = z.object({
-  query: z.object({
-    page: z.coerce.number().int().positive().default(1),
-    limit: z.coerce.number().int().positive().max(100).default(10),
+  query: basePaginationSchema.extend({
     arcSlug: z.string().trim().optional(),
     type: z
       .string()
@@ -15,18 +14,7 @@ export const getEpisodesSchema = z.object({
   }),
 });
 
-export const getEpisodeBySlugSchema = z.object({
-  params: z.object({
-    slug: z
-      .string()
-      .trim()
-      .min(1, "Slug is required")
-      .regex(
-        /^[a-zA-Z0-9\s-]+$/,
-        "Slug can only contain letters, numbers, spaces and hyphens",
-      ),
-  }),
-});
+export const getEpisodeBySlugSchema = slugParamSchema;
 
 export const getEpisodeByNumberSchema = z.object({
   params: z.object({

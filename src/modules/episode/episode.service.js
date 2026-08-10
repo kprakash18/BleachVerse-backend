@@ -1,6 +1,8 @@
 import * as episodeRepository from "./episode.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
+import { normalizeSlug } from "../../common/utils/slug.js";
 
 const toEpisodeResponse = (episode) => ({
   title: episode.title,
@@ -13,7 +15,8 @@ const toEpisodeResponse = (episode) => ({
 });
 
 export const getEpisodes = async (query) => {
-  const { page = 1, limit = 10, arcSlug, type } = query;
+  const { arcSlug, type } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -26,8 +29,6 @@ export const getEpisodes = async (query) => {
       slug: arcSlug,
     };
   }
-
-  const skip = (page - 1) * limit;
 
   const [episodes, totalItems] = await Promise.all([
     episodeRepository.findEpisodes({
@@ -46,19 +47,16 @@ export const getEpisodes = async (query) => {
     type: episode.type,
   }));
 
-  return {
+  return buildPaginatedResponse({
     data,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getEpisodeBySlug = async (slug) => {
-  const normalizedSlug = slug.trim().toLowerCase();
+  const normalizedSlug = normalizeSlug(slug);
 
   const episode = await episodeRepository.findEpisodeBySlug(normalizedSlug);
 

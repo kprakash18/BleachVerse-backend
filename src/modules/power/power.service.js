@@ -1,6 +1,7 @@
 import * as powerRepository from "./power.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 
 const formatPowerDetail = (power) => ({
   id: power.id,
@@ -16,8 +17,6 @@ const formatPowerDetail = (power) => ({
 
 export const getPowers = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     type,
     source,
@@ -26,6 +25,7 @@ export const getPowers = async (query) => {
     sortBy = "name",
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -54,8 +54,6 @@ export const getPowers = async (query) => {
     };
   }
 
-  const skip = (page - 1) * limit;
-
   const orderBy = {
     [sortBy]: sortOrder,
   };
@@ -70,15 +68,12 @@ export const getPowers = async (query) => {
     powerRepository.countPowers(where),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: powers,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getPowerById = async (id) => {

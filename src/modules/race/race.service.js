@@ -1,6 +1,7 @@
 import * as raceRepository from "./race.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 
 const formatRaceDetail = (race) => ({
   name: race.name,
@@ -11,13 +12,12 @@ const formatRaceDetail = (race) => ({
 
 export const getRaces = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     category,
     sortBy = "name",
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -31,8 +31,6 @@ export const getRaces = async (query) => {
   if (category) {
     where.category = category.toUpperCase();
   }
-
-  const skip = (page - 1) * limit;
 
   const orderBy = {
     [sortBy]: sortOrder,
@@ -48,15 +46,12 @@ export const getRaces = async (query) => {
     raceRepository.countRaces(where),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: races,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getRaceByName = async (name) => {

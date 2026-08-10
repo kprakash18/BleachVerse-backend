@@ -1,6 +1,7 @@
 import * as transformationRepository from "./transformation.repository.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 
 const formatTransformationDetail = (transformation) => ({
   id: transformation.id,
@@ -24,8 +25,6 @@ const formatTransformationDetail = (transformation) => ({
 
 export const getTransformations = async (query) => {
   const {
-    page = 1,
-    limit = 10,
     search,
     type,
     characterSlug,
@@ -34,6 +33,7 @@ export const getTransformations = async (query) => {
     sortBy = "name",
     sortOrder = "asc",
   } = query;
+  const { page, limit, skip } = calculatePaginationParams(query);
 
   const where = {};
 
@@ -64,8 +64,6 @@ export const getTransformations = async (query) => {
     where.sourceMaterial = sourceMaterial.toUpperCase();
   }
 
-  const skip = (page - 1) * limit;
-
   const orderBy = {
     [sortBy]: sortOrder,
   };
@@ -80,15 +78,12 @@ export const getTransformations = async (query) => {
     transformationRepository.countTransformations(where),
   ]);
 
-  return {
+  return buildPaginatedResponse({
     data: transformations,
-    pagination: {
-      page,
-      limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / limit),
-    },
-  };
+    totalItems,
+    page,
+    limit,
+  });
 };
 
 export const getTransformationById = async (id) => {
