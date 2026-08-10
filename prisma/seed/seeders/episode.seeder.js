@@ -27,9 +27,12 @@ export async function seedEpisodes() {
       where: {
         number: episode.number,
       },
-      update: {},
+      update: {
+        slug: episode.slug,
+      },
       create: {
         number: episode.number,
+        slug: episode.slug,
         title: episode.title,
         type: episode.type,
         synopsis: episode.synopsis,
