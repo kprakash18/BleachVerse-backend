@@ -70,6 +70,7 @@ export const findEpisodesByArcId = async ({ arcId, skip, take }) => {
     },
     select: {
       title: true,
+      slug: true,
       number: true,
     },
   });

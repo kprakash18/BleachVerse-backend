@@ -103,6 +103,7 @@ Table Arc {
 
 Table Episode {
   id String [pk]
+  slug String [unique, not null]
   number Int [unique, not null]
   title String [not null]
   type EpisodeType [not null]

@@ -1,4 +1,5 @@
 import { EpisodeType } from "@prisma/client";
+import slugify from "slugify";
 
 // Arc slug ranges — matches startEpisodeNumber/endEpisodeNumber in arc.data.js
 const arcRanges = [
@@ -3335,9 +3336,10 @@ const rawEpisodes = [
   },
 ];
 
-// Auto-assign arcSlug from episode number range
+// Auto-assign arcSlug from episode number range and convert episode title name to slug
 const EpisodeData = rawEpisodes.map((ep) => ({
   ...ep,
+  slug: slugify(ep.title, { lower: true, strict: true }),
   arcSlug: getArcSlug(ep.number),
 }));
 

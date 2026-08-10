@@ -225,6 +225,7 @@ enum EpisodeType {
 // episode model
 model Episode {
   id       String      @id @default(uuid())
+  slug     String      @unique
   number   Int         @unique
   title    String
   type     EpisodeType

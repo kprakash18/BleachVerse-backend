@@ -1,4 +1,3 @@
-import prisma from "../src/database/prisma.js";
 import { seedOrganization } from "./seed/seeders/organization.seeder.js";
 import { seedRace } from "./seed/seeders/race.seeder.js";
 import { seedLocations } from "./seed/seeders/location.seeder.js";
