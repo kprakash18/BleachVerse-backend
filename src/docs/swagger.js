@@ -27,6 +27,10 @@ import {
   racePaths,
   raceSchemas,
 } from "../modules/race/race.swagger.js";
+import {
+  quotePaths,
+  quoteSchemas,
+} from "../modules/quote/quote.swagger.js";
 
 const swaggerSpec = {
   openapi: "3.0.0",
@@ -34,7 +38,7 @@ const swaggerSpec = {
     title: "BleachVerse API Documentation",
     version: "1.0.0",
     description:
-      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, organization, zanpakuto, location, and race resources.",
+      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, organization, zanpakuto, location, race, and quote resources.",
   },
   servers: [
     {
@@ -51,6 +55,7 @@ const swaggerSpec = {
     ...zanpakutoPaths,
     ...locationPaths,
     ...racePaths,
+    ...quotePaths,
   },
   components: {
     schemas: {
@@ -62,6 +67,7 @@ const swaggerSpec = {
       ...zanpakutoSchemas,
       ...locationSchemas,
       ...raceSchemas,
+      ...quoteSchemas,
     },
   },
 };

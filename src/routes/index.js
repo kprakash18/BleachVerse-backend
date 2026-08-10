@@ -8,6 +8,7 @@ import organizationRoutes from "../modules/organization/organization.router.js";
 import zanpakutoRoutes from "../modules/zanpakuto/zanpakuto.router.js";
 import locationRoutes from "../modules/location/location.router.js";
 import raceRoutes from "../modules/race/race.router.js";
+import quoteRoutes from "../modules/quote/quote.router.js";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use("/", organizationRoutes);
 router.use("/", zanpakutoRoutes);
 router.use("/", locationRoutes);
 router.use("/", raceRoutes);
+router.use("/", quoteRoutes);
 router.use("/arcs", arcRoutes);
 
 export default router;
