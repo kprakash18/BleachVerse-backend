@@ -6,6 +6,7 @@ import episodeRoutes from "../modules/episode/episode.router.js";
 import fightRoutes from "../modules/fight/fight.router.js";
 import organizationRoutes from "../modules/organization/organization.router.js";
 import zanpakutoRoutes from "../modules/zanpakuto/zanpakuto.router.js";
+import locationRoutes from "../modules/location/location.router.js";
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.use("/", episodeRoutes);
 router.use("/", fightRoutes);
 router.use("/", organizationRoutes);
 router.use("/", zanpakutoRoutes);
+router.use("/", locationRoutes);
 router.use("/arcs", arcRoutes);
 
 export default router;
