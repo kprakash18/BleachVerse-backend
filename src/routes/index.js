@@ -12,6 +12,7 @@ import quoteRoutes from "../modules/quote/quote.router.js";
 import eventRoutes from "../modules/event/event.router.js";
 import powerRoutes from "../modules/power/power.router.js";
 import transformationRoutes from "../modules/transformation/transformation.router.js";
+import appearanceRoutes from "../modules/appearance/appearance.router.js";
 
 const router = Router();
 
@@ -26,6 +27,7 @@ router.use("/", quoteRoutes);
 router.use("/", eventRoutes);
 router.use("/", powerRoutes);
 router.use("/", transformationRoutes);
+router.use("/", appearanceRoutes);
 router.use("/arcs", arcRoutes);
 
 export default router;
