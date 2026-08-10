@@ -11,6 +11,10 @@ import {
   fightPaths,
   fightSchemas,
 } from "../modules/fight/fight.swagger.js";
+import {
+  organizationPaths,
+  organizationSchemas,
+} from "../modules/organization/organization.swagger.js";
 
 const swaggerSpec = {
   openapi: "3.0.0",
@@ -18,7 +22,7 @@ const swaggerSpec = {
     title: "BleachVerse API Documentation",
     version: "1.0.0",
     description:
-      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, and fight resources.",
+      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, and organization resources.",
   },
   servers: [
     {
@@ -31,6 +35,7 @@ const swaggerSpec = {
     ...arcPaths,
     ...episodePaths,
     ...fightPaths,
+    ...organizationPaths,
   },
   components: {
     schemas: {
@@ -38,6 +43,7 @@ const swaggerSpec = {
       ...arcSchemas,
       ...episodeSchemas,
       ...fightSchemas,
+      ...organizationSchemas,
     },
   },
 };
