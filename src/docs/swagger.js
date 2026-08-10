@@ -15,6 +15,10 @@ import {
   organizationPaths,
   organizationSchemas,
 } from "../modules/organization/organization.swagger.js";
+import {
+  zanpakutoPaths,
+  zanpakutoSchemas,
+} from "../modules/zanpakuto/zanpakuto.swagger.js";
 
 const swaggerSpec = {
   openapi: "3.0.0",
@@ -22,7 +26,7 @@ const swaggerSpec = {
     title: "BleachVerse API Documentation",
     version: "1.0.0",
     description:
-      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, and organization resources.",
+      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, organization, and zanpakuto resources.",
   },
   servers: [
     {
@@ -36,6 +40,7 @@ const swaggerSpec = {
     ...episodePaths,
     ...fightPaths,
     ...organizationPaths,
+    ...zanpakutoPaths,
   },
   components: {
     schemas: {
@@ -44,6 +49,7 @@ const swaggerSpec = {
       ...episodeSchemas,
       ...fightSchemas,
       ...organizationSchemas,
+      ...zanpakutoSchemas,
     },
   },
 };
