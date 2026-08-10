@@ -57,14 +57,14 @@ export const findIdBySlug = async (slug) => {
   });
 };
 
-// Child node helper: Fetch a paginated list of episodes belonging to a specific parent Arc ID
+// Child node helper: Fetch episodes belonging to a specific parent Arc ID
 export const findEpisodesByArcId = async ({ arcId, skip, take }) => {
   return prisma.episode.findMany({
     where: {
       arcId,
     },
-    skip,
-    take,
+    ...(skip !== undefined && { skip }),
+    ...(take !== undefined && { take }),
     orderBy: {
       number: "asc",
     },

@@ -419,6 +419,14 @@ export const arcPaths = {
           required: false,
           schema: { type: "integer", default: 10 },
         },
+        {
+          name: "all",
+          in: "query",
+          description:
+            "Set to true to retrieve 100% of the episodes in the arc without pagination limits",
+          required: false,
+          schema: { type: "boolean", default: false },
+        },
       ],
       responses: {
         200: {
