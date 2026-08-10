@@ -111,12 +111,32 @@ export const getArcBySlug = async (slug) => {
   return response;
 };
 
-// Child nodes of Arc: Retrieve paginated episodes associated with a parent Arc (identified by slug)
-export const getEpisodesByArcSlug = async ({ slug, page, limit }) => {
+// Child nodes of Arc: Retrieve paginated (or all) episodes associated with a parent Arc (identified by slug)
+export const getEpisodesByArcSlug = async ({ slug, page, limit, all }) => {
   const arc = await arcRepository.findIdBySlug(slug);
 
   if (!arc) {
     throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Arc not found");
+  }
+
+  if (all) {
+    const episodes = await arcRepository.findEpisodesByArcId({
+      arcId: arc.id,
+    });
+
+    return {
+      data: episodes.map((ep) => ({
+        title: ep.title,
+        slug: ep.slug,
+        episodeNumber: ep.number,
+      })),
+      pagination: {
+        page: 1,
+        limit: episodes.length,
+        totalItems: episodes.length,
+        totalPages: 1,
+      },
+    };
   }
 
   const skip = (page - 1) * limit;
