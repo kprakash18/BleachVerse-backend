@@ -39,6 +39,10 @@ import {
   powerPaths,
   powerSchemas,
 } from "../modules/power/power.swagger.js";
+import {
+  transformationPaths,
+  transformationSchemas,
+} from "../modules/transformation/transformation.swagger.js";
 
 const swaggerSpec = {
   openapi: "3.0.0",
@@ -46,7 +50,7 @@ const swaggerSpec = {
     title: "BleachVerse API Documentation",
     version: "1.0.0",
     description:
-      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, organization, zanpakuto, location, race, quote, event, and power resources.",
+      "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, organization, zanpakuto, location, race, quote, event, power, and transformation resources.",
   },
   servers: [
     {
@@ -66,6 +70,7 @@ const swaggerSpec = {
     ...quotePaths,
     ...eventPaths,
     ...powerPaths,
+    ...transformationPaths,
   },
   components: {
     schemas: {
@@ -80,6 +85,7 @@ const swaggerSpec = {
       ...quoteSchemas,
       ...eventSchemas,
       ...powerSchemas,
+      ...transformationSchemas,
     },
   },
 };

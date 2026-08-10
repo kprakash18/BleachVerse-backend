@@ -11,6 +11,7 @@ import raceRoutes from "../modules/race/race.router.js";
 import quoteRoutes from "../modules/quote/quote.router.js";
 import eventRoutes from "../modules/event/event.router.js";
 import powerRoutes from "../modules/power/power.router.js";
+import transformationRoutes from "../modules/transformation/transformation.router.js";
 
 const router = Router();
 
@@ -24,6 +25,7 @@ router.use("/", raceRoutes);
 router.use("/", quoteRoutes);
 router.use("/", eventRoutes);
 router.use("/", powerRoutes);
+router.use("/", transformationRoutes);
 router.use("/arcs", arcRoutes);
 
 export default router;
