@@ -1,0 +1,1675 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BleachVerse API Documentation",
+    "version": "1.0.0",
+    "description": "Comprehensive API endpoints for BleachVerse, exposing character, arc, and episode resources."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development Server"
+    }
+  ],
+  "paths": {
+    "/api/v1/characters": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Get all characters",
+        "description": "Retrieve a paginated list of all characters with optional filtering and search.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search character by name (case-insensitive substring)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter characters by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALIVE",
+                "DEAD",
+                "UNKNOWN"
+              ]
+            }
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "description": "Filter characters by sex",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "MALE",
+                "FEMALE",
+                "UNKNOWN"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Field to sort the results by",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "createdAt",
+                "updatedAt"
+              ],
+              "default": "name"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort order (ascending or descending)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of characters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/character/{slug}": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Get character details by slug",
+        "description": "Retrieve comprehensive details for a single character using their unique URL-friendly slug.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique character slug (e.g. 'ichigo-kurosaki')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed character information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid slug parameter validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Character not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/arcs": {
+      "get": {
+        "tags": [
+          "Arcs"
+        ],
+        "summary": "Get all arcs",
+        "description": "Retrieve a paginated list of all story arcs with optional search and type filtering.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search arc by name or slug (case-insensitive substring)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter arcs by type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CANON",
+                "MOVIE",
+                "FILLER",
+                "OVA"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Field to sort the results by",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "startEpisodeNumber"
+              ],
+              "default": "startEpisodeNumber"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort order (ascending or descending)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of story arcs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArcListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/arcs/{slug}": {
+      "get": {
+        "tags": [
+          "Arcs"
+        ],
+        "summary": "Get arc details by slug",
+        "description": "Retrieve details and coverage information for a single story arc by its unique slug.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed arc information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArcDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid slug parameter validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Arc not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Arc not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/arcs/{slug}/episodes": {
+      "get": {
+        "tags": [
+          "Arcs"
+        ],
+        "summary": "Get episodes of an arc",
+        "description": "Retrieve a paginated list of episodes belonging to a specific story arc.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of episodes belonging to the arc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArcEpisodesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Arc not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Arc not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/arcs/{slug}/fights": {
+      "get": {
+        "tags": [
+          "Arcs"
+        ],
+        "summary": "Get fights of an arc",
+        "description": "Retrieve a paginated list of fights belonging to a specific story arc, ordered by title ascending.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of fights belonging to the arc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArcFightsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Arc not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Arc not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/arcs/{slug}/events": {
+      "get": {
+        "tags": [
+          "Arcs"
+        ],
+        "summary": "Get events of an arc",
+        "description": "Retrieve a paginated list of events belonging to a specific story arc, ordered by title ascending.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of events belonging to the arc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArcEventsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Arc not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Arc not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/arcs/{slug}/characters": {
+      "get": {
+        "tags": [
+          "Arcs"
+        ],
+        "summary": "Get distinct characters of an arc",
+        "description": "Retrieve a paginated list of distinct characters appearing in the episodes of a specific story arc, ordered alphabetically by name.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique story arc slug (e.g. 'substitute-shinigami-arc')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of distinct characters belonging to the arc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArcCharactersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Arc not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Arc not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/episodes": {
+      "get": {
+        "tags": [
+          "Episodes"
+        ],
+        "summary": "Get all episodes",
+        "description": "Retrieve a paginated list of all episodes with optional filtering by arc slug and episode type.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records per page (max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "arcSlug",
+            "in": "query",
+            "description": "Filter episodes by parent Arc slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter episodes by type (CANON, FILLER, MIXED, RECAP)",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/EpisodeType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of episodes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed / Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/episodes/number/{number}": {
+      "get": {
+        "tags": [
+          "Episodes"
+        ],
+        "summary": "Get episode details by number",
+        "description": "Retrieve comprehensive details for a single episode using its unique episode number.",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "description": "The unique episode number (e.g. 1)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed episode information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid episode number parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Episode not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Episode not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/episodes/{slug}": {
+      "get": {
+        "tags": [
+          "Episodes"
+        ],
+        "summary": "Get episode details by slug",
+        "description": "Retrieve comprehensive details for a single episode using its unique URL-friendly slug.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "The unique episode slug (e.g. 'the-day-i-became-a-shinigami')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed episode information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid slug parameter validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Episode not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Episode not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Sex": {
+        "type": "string",
+        "enum": [
+          "MALE",
+          "FEMALE",
+          "UNKNOWN"
+        ],
+        "description": "The sex of the character"
+      },
+      "CharacterStatus": {
+        "type": "string",
+        "enum": [
+          "ALIVE",
+          "DEAD",
+          "UNKNOWN"
+        ],
+        "description": "The alive or dead status of the character"
+      },
+      "Character": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+          },
+          "slug": {
+            "type": "string",
+            "example": "ichigo-kurosaki"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ichigo Kurosaki"
+          },
+          "sex": {
+            "$ref": "#/components/schemas/Sex"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CharacterStatus"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "The main protagonist of the series, a Substitute Soul Reaper."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-24T10:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-24T10:00:00.000Z"
+          }
+        }
+      },
+      "CharacterAlias": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "alias": {
+            "type": "string",
+            "example": "Strawberry"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Race": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Soul Reaper"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "MAIN",
+              "HYBRID",
+              "SPECIAL",
+              "COSMIC"
+            ],
+            "example": "MAIN"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Spiritual beings who govern the flow of souls."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CharacterRace": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "raceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "race": {
+            "$ref": "#/components/schemas/Race"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "example": "gotei-13"
+          },
+          "name": {
+            "type": "string",
+            "example": "Gotei 13"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MILITARY",
+              "FACTION",
+              "ROYAL",
+              "ACADEMY",
+              "OTHER"
+            ],
+            "example": "MILITARY"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CharacterOrganization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "example": "Substitute Soul Reaper"
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "leftAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "organization": {
+            "$ref": "#/components/schemas/Organization"
+          }
+        }
+      },
+      "CharacterDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Character"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aliases": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CharacterAlias"
+                }
+              },
+              "races": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CharacterRace"
+                }
+              },
+              "organizations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CharacterOrganization"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 10
+          },
+          "total": {
+            "type": "integer",
+            "example": 45
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "CharacterListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Character"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "CharacterDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CharacterDetails"
+          }
+        }
+      },
+      "ValidationErrorDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "minimum": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "inclusive": {
+            "type": "boolean"
+          },
+          "exact": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "query",
+              "page"
+            ]
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "VALIDATION_ERROR"
+              },
+              "message": {
+                "type": "string",
+                "example": "Validation failed"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ValidationErrorDetail"
+                },
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "ArcType": {
+        "type": "string",
+        "enum": [
+          "CANON",
+          "MOVIE",
+          "FILLER",
+          "OVA"
+        ],
+        "description": "The canon status or media type of the story arc"
+      },
+      "Arc": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Substitute Shinigami Arc"
+          },
+          "slug": {
+            "type": "string",
+            "example": "substitute-shinigami-arc"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ArcType"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ichigo Kurosaki gains Soul Reaper powers and begins protecting Karakura Town."
+          },
+          "episodeCount": {
+            "type": "integer",
+            "example": 20
+          }
+        }
+      },
+      "ArcCoverageInfo": {
+        "type": "object",
+        "properties": {
+          "startEpisode": {
+            "type": "integer",
+            "example": 1
+          },
+          "endEpisode": {
+            "type": "integer",
+            "example": 20
+          },
+          "episodeCount": {
+            "type": "integer",
+            "example": 20
+          }
+        }
+      },
+      "MangaCoverageInfo": {
+        "type": "object",
+        "properties": {
+          "startChapter": {
+            "type": "integer",
+            "example": 1
+          },
+          "endChapter": {
+            "type": "integer",
+            "example": 70
+          },
+          "chapterCount": {
+            "type": "integer",
+            "example": 70
+          }
+        }
+      },
+      "ArcDetails": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Substitute Shinigami Arc"
+          },
+          "slug": {
+            "type": "string",
+            "example": "substitute-shinigami-arc"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ArcType"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ichigo Kurosaki gains Soul Reaper powers and begins protecting Karakura Town."
+          },
+          "coverage": {
+            "type": "object",
+            "properties": {
+              "anime": {
+                "$ref": "#/components/schemas/ArcCoverageInfo"
+              },
+              "manga": {
+                "$ref": "#/components/schemas/MangaCoverageInfo"
+              }
+            }
+          }
+        }
+      },
+      "Episode": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "The Day I Became a Shinigami"
+          },
+          "number": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "ArcListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Arc"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "ArcDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ArcDetails"
+          }
+        }
+      },
+      "ArcEpisodesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Episode"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "Fight": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Ichigo Kurosaki vs. Byakuya Kuchiki"
+          },
+          "slug": {
+            "type": "string",
+            "example": "ichigo-kurosaki-vs-byakuya-kuchiki"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DUEL",
+              "TEAM_BATTLE",
+              "WAR",
+              "TRAINING"
+            ],
+            "example": "DUEL"
+          }
+        }
+      },
+      "ArcFightsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fight"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Aizen's Betrayal"
+          },
+          "slug": {
+            "type": "string",
+            "example": "aizens-betrayal"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "BATTLE",
+              "DEATH",
+              "REVEAL",
+              "BETRAYAL",
+              "TRANSFORMATION",
+              "POWER_GAIN",
+              "POWER_LOSS",
+              "RESCUE",
+              "INVASION",
+              "OTHER"
+            ],
+            "example": "BETRAYAL"
+          }
+        }
+      },
+      "ArcEventsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "ArcCharacter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ichigo Kurosaki"
+          },
+          "slug": {
+            "type": "string",
+            "example": "ichigo-kurosaki"
+          }
+        }
+      },
+      "ArcCharactersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArcCharacter"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "EpisodeType": {
+        "type": "string",
+        "enum": [
+          "CANON",
+          "FILLER",
+          "MIXED",
+          "RECAP"
+        ],
+        "description": "The canon or filler type classification of the episode"
+      },
+      "EpisodeSummary": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "The Day I Became a Shinigami"
+          },
+          "slug": {
+            "type": "string",
+            "example": "the-day-i-became-a-shinigami"
+          },
+          "episodeNumber": {
+            "type": "integer",
+            "example": 1
+          },
+          "type": {
+            "$ref": "#/components/schemas/EpisodeType"
+          }
+        }
+      },
+      "EpisodeArcSummary": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Substitute Shinigami Arc"
+          },
+          "slug": {
+            "type": "string",
+            "example": "substitute-shinigami-arc"
+          }
+        }
+      },
+      "EpisodeDetail": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "The Day I Became a Shinigami"
+          },
+          "slug": {
+            "type": "string",
+            "example": "the-day-i-became-a-shinigami"
+          },
+          "episodeNumber": {
+            "type": "integer",
+            "example": 1
+          },
+          "type": {
+            "$ref": "#/components/schemas/EpisodeType"
+          },
+          "synopsis": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ichigo Kurosaki meets Rukia Kuchiki, a Soul Reaper, and accidentally absorbs her powers to save his family from a monstrous Hollow."
+          },
+          "airDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2004-10-05T00:00:00.000Z"
+          },
+          "arc": {
+            "$ref": "#/components/schemas/EpisodeArcSummary",
+            "nullable": true
+          }
+        }
+      },
+      "EpisodeListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EpisodeSummary"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        }
+      },
+      "EpisodeDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EpisodeDetail"
+          }
+        }
+      }
+    }
+  }
+}
