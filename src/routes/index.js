@@ -10,6 +10,7 @@ import locationRoutes from "../modules/location/location.router.js";
 import raceRoutes from "../modules/race/race.router.js";
 import quoteRoutes from "../modules/quote/quote.router.js";
 import eventRoutes from "../modules/event/event.router.js";
+import powerRoutes from "../modules/power/power.router.js";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.use("/", locationRoutes);
 router.use("/", raceRoutes);
 router.use("/", quoteRoutes);
 router.use("/", eventRoutes);
+router.use("/", powerRoutes);
 router.use("/arcs", arcRoutes);
 
 export default router;
