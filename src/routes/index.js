@@ -7,6 +7,7 @@ import fightRoutes from "../modules/fight/fight.router.js";
 import organizationRoutes from "../modules/organization/organization.router.js";
 import zanpakutoRoutes from "../modules/zanpakuto/zanpakuto.router.js";
 import locationRoutes from "../modules/location/location.router.js";
+import raceRoutes from "../modules/race/race.router.js";
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use("/", fightRoutes);
 router.use("/", organizationRoutes);
 router.use("/", zanpakutoRoutes);
 router.use("/", locationRoutes);
+router.use("/", raceRoutes);
 router.use("/arcs", arcRoutes);
 
 export default router;
