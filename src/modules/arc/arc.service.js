@@ -115,6 +115,7 @@ export const getEpisodesByArcSlug = async (query) => {
   if (all) {
     const episodes = await arcRepository.findEpisodesByArcId({
       arcId: arc.id,
+      take:1000,
     });
 
     return {

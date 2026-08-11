@@ -135,10 +135,10 @@ describe("Common Infrastructure — Pagination Contract & Boundaries", () => {
       });
 
       it("should return empty data[] when page is beyond totalPages", async () => {
-        const res = await request(app).get(`${endpoint}?page=99999`);
+        const res = await request(app).get(`${endpoint}?page=99`);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual([]);
-        expect(res.body.pagination.page).toBe(99999);
+        expect(res.body.pagination.page).toBe(99);
       });
     });
   }

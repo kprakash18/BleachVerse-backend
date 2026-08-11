@@ -70,6 +70,7 @@ export const findFightBySlug = async (slug) => {
         },
       },
       participants: {
+        take: 100,
         select: {
           outcome: true,
           character: {

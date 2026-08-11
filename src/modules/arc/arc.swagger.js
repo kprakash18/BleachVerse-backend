@@ -423,7 +423,7 @@ export const arcPaths = {
           name: "all",
           in: "query",
           description:
-            "Set to true to retrieve 100% of the episodes in the arc without pagination limits",
+            "Set to true to retrieve all episodes in the arc without pagination limits (capped at a maximum of 1000 episodes)",
           required: false,
           schema: { type: "boolean", default: false },
         },

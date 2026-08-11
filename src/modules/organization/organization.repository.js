@@ -34,6 +34,7 @@ export const findOrganizationBySlug = async (slug) => {
         },
       },
       children: {
+        take: 100,
         select: {
           name: true,
           slug: true,
@@ -41,6 +42,7 @@ export const findOrganizationBySlug = async (slug) => {
         },
       },
       members: {
+        take: 100,
         select: {
           role: true,
           character: {
