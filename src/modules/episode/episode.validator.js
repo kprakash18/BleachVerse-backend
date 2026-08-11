@@ -18,6 +18,6 @@ export const getEpisodeBySlugSchema = slugParamSchema;
 
 export const getEpisodeByNumberSchema = z.object({
   params: z.object({
-    number: z.coerce.number().int().positive("Episode number must be a positive integer"),
+    number: z.coerce.number().int().positive("Episode number must be a positive integer").max(2147483647),
   }),
 });

@@ -14,6 +14,16 @@ export const errorHandler = (err, req, res, next) => {
     );
   }
 
+  // Handle Express body-parser entity too large error
+  if (err.type === "entity.too.large" || err.status === 413 || err.statusCode === 413) {
+    return errorResponse(
+      res,
+      413,
+      errorCodes.PAYLOAD_TOO_LARGE,
+      "Request payload too large"
+    );
+  }
+
   // Unexpected errors
   console.error(err);
 

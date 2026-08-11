@@ -5,7 +5,7 @@ import { basePaginationSchema } from "../../common/utils/commonValidation.js";
 export const getArcsSchema = z.object({
   query: z
     .object({
-      page: z.coerce.number().int().min(1).default(1),
+      page: z.coerce.number().int().min(1).max(100).default(1),
 
       limit: z.coerce.number().int().min(1).max(100).default(10),
 
@@ -15,7 +15,7 @@ export const getArcsSchema = z.object({
         const trimmed = value.trim();
 
         return trimmed.length > 0 ? trimmed : undefined;
-      }, z.string().optional()),
+      }, z.string().max(500).optional()),
 
       type: z.preprocess((value) => {
         if (typeof value !== "string") return undefined;

@@ -31,6 +31,7 @@ export const findRaceByName = async (name) => {
       category: true,
       description: true,
       characters: {
+        take: 100,
         select: {
           character: {
             select: {

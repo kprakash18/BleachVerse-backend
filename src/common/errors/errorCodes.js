@@ -19,6 +19,8 @@ const errorCodes = {
 
   // Server
   INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
+
+  PAYLOAD_TOO_LARGE: "PAYLOAD_TOO_LARGE"
 };
 
 export default errorCodes;

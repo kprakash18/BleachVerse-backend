@@ -34,6 +34,7 @@ export const findLocationBySlug = async (slug) => {
         },
       },
       children: {
+        take: 100,
         select: {
           name: true,
           slug: true,
@@ -41,6 +42,7 @@ export const findLocationBySlug = async (slug) => {
         },
       },
       fights: {
+        take: 100,
         select: {
           title: true,
           slug: true,
