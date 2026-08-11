@@ -45,13 +45,13 @@ if (process.env.CORS_ALLOWED_ORIGINS) {
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, or Postman)
+
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true); // Origin is allowed
     } else {
-      callback(null, false); // Blocked cleanly at the browser layer (no 500 error)
+      callback(null, false); 
     }
   },
   methods: ["GET", "OPTIONS"],
@@ -61,13 +61,9 @@ app.use(cors({
 
 app.use(express.json());
 
-// API documentation (Swagger UI)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// API routes (all versioned under /api/v1)
 app.use("/api/v1", apiRoutes);
 
-// Global error handler (must come after routes)
 app.use(errorHandler);
 
 export default app;
