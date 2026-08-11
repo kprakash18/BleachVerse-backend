@@ -1,6 +1,7 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import helmet from "helmet";
+import cors from 'cors' ;
 
 import swaggerSpec from "./docs/swagger.js";
 import apiRoutes from "./routes/index.js";
@@ -28,6 +29,34 @@ app.use(helmet({
         "img-src": ["'self'", "data:", "https:"],
       },
     },
+}));
+
+// cors allow origins
+let allowedOrigins = [];
+
+if (process.env.CORS_ALLOWED_ORIGINS) {
+  allowedOrigins = process.env.CORS_ALLOWED_ORIGINS.split(",").map((o) => o.trim());
+} else {
+  const isProduction = process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === "production";
+  if (isProduction) {
+    throw new Error("CORS_ALLOWED_ORIGINS environment variable is required in production mode");
+  }
+}
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true); // Origin is allowed
+    } else {
+      callback(null, false); // Blocked cleanly at the browser layer (no 500 error)
+    }
+  },
+  methods: ["GET", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Accept"],
+  credentials: false,
 }));
 
 app.use(express.json());
