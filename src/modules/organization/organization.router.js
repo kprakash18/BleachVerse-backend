@@ -5,11 +5,13 @@ import {
   getOrganizationBySlugSchema,
 } from "./organization.validator.js";
 import * as organizationController from "./organization.controller.js";
+import {expensiveApiRateLimiter} from "../../common/middleware/rateLimmiter.js"
 
 const router = Router();
 
 router.get(
   "/organizations",
+  expensiveApiRateLimiter,
   validateRequest(getOrganizationsSchema),
   organizationController.getOrganizations,
 );
