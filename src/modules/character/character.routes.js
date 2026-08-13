@@ -2,15 +2,15 @@ import { Router } from "express";
 
 import { getCharacters, getCharacterBySlug } from "./character.controller.js";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
-import {
-  getCharactersSchema,
-  getCharacterBySlugSchema,
-} from "./character.validator.js";
+import { getCharactersSchema, getCharacterBySlugSchema } from "./character.validator.js";
+
+import {expensiveApiRateLimiter} from '../../common/middleware/rateLimmiter.js'
+
 
 const router = Router();
 
 // List characters (filter, sort, paginate)
-router.get("/characters", validateRequest(getCharactersSchema), getCharacters);
+router.get("/characters", expensiveApiRateLimiter,  validateRequest(getCharactersSchema), getCharacters);
 
 // Get a single character by slug
 router.get(

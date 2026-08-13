@@ -16,7 +16,9 @@ import {
   getCharactersByArcSlugSchema,
 } from "./arc.validator.js";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
-const router = Router();
+import {expensiveApiRateLimiter} from '../../common/middleware/rateLimmiter.js'
+
+const router = Router() ;
 
 // List arcs (filter, sort, paginate)
 router.get("/", validateRequest(getArcsSchema), getArcs);
@@ -27,6 +29,7 @@ router.get("/:slug", validateRequest(getArcBySlugSchema), getArcBySlug);
 // Child nodes of Arc: Fetch all episodes belonging to a specific parent Arc
 router.get(
   "/:slug/episodes",
+  expensiveApiRateLimiter,
   validateRequest(getEpisodesByArcSlugSchema),
   getEpisodesByArcSlug,
 );

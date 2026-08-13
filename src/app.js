@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import helmet from "helmet";
@@ -6,8 +7,29 @@ import cors from 'cors' ;
 import swaggerSpec from "./docs/swagger.js";
 import apiRoutes from "./routes/index.js";
 import { errorHandler } from "./common/errors/errorHandler.js";
+import { globalRateLimiter } from "./common/middleware/rateLimmiter.js";
 
 const app = express();
+
+// Proxy configuration
+if (process.env.TRUST_PROXY !== undefined && process.env.TRUST_PROXY !== "") {
+  const theTrustedProxy = process.env.TRUST_PROXY;
+  const isProduction = (process.env.NODE_ENV || "development").toLowerCase() === "production";
+
+  if (isProduction && theTrustedProxy === "false") {
+    throw new Error(
+      "Security Error: In production, TRUST_PROXY must be set to 'true' (or specific proxy IPs) to ensure accurate client IP identification."
+    );
+  }
+  app.set(
+    "trust proxy",
+    theTrustedProxy === "true" ? true : theTrustedProxy === "false" ? false : theTrustedProxy
+  );
+} else {
+  throw new Error("TRUST_PROXY environment variable is required. Please set it in your configuration.");
+}
+
+
 
 // Global middlewares (add cors, helmet, rate limiting, auth here)
 app.use(helmet({
@@ -58,6 +80,9 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Accept"],
   credentials: false,
 }));
+
+// rate limit 
+app.use('/api/v1', globalRateLimiter)
 
 app.use(express.json({ limit: "10kb" }));
 
