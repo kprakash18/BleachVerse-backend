@@ -9,7 +9,8 @@ export const getCharactersSchema = z.object({
     .extend({
       status: z.enum(CHARACTER.STATUSES).optional(),
       sex: z.enum(CHARACTER.SEXES).optional(),
-    }),
+    })
+    .strict(),
 });
 
 // validate the slug

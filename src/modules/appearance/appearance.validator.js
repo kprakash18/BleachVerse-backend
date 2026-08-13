@@ -1,16 +1,16 @@
 import { z } from "zod";
-import { basePaginationSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getAppearancesSchema = z.object({
   query: basePaginationSchema.extend({
-    characterSlug: z.string().trim().optional(),
-    episodeSlug: z.string().trim().optional(),
+    characterSlug: slugSchema.optional(),
+    episodeSlug: slugSchema.optional(),
     isFirstAppearance: z
       .string()
       .toLowerCase()
       .transform((val) => val === "true")
       .optional(),
-  }),
+  }).strict(),
 });
 
 export const getAppearanceByIdSchema = z.object({

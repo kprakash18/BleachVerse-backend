@@ -13,7 +13,8 @@ export const getLocationsSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(LOCATION.TYPES))
         .optional(),
-    }),
+    })
+    .strict(),
 });
 
 export const getLocationBySlugSchema = slugParamSchema;

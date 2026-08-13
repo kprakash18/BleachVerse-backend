@@ -12,6 +12,6 @@ describe("Races Module — Edge & Validation Cases", () => {
 
   it("should safely handle SQL-injection string in name parameter", async () => {
     const res = await request(app).get("/api/v1/races/' OR '1'='1'; DROP TABLE races;--");
-    expect([200, 404]).toContain(res.status);
+    expectErrorContract(res, 400, "VALIDATION_ERROR");
   });
 });

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { POWER } from "./power.constant.js";
-import { basePaginationSchema, baseSearchSchema, createSortSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, baseSearchSchema, createSortSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getPowersSchema = z.object({
   query: basePaginationSchema
@@ -25,8 +25,9 @@ export const getPowersSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(POWER.SOURCE_MATERIALS))
         .optional(),
-      characterSlug: z.string().trim().optional(),
-    }),
+      characterSlug: slugSchema.optional(),
+    })
+    .strict(),
 });
 
 export const getPowerByIdSchema = z.object({
