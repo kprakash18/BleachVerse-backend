@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRANSFORMATION } from "./transformation.constant.js";
-import { basePaginationSchema, baseSearchSchema, createSortSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, baseSearchSchema, createSortSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getTransformationsSchema = z.object({
   query: basePaginationSchema
@@ -13,15 +13,16 @@ export const getTransformationsSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(TRANSFORMATION.TYPES))
         .optional(),
-      characterSlug: z.string().trim().optional(),
-      zanpakutoSlug: z.string().trim().optional(),
+      characterSlug: slugSchema.optional(),
+      zanpakutoSlug: slugSchema.optional(),
       sourceMaterial: z
         .string()
         .trim()
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(TRANSFORMATION.SOURCE_MATERIALS))
         .optional(),
-    }),
+    })
+    .strict(),
 });
 
 export const getTransformationByIdSchema = z.object({

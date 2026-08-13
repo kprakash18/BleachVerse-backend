@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { QUOTE } from "./quote.constant.js";
-import { basePaginationSchema, baseSearchSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, baseSearchSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getQuotesSchema = z.object({
   query: basePaginationSchema
@@ -12,10 +12,11 @@ export const getQuotesSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(QUOTE.CATEGORIES))
         .optional(),
-      characterSlug: z.string().trim().optional(),
-      arcSlug: z.string().trim().optional(),
+      characterSlug: slugSchema.optional(),
+      arcSlug: slugSchema.optional(),
       sortOrder: z.enum(QUOTE.SORT_ORDERS).default("asc"),
-    }),
+    })
+    .strict(),
 });
 
 export const getQuoteByIdSchema = z.object({
@@ -26,7 +27,7 @@ export const getQuoteByIdSchema = z.object({
 
 export const getQuotesByCharacterSlugSchema = z.object({
   params: z.object({
-    characterSlug: z.string().trim().min(1, "Character slug is required"),
+    characterSlug: slugSchema,
   }),
-  query: basePaginationSchema,
+  query: basePaginationSchema.strict(),
 });

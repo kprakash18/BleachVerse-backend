@@ -13,7 +13,8 @@ export const getOrganizationsSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(ORGANIZATION.TYPES))
         .optional(),
-    }),
+    })
+    .strict(),
 });
 
 export const getOrganizationBySlugSchema = slugParamSchema;

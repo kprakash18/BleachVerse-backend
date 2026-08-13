@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ZANPAKUTO } from "./zanpakuto.constant.js";
-import { basePaginationSchema, baseSearchSchema, createSortSchema, slugParamSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, baseSearchSchema, createSortSchema, slugParamSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getZanpakutosSchema = z.object({
   query: basePaginationSchema
@@ -13,8 +13,9 @@ export const getZanpakutosSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(ZANPAKUTO.TYPES))
         .optional(),
-      wielderSlug: z.string().trim().optional(),
-    }),
+      wielderSlug: slugSchema.optional(),
+    })
+    .strict(),
 });
 
 export const getZanpakutoBySlugSchema = slugParamSchema;

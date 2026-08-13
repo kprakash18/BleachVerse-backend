@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { FIGHT } from "./fight.constant.js";
-import { basePaginationSchema, baseSearchSchema, createSortSchema, slugParamSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, baseSearchSchema, createSortSchema, slugParamSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getFightsSchema = z.object({
   query: basePaginationSchema
@@ -13,10 +13,11 @@ export const getFightsSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(FIGHT.TYPES))
         .optional(),
-      winnerSlug: z.string().trim().optional(),
-      arcSlug: z.string().trim().optional(),
-      locationSlug: z.string().trim().optional(),
-    }),
+      winnerSlug: slugSchema.optional(),
+      arcSlug: slugSchema.optional(),
+      locationSlug: slugSchema.optional(),
+    })
+    .strict(),
 });
 
 export const getFightBySlugSchema = slugParamSchema;

@@ -45,14 +45,12 @@ describe("Episodes Module — Edge, Validation & Security Cases", () => {
 
     it("should safely handle SQL-injection string in arcSlug query without crashing", async () => {
       const res = await request(app).get("/api/v1/episodes?arcSlug=' OR '1'='1'; DROP TABLE episodes;--");
-      expect(res.status).toBe(200);
-      expect(Array.isArray(res.body.data)).toBe(true);
+      expectErrorContract(res, 400, "VALIDATION_ERROR");
     });
 
     it("should safely handle Japanese / Unicode string in arcSlug query", async () => {
       const res = await request(app).get("/api/v1/episodes?arcSlug=死神代行篇");
-      expect(res.status).toBe(200);
-      expect(res.body.data).toEqual([]);
+      expectErrorContract(res, 400, "VALIDATION_ERROR");
     });
 
     it("should return 400 VALIDATION_ERROR for empty enum filter query parameter (?type=)", async () => {

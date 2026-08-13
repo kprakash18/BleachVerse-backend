@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { EVENT } from "./event.constant.js";
-import { basePaginationSchema, baseSearchSchema, createSortSchema, slugParamSchema } from "../../common/utils/commonValidation.js";
+import { basePaginationSchema, baseSearchSchema, createSortSchema, slugParamSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getEventsSchema = z.object({
   query: basePaginationSchema
@@ -19,9 +19,10 @@ export const getEventsSchema = z.object({
         .transform((val) => val.toUpperCase())
         .pipe(z.enum(EVENT.SOURCE_MATERIALS))
         .optional(),
-      arcSlug: z.string().trim().optional(),
-      locationSlug: z.string().trim().optional(),
-    }),
+      arcSlug: slugSchema.optional(),
+      locationSlug: slugSchema.optional(),
+    })
+    .strict(),
 });
 
 export const getEventBySlugSchema = slugParamSchema;
