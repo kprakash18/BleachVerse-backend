@@ -8,8 +8,13 @@ import swaggerSpec from "./docs/swagger.js";
 import apiRoutes from "./routes/index.js";
 import { errorHandler } from "./common/errors/errorHandler.js";
 import { globalRateLimiter } from "./common/middleware/rateLimmiter.js";
+import { requestCorrelation } from "./common/middleware/requestCorrelation.js";
+import { ApiError } from "./common/errors/ApiError.js";
+import errorCodes from "./common/errors/errorCodes.js";
 
 const app = express();
+
+app.use(requestCorrelation);
 
 // Proxy configuration
 if (process.env.TRUST_PROXY !== undefined && process.env.TRUST_PROXY !== "") {
@@ -32,18 +37,19 @@ if (process.env.TRUST_PROXY !== undefined && process.env.TRUST_PROXY !== "") {
 
 
 // Global middlewares (add cors, helmet, rate limiting, auth here)
-app.use(helmet({
-    frameguard : {
-        action : 'deny' ,
+app.use((req, res, next) => {
+  const isProduction = (process.env.NODE_ENV || "development").toLowerCase() === "production";
+  helmet({
+    frameguard: {
+      action: 'deny',
     },
-    referrerPolicy : {
-        policy : 'no-referrer' ,
+    referrerPolicy: {
+      policy: 'no-referrer',
     },
-    strictTransportSecurity: process.env.NODE_ENV === 'production' 
+    strictTransportSecurity: isProduction
       ? { maxAge: 31536000, includeSubDomains: true, preload: true }
       : false,
-
-      contentSecurityPolicy: {
+    contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         "script-src": ["'self'", "'unsafe-inline'"],
@@ -51,7 +57,8 @@ app.use(helmet({
         "img-src": ["'self'", "data:", "https:"],
       },
     },
-}));
+  })(req, res, next);
+});
 
 // cors allow origins
 let allowedOrigins = [];
@@ -88,6 +95,11 @@ app.use(express.json({ limit: "10kb" }));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1", apiRoutes);
+
+// Fallback 404 route handler
+app.use((req, res, next) => {
+  next(new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Resource not found"));
+});
 
 app.use(errorHandler);
 

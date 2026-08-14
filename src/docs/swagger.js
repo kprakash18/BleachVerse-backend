@@ -116,6 +116,22 @@ const commonResponses = {
       },
     },
   },
+  PayloadTooLargeError: {
+    description: "Request payload too large",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" },
+      },
+    },
+  },
+  RateLimitExceededError: {
+    description: "Rate limit exceeded",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" },
+      },
+    },
+  },
 };
 
 const swaggerSpec = {
