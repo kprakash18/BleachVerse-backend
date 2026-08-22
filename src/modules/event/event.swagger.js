@@ -1,3 +1,13 @@
+import {
+  collectionResponses,
+  detailResponses,
+  paginatedListSchema,
+  singleItemSchema,
+  paginationParams,
+  queryParam,
+  pathParam,
+} from "../../docs/swagger.helper.js";
+
 export const eventSchemas = {
   EventType: {
     type: "string",
@@ -97,28 +107,8 @@ export const eventSchemas = {
       },
     },
   },
-  EventListResponse: {
-    type: "object",
-    properties: {
-      data: {
-        type: "array",
-        items: {
-          $ref: "#/components/schemas/EventSummary",
-        },
-      },
-      pagination: {
-        $ref: "#/components/schemas/PaginationMeta",
-      },
-    },
-  },
-  EventDetailResponse: {
-    type: "object",
-    properties: {
-      data: {
-        $ref: "#/components/schemas/EventDetail",
-      },
-    },
-  },
+  EventListResponse: paginatedListSchema("#/components/schemas/EventSummary"),
+  EventDetailResponse: singleItemSchema("#/components/schemas/EventDetail"),
 };
 
 export const eventPaths = {
@@ -129,114 +119,21 @@ export const eventPaths = {
       description:
         "Retrieve a paginated list of events with optional title search, type filtering, source material filtering, arc filtering, and location filtering.",
       parameters: [
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
-        {
-          name: "search",
-          in: "query",
-          description: "Search event title (case-insensitive substring)",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "type",
-          in: "query",
-          description: "Filter by event type",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/EventType",
-          },
-        },
-        {
-          name: "sourceMaterial",
-          in: "query",
-          description: "Filter by source material origin (MANGA, ANIME, MOVIE, OVA, NOVEL, GAME)",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/SourceMaterial",
-          },
-        },
-        {
-          name: "arcSlug",
-          in: "query",
-          description: "Filter events by story arc slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "locationSlug",
-          in: "query",
-          description: "Filter events by location slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "sortBy",
-          in: "query",
-          description: "Field to sort the results by",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["title"],
-            default: "title",
-          },
-        },
-        {
-          name: "sortOrder",
-          in: "query",
-          description: "Sort order (ascending or descending)",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["asc", "desc"],
-            default: "asc",
-          },
-        },
+        ...paginationParams,
+        queryParam("search", "Search event title (case-insensitive substring)"),
+        queryParam("type", "Filter by event type", "string", { $ref: "#/components/schemas/EventType" }),
+        queryParam("sourceMaterial", "Filter by source material origin (MANGA, ANIME, MOVIE, OVA, NOVEL, GAME)", "string", {
+          $ref: "#/components/schemas/SourceMaterial",
+        }),
+        queryParam("arcSlug", "Filter events by story arc slug"),
+        queryParam("locationSlug", "Filter events by location slug"),
+        queryParam("sortBy", "Field to sort the results by", "string", { enum: ["title"], default: "title" }),
+        queryParam("sortOrder", "Sort order (ascending or descending)", "string", {
+          enum: ["asc", "desc"],
+          default: "asc",
+        }),
       ],
-      responses: {
-        200: {
-          description: "A paginated list of events",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/EventListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: collectionResponses("#/components/schemas/EventListResponse", "A paginated list of events"),
     },
   },
   "/api/v1/events/{slug}": {
@@ -245,66 +142,8 @@ export const eventPaths = {
       summary: "Get event details by slug",
       description:
         "Retrieve comprehensive details for a single event including location, arc, episode, and key character participants.",
-      parameters: [
-        {
-          name: "slug",
-          in: "path",
-          description: "The unique event slug (e.g. 'winter-war-invasion')",
-          required: true,
-          schema: {
-            type: "string",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Detailed event information",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/EventDetailResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Invalid slug parameter validation error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Event not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-                example: {
-                  error: {
-                    code: "RESOURCE_NOT_FOUND",
-                    message: "Event not found",
-                    details: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      parameters: [pathParam("slug", "The unique event slug (e.g. 'winter-war-invasion')")],
+      responses: detailResponses("#/components/schemas/EventDetailResponse", "Detailed event information", "Event not found"),
     },
   },
 };

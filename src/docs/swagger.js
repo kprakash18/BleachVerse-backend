@@ -75,6 +75,22 @@ const commonSchemas = {
       totalPages: { type: "integer", example: 17 },
     },
   },
+  ValidationErrorDetail: {
+    type: "object",
+    properties: {
+      code: { type: "string" },
+      minimum: { type: "integer" },
+      type: { type: "string" },
+      inclusive: { type: "boolean" },
+      exact: { type: "boolean" },
+      message: { type: "string" },
+      path: {
+        type: "array",
+        items: { type: "string" },
+        example: ["query", "page"],
+      },
+    },
+  },
   ErrorResponse: {
     type: "object",
     required: ["error"],
@@ -85,6 +101,13 @@ const commonSchemas = {
         properties: {
           code: { type: "string", example: "VALIDATION_ERROR" },
           message: { type: "string", example: "Invalid parameter" },
+          details: {
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/ValidationErrorDetail",
+            },
+            nullable: true,
+          },
         },
       },
     },

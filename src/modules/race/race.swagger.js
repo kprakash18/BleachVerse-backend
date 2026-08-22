@@ -1,3 +1,13 @@
+import {
+  collectionResponses,
+  detailResponses,
+  paginatedListSchema,
+  singleItemSchema,
+  paginationParams,
+  queryParam,
+  pathParam,
+} from "../../docs/swagger.helper.js";
+
 export const raceSchemas = {
   RaceCategory: {
     type: "string",
@@ -38,28 +48,8 @@ export const raceSchemas = {
       },
     },
   },
-  RaceListResponse: {
-    type: "object",
-    properties: {
-      data: {
-        type: "array",
-        items: {
-          $ref: "#/components/schemas/RaceSummary",
-        },
-      },
-      pagination: {
-        $ref: "#/components/schemas/PaginationMeta",
-      },
-    },
-  },
-  RaceDetailResponse: {
-    type: "object",
-    properties: {
-      data: {
-        $ref: "#/components/schemas/RaceDetail",
-      },
-    },
-  },
+  RaceListResponse: paginatedListSchema("#/components/schemas/RaceSummary"),
+  RaceDetailResponse: singleItemSchema("#/components/schemas/RaceDetail"),
 };
 
 export const racePaths = {
@@ -67,162 +57,29 @@ export const racePaths = {
     get: {
       tags: ["Races"],
       summary: "Get all races",
-      description:
-        "Retrieve a paginated list of races with optional search and category filtering.",
+      description: "Retrieve a paginated list of races with optional search and category filtering.",
       parameters: [
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
-        {
-          name: "search",
-          in: "query",
-          description: "Search race by name (case-insensitive substring)",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "category",
-          in: "query",
-          description: "Filter by race category (MAIN, HYBRID, SPECIAL, COSMIC)",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/RaceCategory",
-          },
-        },
-        {
-          name: "sortBy",
-          in: "query",
-          description: "Field to sort the results by",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["name"],
-            default: "name",
-          },
-        },
-        {
-          name: "sortOrder",
-          in: "query",
-          description: "Sort order (ascending or descending)",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["asc", "desc"],
-            default: "asc",
-          },
-        },
+        ...paginationParams,
+        queryParam("search", "Search race by name (case-insensitive substring)"),
+        queryParam("category", "Filter by race category (MAIN, HYBRID, SPECIAL, COSMIC)", "string", {
+          $ref: "#/components/schemas/RaceCategory",
+        }),
+        queryParam("sortBy", "Field to sort the results by", "string", { enum: ["name"], default: "name" }),
+        queryParam("sortOrder", "Sort order (ascending or descending)", "string", {
+          enum: ["asc", "desc"],
+          default: "asc",
+        }),
       ],
-      responses: {
-        200: {
-          description: "A paginated list of races",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/RaceListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: collectionResponses("#/components/schemas/RaceListResponse", "A paginated list of races"),
     },
   },
   "/api/v1/races/{name}": {
     get: {
       tags: ["Races"],
       summary: "Get race details by name",
-      description:
-        "Retrieve comprehensive details for a single race including characters belonging to that race.",
-      parameters: [
-        {
-          name: "name",
-          in: "path",
-          description: "The race name (e.g. 'Soul Reaper' or 'soul-reaper')",
-          required: true,
-          schema: {
-            type: "string",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Detailed race information",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/RaceDetailResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Invalid name parameter validation error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Race not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-                example: {
-                  error: {
-                    code: "RESOURCE_NOT_FOUND",
-                    message: "Race not found",
-                    details: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      description: "Retrieve comprehensive details for a single race including characters belonging to that race.",
+      parameters: [pathParam("name", "The race name (e.g. 'Soul Reaper' or 'soul-reaper')")],
+      responses: detailResponses("#/components/schemas/RaceDetailResponse", "Detailed race information", "Race not found"),
     },
   },
 };

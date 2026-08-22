@@ -1,15 +1,17 @@
+import {
+  collectionResponses,
+  detailResponses,
+  paginatedListSchema,
+  singleItemSchema,
+  paginationParams,
+  queryParam,
+  pathParam,
+} from "../../docs/swagger.helper.js";
+
 export const quoteSchemas = {
   QuoteCategory: {
     type: "string",
-    enum: [
-      "MOTIVATIONAL",
-      "PHILOSOPHICAL",
-      "COMEDY",
-      "THREAT",
-      "BATTLE",
-      "EMOTIONAL",
-      "OTHER",
-    ],
+    enum: ["MOTIVATIONAL", "PHILOSOPHICAL", "COMEDY", "THREAT", "BATTLE", "EMOTIONAL", "OTHER"],
     description: "Category classification of the quote",
   },
   QuoteSummary: {
@@ -56,28 +58,8 @@ export const quoteSchemas = {
       },
     ],
   },
-  QuoteListResponse: {
-    type: "object",
-    properties: {
-      data: {
-        type: "array",
-        items: {
-          $ref: "#/components/schemas/QuoteSummary",
-        },
-      },
-      pagination: {
-        $ref: "#/components/schemas/PaginationMeta",
-      },
-    },
-  },
-  QuoteDetailResponse: {
-    type: "object",
-    properties: {
-      data: {
-        $ref: "#/components/schemas/QuoteDetail",
-      },
-    },
-  },
+  QuoteListResponse: paginatedListSchema("#/components/schemas/QuoteSummary"),
+  QuoteDetailResponse: singleItemSchema("#/components/schemas/QuoteDetail"),
 };
 
 export const quotePaths = {
@@ -85,97 +67,19 @@ export const quotePaths = {
     get: {
       tags: ["Quotes"],
       summary: "Get all quotes",
-      description:
-        "Retrieve a paginated list of famous quotes with optional search, category, character, and arc filtering.",
+      description: "Retrieve a paginated list of famous quotes with optional search, category, character, and arc filtering.",
       parameters: [
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
-        {
-          name: "search",
-          in: "query",
-          description: "Search quote text (case-insensitive substring)",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "category",
-          in: "query",
-          description: "Filter by quote category",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/QuoteCategory",
-          },
-        },
-        {
-          name: "characterSlug",
-          in: "query",
-          description: "Filter quotes by character slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "arcSlug",
-          in: "query",
-          description: "Filter quotes by story arc slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "sortOrder",
-          in: "query",
-          description: "Sort order (ascending or descending)",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["asc", "desc"],
-            default: "asc",
-          },
-        },
+        ...paginationParams,
+        queryParam("search", "Search quote text (case-insensitive substring)"),
+        queryParam("category", "Filter by quote category", "string", { $ref: "#/components/schemas/QuoteCategory" }),
+        queryParam("characterSlug", "Filter quotes by character slug"),
+        queryParam("arcSlug", "Filter quotes by story arc slug"),
+        queryParam("sortOrder", "Sort order (ascending or descending)", "string", {
+          enum: ["asc", "desc"],
+          default: "asc",
+        }),
       ],
-      responses: {
-        200: {
-          description: "A paginated list of quotes",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/QuoteListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: collectionResponses("#/components/schemas/QuoteListResponse", "A paginated list of quotes"),
     },
   },
   "/api/v1/quotes/character/{characterSlug}": {
@@ -184,72 +88,10 @@ export const quotePaths = {
       summary: "Get quotes by character slug",
       description: "Retrieve a paginated list of famous quotes uttered by a specific character.",
       parameters: [
-        {
-          name: "characterSlug",
-          in: "path",
-          description: "The unique character slug (e.g. 'ichigo-kurosaki')",
-          required: true,
-          schema: {
-            type: "string",
-          },
-        },
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
+        pathParam("characterSlug", "The unique character slug (e.g. 'ichigo-kurosaki')"),
+        ...paginationParams,
       ],
-      responses: {
-        200: {
-          description: "A paginated list of character quotes",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/QuoteListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Character not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: detailResponses("#/components/schemas/QuoteListResponse", "A paginated list of character quotes", "Character not found"),
     },
   },
   "/api/v1/quotes/{id}": {
@@ -257,67 +99,8 @@ export const quotePaths = {
       tags: ["Quotes"],
       summary: "Get quote details by ID",
       description: "Retrieve comprehensive details for a single quote by its UUID.",
-      parameters: [
-        {
-          name: "id",
-          in: "path",
-          description: "The quote UUID",
-          required: true,
-          schema: {
-            type: "string",
-            format: "uuid",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Detailed quote information",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/QuoteDetailResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Invalid UUID parameter validation error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Quote not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-                example: {
-                  error: {
-                    code: "RESOURCE_NOT_FOUND",
-                    message: "Quote not found",
-                    details: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      parameters: [pathParam("id", "The quote UUID", { type: "string", format: "uuid" })],
+      responses: detailResponses("#/components/schemas/QuoteDetailResponse", "Detailed quote information", "Quote not found"),
     },
   },
 };

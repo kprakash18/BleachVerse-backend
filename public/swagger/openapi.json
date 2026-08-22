@@ -1,14 +1,68 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "BleachVerse API Documentation",
+    "title": "BleachVerse REST API",
     "version": "1.0.0",
-    "description": "Comprehensive API endpoints for BleachVerse, exposing character, arc, episode, fight, organization, zanpakuto, location, race, quote, event, power, transformation, and appearance resources."
+    "description": "Comprehensive API documentation for BleachVerse — exposing 32 GET endpoints across 13 modules."
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
-      "description": "Development Server"
+      "url": "/api/v1",
+      "description": "BleachVerse API v1 Base Route"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Characters",
+      "description": "Character profiles and relationships"
+    },
+    {
+      "name": "Arcs",
+      "description": "Story arcs and sub-resources"
+    },
+    {
+      "name": "Episodes",
+      "description": "Anime episode catalog"
+    },
+    {
+      "name": "Fights",
+      "description": "Combat encounters and participants"
+    },
+    {
+      "name": "Organizations",
+      "description": "Factions and military divisions"
+    },
+    {
+      "name": "Zanpakutos",
+      "description": "Zanpakutō weapons and releases"
+    },
+    {
+      "name": "Locations",
+      "description": "Worlds, regions, and structures"
+    },
+    {
+      "name": "Races",
+      "description": "Races and character groupings"
+    },
+    {
+      "name": "Quotes",
+      "description": "Famous quotes and character quotes"
+    },
+    {
+      "name": "Events",
+      "description": "Major historical events"
+    },
+    {
+      "name": "Powers",
+      "description": "Abilities and techniques"
+    },
+    {
+      "name": "Transformations",
+      "description": "Forms and Bankai releases"
+    },
+    {
+      "name": "Appearances",
+      "description": "Character debut tracking"
     }
   ],
   "paths": {
@@ -119,7 +173,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -171,7 +225,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -303,7 +357,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -355,7 +409,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -434,7 +488,7 @@
           {
             "name": "all",
             "in": "query",
-            "description": "Set to true to retrieve 100% of the episodes in the arc without pagination limits",
+            "description": "Set to true to retrieve all episodes in the arc without pagination limits (capped at a maximum of 1000 episodes)",
             "required": false,
             "schema": {
               "type": "boolean",
@@ -454,7 +508,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -543,7 +597,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -632,7 +686,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -721,7 +775,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -771,7 +825,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "Page number for pagination",
+            "description": "Page number",
             "required": false,
             "schema": {
               "type": "integer",
@@ -803,6 +857,7 @@
             "description": "Filter episodes by type (CANON, FILLER, MIXED, RECAP)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/EpisodeType"
             }
           }
@@ -819,7 +874,7 @@
             }
           },
           "400": {
-            "description": "Validation failed / Invalid query parameters",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -871,7 +926,7 @@
             }
           },
           "400": {
-            "description": "Invalid episode number parameter",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -940,7 +995,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -1022,6 +1077,7 @@
             "description": "Filter fights by type (DUEL, TEAM_BATTLE, WAR, TRAINING)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/FightType"
             }
           },
@@ -1144,7 +1200,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -1226,6 +1282,7 @@
             "description": "Filter by organization type",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/OrganizationType"
             }
           },
@@ -1321,7 +1378,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -1403,6 +1460,7 @@
             "description": "Filter by Zanpakutō type (NORMAL, DUAL, HYBRID)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/ZanpakutoType"
             }
           },
@@ -1507,7 +1565,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -1589,6 +1647,7 @@
             "description": "Filter by location type (WORLD, REGION, STRUCTURE, OTHER)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/LocationType"
             }
           },
@@ -1684,7 +1743,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -1766,6 +1825,7 @@
             "description": "Filter by race category (MAIN, HYBRID, SPECIAL, COSMIC)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/RaceCategory"
             }
           },
@@ -1861,7 +1921,7 @@
             }
           },
           "400": {
-            "description": "Invalid name parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -1943,6 +2003,7 @@
             "description": "Filter by quote category",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/QuoteCategory"
             }
           },
@@ -2072,6 +2133,23 @@
               }
             }
           },
+          "404": {
+            "description": "Character not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse",
+                  "example": {
+                    "error": {
+                      "code": "RESOURCE_NOT_FOUND",
+                      "message": "Character not found",
+                      "details": null
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -2116,7 +2194,7 @@
             }
           },
           "400": {
-            "description": "Invalid UUID parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -2198,6 +2276,7 @@
             "description": "Filter by event type",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/EventType"
             }
           },
@@ -2207,6 +2286,7 @@
             "description": "Filter by source material origin (MANGA, ANIME, MOVIE, OVA, NOVEL, GAME)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/SourceMaterial"
             }
           },
@@ -2320,7 +2400,7 @@
             }
           },
           "400": {
-            "description": "Invalid slug parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -2402,6 +2482,7 @@
             "description": "Filter by power type",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/PowerType"
             }
           },
@@ -2411,6 +2492,7 @@
             "description": "Filter by power source (ZANPAKUTO, KIDO, HOLLOW, etc.)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/PowerSource"
             }
           },
@@ -2420,6 +2502,7 @@
             "description": "Filter by source material origin (MANGA, ANIME, MOVIE, etc.)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/SourceMaterial"
             }
           },
@@ -2525,7 +2608,7 @@
             }
           },
           "400": {
-            "description": "Invalid UUID parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -2607,6 +2690,7 @@
             "description": "Filter by transformation type (SHIKAI, BANKAI, RESURRECCION, etc.)",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/TransformationType"
             }
           },
@@ -2634,6 +2718,7 @@
             "description": "Filter by source material origin",
             "required": false,
             "schema": {
+              "type": "string",
               "$ref": "#/components/schemas/SourceMaterial"
             }
           },
@@ -2730,7 +2815,7 @@
             }
           },
           "400": {
-            "description": "Invalid UUID parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -2890,7 +2975,7 @@
             }
           },
           "400": {
-            "description": "Invalid UUID parameter validation error",
+            "description": "Validation error / invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -2931,7 +3016,227 @@
     }
   },
   "components": {
+    "parameters": {
+      "PageParam": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
+        }
+      },
+      "LimitParam": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of records per page (max: 100)",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "SortByParam": {
+        "name": "sortBy",
+        "in": "query",
+        "description": "Field name to sort results by",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "SortOrderParam": {
+        "name": "sortOrder",
+        "in": "query",
+        "description": "Order direction for sorting (asc or desc)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "asc"
+        }
+      },
+      "SearchParam": {
+        "name": "search",
+        "in": "query",
+        "description": "Text search query string",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "SlugParam": {
+        "name": "slug",
+        "in": "path",
+        "description": "Resource slug identifier",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "UUIDParam": {
+        "name": "id",
+        "in": "path",
+        "description": "UUID v4 resource identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Validation error (Zod schema rejection)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "PayloadTooLargeError": {
+        "description": "Request payload too large",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "RateLimitExceededError": {
+        "description": "Rate limit exceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "schemas": {
+      "PaginationMeta": {
+        "type": "object",
+        "required": [
+          "page",
+          "limit",
+          "totalItems",
+          "totalPages"
+        ],
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 10
+          },
+          "totalItems": {
+            "type": "integer",
+            "example": 169
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 17
+          }
+        }
+      },
+      "ValidationErrorDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "minimum": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "inclusive": {
+            "type": "boolean"
+          },
+          "exact": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "query",
+              "page"
+            ]
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "VALIDATION_ERROR"
+              },
+              "message": {
+                "type": "string",
+                "example": "Invalid parameter"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ValidationErrorDetail"
+                },
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
       "Sex": {
         "type": "string",
         "enum": [
@@ -3172,27 +3477,6 @@
           }
         ]
       },
-      "PaginationMeta": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "integer",
-            "example": 1
-          },
-          "limit": {
-            "type": "integer",
-            "example": 10
-          },
-          "total": {
-            "type": "integer",
-            "example": 45
-          },
-          "totalPages": {
-            "type": "integer",
-            "example": 5
-          }
-        }
-      },
       "CharacterListResponse": {
         "type": "object",
         "properties": {
@@ -3212,64 +3496,6 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/CharacterDetails"
-          }
-        }
-      },
-      "ValidationErrorDetail": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "minimum": {
-            "type": "integer"
-          },
-          "type": {
-            "type": "string"
-          },
-          "inclusive": {
-            "type": "boolean"
-          },
-          "exact": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "path": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "query",
-              "page"
-            ]
-          }
-        }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string",
-                "example": "VALIDATION_ERROR"
-              },
-              "message": {
-                "type": "string",
-                "example": "Validation failed"
-              },
-              "details": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ValidationErrorDetail"
-                },
-                "nullable": true
-              }
-            }
           }
         }
       },
@@ -3387,6 +3613,71 @@
           }
         }
       },
+      "Fight": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Ichigo Kurosaki vs. Byakuya Kuchiki"
+          },
+          "slug": {
+            "type": "string",
+            "example": "ichigo-kurosaki-vs-byakuya-kuchiki"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DUEL",
+              "TEAM_BATTLE",
+              "WAR",
+              "TRAINING"
+            ],
+            "example": "DUEL"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Aizen's Betrayal"
+          },
+          "slug": {
+            "type": "string",
+            "example": "aizens-betrayal"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "BATTLE",
+              "DEATH",
+              "REVEAL",
+              "BETRAYAL",
+              "TRANSFORMATION",
+              "POWER_GAIN",
+              "POWER_LOSS",
+              "RESCUE",
+              "INVASION",
+              "OTHER"
+            ],
+            "example": "BETRAYAL"
+          }
+        }
+      },
+      "ArcCharacter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ichigo Kurosaki"
+          },
+          "slug": {
+            "type": "string",
+            "example": "ichigo-kurosaki"
+          }
+        }
+      },
       "ArcListResponse": {
         "type": "object",
         "properties": {
@@ -3423,29 +3714,6 @@
           }
         }
       },
-      "Fight": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Ichigo Kurosaki vs. Byakuya Kuchiki"
-          },
-          "slug": {
-            "type": "string",
-            "example": "ichigo-kurosaki-vs-byakuya-kuchiki"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "DUEL",
-              "TEAM_BATTLE",
-              "WAR",
-              "TRAINING"
-            ],
-            "example": "DUEL"
-          }
-        }
-      },
       "ArcFightsResponse": {
         "type": "object",
         "properties": {
@@ -3460,35 +3728,6 @@
           }
         }
       },
-      "Event": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Aizen's Betrayal"
-          },
-          "slug": {
-            "type": "string",
-            "example": "aizens-betrayal"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "BATTLE",
-              "DEATH",
-              "REVEAL",
-              "BETRAYAL",
-              "TRANSFORMATION",
-              "POWER_GAIN",
-              "POWER_LOSS",
-              "RESCUE",
-              "INVASION",
-              "OTHER"
-            ],
-            "example": "BETRAYAL"
-          }
-        }
-      },
       "ArcEventsResponse": {
         "type": "object",
         "properties": {
@@ -3500,19 +3739,6 @@
           },
           "pagination": {
             "$ref": "#/components/schemas/PaginationMeta"
-          }
-        }
-      },
-      "ArcCharacter": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Ichigo Kurosaki"
-          },
-          "slug": {
-            "type": "string",
-            "example": "ichigo-kurosaki"
           }
         }
       },

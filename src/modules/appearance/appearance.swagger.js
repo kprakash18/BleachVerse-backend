@@ -1,3 +1,13 @@
+import {
+  collectionResponses,
+  detailResponses,
+  paginatedListSchema,
+  singleItemSchema,
+  paginationParams,
+  queryParam,
+  pathParam,
+} from "../../docs/swagger.helper.js";
+
 export const appearanceSchemas = {
   AppearanceSummary: {
     type: "object",
@@ -51,28 +61,8 @@ export const appearanceSchemas = {
       },
     ],
   },
-  AppearanceListResponse: {
-    type: "object",
-    properties: {
-      data: {
-        type: "array",
-        items: {
-          $ref: "#/components/schemas/AppearanceSummary",
-        },
-      },
-      pagination: {
-        $ref: "#/components/schemas/PaginationMeta",
-      },
-    },
-  },
-  AppearanceDetailResponse: {
-    type: "object",
-    properties: {
-      data: {
-        $ref: "#/components/schemas/AppearanceDetail",
-      },
-    },
-  },
+  AppearanceListResponse: paginatedListSchema("#/components/schemas/AppearanceSummary"),
+  AppearanceDetailResponse: singleItemSchema("#/components/schemas/AppearanceDetail"),
 };
 
 export const appearancePaths = {
@@ -83,74 +73,15 @@ export const appearancePaths = {
       description:
         "Retrieve a paginated list of character appearances in anime episodes with optional character, episode, and first-appearance filtering.",
       parameters: [
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
-        {
-          name: "characterSlug",
-          in: "query",
-          description: "Filter appearances by character slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "episodeSlug",
-          in: "query",
-          description: "Filter appearances by episode slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "isFirstAppearance",
-          in: "query",
-          description: "Filter specifically for character debut/first appearances",
-          required: false,
-          schema: { type: "boolean" },
-        },
+        ...paginationParams,
+        queryParam("characterSlug", "Filter appearances by character slug"),
+        queryParam("episodeSlug", "Filter appearances by episode slug"),
+        queryParam("isFirstAppearance", "Filter specifically for character debut/first appearances", "boolean"),
       ],
-      responses: {
-        200: {
-          description: "A paginated list of character appearances",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/AppearanceListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: collectionResponses(
+        "#/components/schemas/AppearanceListResponse",
+        "A paginated list of character appearances"
+      ),
     },
   },
   "/api/v1/appearances/{id}": {
@@ -158,67 +89,12 @@ export const appearancePaths = {
       tags: ["Appearances"],
       summary: "Get appearance detail by ID",
       description: "Retrieve detailed information for a single character appearance record by UUID.",
-      parameters: [
-        {
-          name: "id",
-          in: "path",
-          description: "The appearance UUID",
-          required: true,
-          schema: {
-            type: "string",
-            format: "uuid",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Detailed appearance information",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/AppearanceDetailResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Invalid UUID parameter validation error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Appearance record not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-                example: {
-                  error: {
-                    code: "RESOURCE_NOT_FOUND",
-                    message: "Appearance record not found",
-                    details: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      parameters: [pathParam("id", "The appearance UUID", { type: "string", format: "uuid" })],
+      responses: detailResponses(
+        "#/components/schemas/AppearanceDetailResponse",
+        "Detailed appearance information",
+        "Appearance record not found"
+      ),
     },
   },
 };

@@ -1,3 +1,13 @@
+import {
+  collectionResponses,
+  detailResponses,
+  paginatedListSchema,
+  singleItemSchema,
+  paginationParams,
+  queryParam,
+  pathParam,
+} from "../../docs/swagger.helper.js";
+
 export const transformationSchemas = {
   TransformationType: {
     type: "string",
@@ -83,28 +93,8 @@ export const transformationSchemas = {
       },
     ],
   },
-  TransformationListResponse: {
-    type: "object",
-    properties: {
-      data: {
-        type: "array",
-        items: {
-          $ref: "#/components/schemas/TransformationSummary",
-        },
-      },
-      pagination: {
-        $ref: "#/components/schemas/PaginationMeta",
-      },
-    },
-  },
-  TransformationDetailResponse: {
-    type: "object",
-    properties: {
-      data: {
-        $ref: "#/components/schemas/TransformationDetail",
-      },
-    },
-  },
+  TransformationListResponse: paginatedListSchema("#/components/schemas/TransformationSummary"),
+  TransformationDetailResponse: singleItemSchema("#/components/schemas/TransformationDetail"),
 };
 
 export const transformationPaths = {
@@ -115,114 +105,26 @@ export const transformationPaths = {
       description:
         "Retrieve a paginated list of transformations (Shikai, Bankai, Resurreccion, etc.) with optional name search and filtering.",
       parameters: [
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
-        {
-          name: "search",
-          in: "query",
-          description: "Search transformation by name (case-insensitive substring)",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "type",
-          in: "query",
-          description: "Filter by transformation type (SHIKAI, BANKAI, RESURRECCION, etc.)",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/TransformationType",
-          },
-        },
-        {
-          name: "characterSlug",
-          in: "query",
-          description: "Filter transformations by character slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "zanpakutoSlug",
-          in: "query",
-          description: "Filter transformations by Zanpakutō slug",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "sourceMaterial",
-          in: "query",
-          description: "Filter by source material origin",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/SourceMaterial",
-          },
-        },
-        {
-          name: "sortBy",
-          in: "query",
-          description: "Field to sort the results by",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["name"],
-            default: "name",
-          },
-        },
-        {
-          name: "sortOrder",
-          in: "query",
-          description: "Sort order (ascending or descending)",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["asc", "desc"],
-            default: "asc",
-          },
-        },
+        ...paginationParams,
+        queryParam("search", "Search transformation by name (case-insensitive substring)"),
+        queryParam("type", "Filter by transformation type (SHIKAI, BANKAI, RESURRECCION, etc.)", "string", {
+          $ref: "#/components/schemas/TransformationType",
+        }),
+        queryParam("characterSlug", "Filter transformations by character slug"),
+        queryParam("zanpakutoSlug", "Filter transformations by Zanpakutō slug"),
+        queryParam("sourceMaterial", "Filter by source material origin", "string", {
+          $ref: "#/components/schemas/SourceMaterial",
+        }),
+        queryParam("sortBy", "Field to sort the results by", "string", { enum: ["name"], default: "name" }),
+        queryParam("sortOrder", "Sort order (ascending or descending)", "string", {
+          enum: ["asc", "desc"],
+          default: "asc",
+        }),
       ],
-      responses: {
-        200: {
-          description: "A paginated list of transformations",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/TransformationListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: collectionResponses(
+        "#/components/schemas/TransformationListResponse",
+        "A paginated list of transformations"
+      ),
     },
   },
   "/api/v1/transformations/{id}": {
@@ -231,67 +133,12 @@ export const transformationPaths = {
       summary: "Get transformation details by ID",
       description:
         "Retrieve comprehensive details for a single transformation including character, Zanpakuto, debut episode, debut fight, and powers.",
-      parameters: [
-        {
-          name: "id",
-          in: "path",
-          description: "The transformation UUID",
-          required: true,
-          schema: {
-            type: "string",
-            format: "uuid",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Detailed transformation information",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/TransformationDetailResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Invalid UUID parameter validation error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Transformation not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-                example: {
-                  error: {
-                    code: "RESOURCE_NOT_FOUND",
-                    message: "Transformation not found",
-                    details: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      parameters: [pathParam("id", "The transformation UUID", { type: "string", format: "uuid" })],
+      responses: detailResponses(
+        "#/components/schemas/TransformationDetailResponse",
+        "Detailed transformation information",
+        "Transformation not found"
+      ),
     },
   },
 };

@@ -1,3 +1,13 @@
+import {
+  collectionResponses,
+  detailResponses,
+  paginatedListSchema,
+  singleItemSchema,
+  paginationParams,
+  queryParam,
+  pathParam,
+} from "../../docs/swagger.helper.js";
+
 export const organizationSchemas = {
   OrganizationType: {
     type: "string",
@@ -68,28 +78,8 @@ export const organizationSchemas = {
       },
     },
   },
-  OrganizationListResponse: {
-    type: "object",
-    properties: {
-      data: {
-        type: "array",
-        items: {
-          $ref: "#/components/schemas/OrganizationSummary",
-        },
-      },
-      pagination: {
-        $ref: "#/components/schemas/PaginationMeta",
-      },
-    },
-  },
-  OrganizationDetailResponse: {
-    type: "object",
-    properties: {
-      data: {
-        $ref: "#/components/schemas/OrganizationDetail",
-      },
-    },
-  },
+  OrganizationListResponse: paginatedListSchema("#/components/schemas/OrganizationSummary"),
+  OrganizationDetailResponse: singleItemSchema("#/components/schemas/OrganizationDetail"),
 };
 
 export const organizationPaths = {
@@ -97,162 +87,36 @@ export const organizationPaths = {
     get: {
       tags: ["Organizations"],
       summary: "Get all organizations",
-      description:
-        "Retrieve a paginated list of all organizations with optional name search and type filtering.",
+      description: "Retrieve a paginated list of all organizations with optional name search and type filtering.",
       parameters: [
-        {
-          name: "page",
-          in: "query",
-          description: "Page number",
-          required: false,
-          schema: { type: "integer", default: 1 },
-        },
-        {
-          name: "limit",
-          in: "query",
-          description: "Number of records per page (max: 100)",
-          required: false,
-          schema: { type: "integer", default: 10 },
-        },
-        {
-          name: "search",
-          in: "query",
-          description: "Search organization by name (case-insensitive substring)",
-          required: false,
-          schema: { type: "string" },
-        },
-        {
-          name: "type",
-          in: "query",
-          description: "Filter by organization type",
-          required: false,
-          schema: {
-            $ref: "#/components/schemas/OrganizationType",
-          },
-        },
-        {
-          name: "sortBy",
-          in: "query",
-          description: "Field to sort the results by",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["name"],
-            default: "name",
-          },
-        },
-        {
-          name: "sortOrder",
-          in: "query",
-          description: "Sort order (ascending or descending)",
-          required: false,
-          schema: {
-            type: "string",
-            enum: ["asc", "desc"],
-            default: "asc",
-          },
-        },
+        ...paginationParams,
+        queryParam("search", "Search organization by name (case-insensitive substring)"),
+        queryParam("type", "Filter by organization type", "string", {
+          $ref: "#/components/schemas/OrganizationType",
+        }),
+        queryParam("sortBy", "Field to sort the results by", "string", { enum: ["name"], default: "name" }),
+        queryParam("sortOrder", "Sort order (ascending or descending)", "string", {
+          enum: ["asc", "desc"],
+          default: "asc",
+        }),
       ],
-      responses: {
-        200: {
-          description: "A paginated list of organizations",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/OrganizationListResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Validation error / invalid parameters",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      responses: collectionResponses(
+        "#/components/schemas/OrganizationListResponse",
+        "A paginated list of organizations"
+      ),
     },
   },
   "/api/v1/organizations/{slug}": {
     get: {
       tags: ["Organizations"],
       summary: "Get organization details by slug",
-      description:
-        "Retrieve comprehensive details for a single organization including parent organization, child divisions, and roster members.",
-      parameters: [
-        {
-          name: "slug",
-          in: "path",
-          description: "The unique organization slug (e.g. 'gotei-13')",
-          required: true,
-          schema: {
-            type: "string",
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: "Detailed organization information",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/OrganizationDetailResponse",
-              },
-            },
-          },
-        },
-        400: {
-          description: "Invalid slug parameter validation error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-        404: {
-          description: "Organization not found",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-                example: {
-                  error: {
-                    code: "RESOURCE_NOT_FOUND",
-                    message: "Organization not found",
-                    details: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-            },
-          },
-        },
-      },
+      description: "Retrieve comprehensive details for a single organization including parent organization, child divisions, and roster members.",
+      parameters: [pathParam("slug", "The unique organization slug (e.g. 'gotei-13')")],
+      responses: detailResponses(
+        "#/components/schemas/OrganizationDetailResponse",
+        "Detailed organization information",
+        "Organization not found"
+      ),
     },
   },
 };
