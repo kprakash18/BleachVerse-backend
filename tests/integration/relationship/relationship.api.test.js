@@ -35,6 +35,7 @@ describe("Relationship Module Integration Tests", () => {
   it("POST /api/v1/relationships — should create a new relationship between characters", async () => {
     const res = await request(app)
       .post("/api/v1/relationships")
+      .set("x-api-key", process.env.ADMIN_API_KEY || "bleachverse-admin-secret")
       .send({
         sourceSlug: "ichigo-kurosaki",
         targetSlug: "kisuke-urahara",

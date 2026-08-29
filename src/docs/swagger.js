@@ -132,6 +132,14 @@ const commonResponses = {
       },
     },
   },
+  UnauthorizedError: {
+    description: "Unauthorized - Admin API Key missing or invalid",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/ErrorResponse" },
+      },
+    },
+  },
   InternalServerError: {
     description: "Internal server error",
     content: {
@@ -205,6 +213,14 @@ const swaggerSpec = {
     ...relationshipPaths,
   },
   components: {
+    securitySchemes: {
+      ApiKeyAuth: {
+        type: "apiKey",
+        in: "header",
+        name: "x-api-key",
+        description: "Admin API Key for privileged operations",
+      },
+    },
     parameters: commonParameters,
     responses: commonResponses,
     schemas: {

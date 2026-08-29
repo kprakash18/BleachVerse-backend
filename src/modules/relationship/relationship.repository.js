@@ -1,4 +1,5 @@
 import { runCypher } from "../../database/neo4j.js";
+import prisma from "../../database/prisma.js";
 import { RELATIONSHIP_TYPES } from "./relationship.constant.js";
 
 const BIDIRECTIONAL_TYPES = new Set(["ALLIED_WITH", "FOUGHT", "RIVAL_OF", "MARRIED_TO", "FAMILY_OF"]);
@@ -108,3 +109,15 @@ export const findShortestPath = async (fromSlug, toSlug, maxDepth = 2) => {
     relationships: record.get("relationships"),
   };
 };
+
+// Submissions (PostgreSQL)
+export const createSubmission = (data) => prisma.relationshipSubmission.create({ data });
+
+export const findSubmissions = ({ where, skip, take, orderBy }) =>
+  prisma.relationshipSubmission.findMany({ where, skip, take, orderBy });
+
+export const countSubmissions = (where) => prisma.relationshipSubmission.count({ where });
+
+export const findSubmissionById = (id) => prisma.relationshipSubmission.findUnique({ where: { id } });
+
+export const updateSubmission = (id, data) => prisma.relationshipSubmission.update({ where: { id }, data });

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { slugSchema, slugParamSchema } from "../../common/utils/commonValidation.js";
+import { slugSchema, slugParamSchema, basePaginationSchema } from "../../common/utils/commonValidation.js";
 import { RELATIONSHIP_TYPES, TRAVERSAL_LIMITS } from "./relationship.constant.js";
 
 export const createRelationshipSchema = z.object({
@@ -14,6 +14,39 @@ export const createRelationshipSchema = z.object({
       message: "Self-relationships are not allowed",
       path: ["targetSlug"],
     }),
+});
+
+export const submitRelationshipSchema = z.object({
+  body: z
+    .object({
+      sourceSlug: slugSchema,
+      targetSlug: slugSchema,
+      relationshipType: z.enum(RELATIONSHIP_TYPES),
+      note: z.string().trim().max(500).optional(),
+      submittedBy: z.string().trim().max(100).optional().default("Anonymous Fan"),
+    })
+    .refine((data) => data.sourceSlug !== data.targetSlug, {
+      message: "Self-relationships are not allowed",
+      path: ["targetSlug"],
+    }),
+});
+
+export const reviewSubmissionSchema = z.object({
+  params: z.object({
+    id: z.string().uuid("Invalid submission ID format"),
+  }),
+  body: z.object({
+    status: z.enum(["APPROVED", "REJECTED"]),
+    reviewerNotes: z.string().trim().max(500).optional(),
+  }),
+});
+
+export const getSubmissionsSchema = z.object({
+  query: basePaginationSchema
+    .extend({
+      status: z.enum(["PENDING", "APPROVED", "REJECTED"]).optional(),
+    })
+    .strict(),
 });
 
 export const getRelationshipsSchema = z.object({

@@ -47,11 +47,11 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
   it("should document all operations across all paths", () => {
     expect(swaggerSpec.paths).toBeDefined();
     const pathKeys = Object.keys(swaggerSpec.paths);
-    expect(pathKeys.length).toBe(39);
+    expect(pathKeys.length).toBe(41);
 
     for (const pathKey of pathKeys) {
       const pathObj = swaggerSpec.paths[pathKey];
-      const operation = pathObj.get || pathObj.post;
+      const operation = pathObj.get || pathObj.post || pathObj.patch;
       expect(operation).toBeDefined();
       expect(operation).toHaveProperty("tags");
       expect(operation.tags.length).toBeGreaterThan(0);
@@ -61,12 +61,12 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
 
   it("should enforce explicit response code rules across operations", () => {
     for (const [pathKey, pathObj] of Object.entries(swaggerSpec.paths)) {
-      const operation = pathObj.get || pathObj.post;
+      const operation = pathObj.get || pathObj.post || pathObj.patch;
       const responses = operation.responses;
       expect(responses).toHaveProperty("400");
       expect(responses).toHaveProperty("500");
 
-      if (pathObj.get) {
+      if (pathObj.get || pathObj.patch) {
         expect(responses).toHaveProperty("200");
       } else if (pathObj.post) {
         expect(responses).toHaveProperty("201");
