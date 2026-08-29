@@ -1132,5 +1132,449 @@ export const CANON_RELATIONSHIPS = [
     "targetSlug": "ichigo-kurosaki",
     "type": "RIVAL_OF",
     "note": "Bount leader who dueled Ichigo atop Sokyoku Hill"
+  },
+  {
+    "sourceSlug": "uryu-ishida",
+    "targetSlug": "mayuri-kurotsuchi",
+    "type": "FOUGHT",
+    "note": "Uryu unleashed Quincy Letzt Stil to avenge his grandfather Soken, destroying Konjiki Ashisogi Jizo"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "kaname-tosen",
+    "type": "FOUGHT",
+    "note": "Fought inside Tosen's sensory-deprivation Bankai Suzumushi Tsuishiki Enma Korogi"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "sajin-komamura",
+    "type": "FOUGHT",
+    "note": "Clashed with Komamura's Kokujo Tengen Myo'o on Sokyoku Hill"
+  },
+  {
+    "sourceSlug": "shunsui-kyoraku",
+    "targetSlug": "genryusai-shigekuni-yamamoto",
+    "type": "FOUGHT",
+    "note": "Shunsui and Ukitake stood against Yamamoto's Ryujin Jakka to delay Rukia's execution"
+  },
+  {
+    "sourceSlug": "jushiro-ukitake",
+    "targetSlug": "genryusai-shigekuni-yamamoto",
+    "type": "FOUGHT",
+    "note": "Ukitake and Shunsui stood against Yamamoto's Ryujin Jakka to delay Rukia's execution"
+  },
+  {
+    "sourceSlug": "soi-fon",
+    "targetSlug": "yoruichi-shihoin",
+    "type": "FOUGHT",
+    "note": "Emotional Shunko and Hakuda master-versus-disciple duel in the Seireitei forest"
+  },
+  {
+    "sourceSlug": "byakuya-kuchiki",
+    "targetSlug": "renji-abarai",
+    "type": "FOUGHT",
+    "note": "Renji challenged his captain with newly unlocked Bankai Hihio Zabimaru"
+  },
+  {
+    "sourceSlug": "uryu-ishida",
+    "targetSlug": "jirobo-ikkanzaka",
+    "type": "FOUGHT",
+    "note": "Uryu easily defeated the Squad 7 4th Seat Kamaitachi wielder"
+  },
+  {
+    "sourceSlug": "toshiro-hitsugaya",
+    "targetSlug": "gin-ichimaru",
+    "type": "FOUGHT",
+    "note": "Hitsugaya froze Gin's arm to protect Momo Hinamori"
+  },
+  {
+    "sourceSlug": "ikkaku-madarame",
+    "targetSlug": "edrad-liones",
+    "type": "FOUGHT",
+    "note": "Ikkaku revealed his secret Bankai Ryumon Hozukimaru to defeat Volcanica"
+  },
+  {
+    "sourceSlug": "toshiro-hitsugaya",
+    "targetSlug": "shawlong-koufang",
+    "type": "FOUGHT",
+    "note": "Hitsugaya released Gentei Kaijo and finished Shawlong with Daiguren Hyorinmaru"
+  },
+  {
+    "sourceSlug": "rukia-kuchiki",
+    "targetSlug": "di-roy-rinker",
+    "type": "FOUGHT",
+    "note": "Rukia demonstrated Sode no Shirayuki's Some no Mai Tsukishiro"
+  },
+  {
+    "sourceSlug": "uryu-ishida",
+    "targetSlug": "cirucci-sanderwicci",
+    "type": "FOUGHT",
+    "note": "Uryu cut through Cirucci's iron feathers using Seele Schneider"
+  },
+  {
+    "sourceSlug": "yasutora-sado",
+    "targetSlug": "gantenbainne-mosqueda",
+    "type": "FOUGHT",
+    "note": "Chad unlocked Brazo Izquierda del Diablo and finished Gantenbainne with La Muerte"
+  },
+  {
+    "sourceSlug": "rukia-kuchiki",
+    "targetSlug": "aaroniero-arruruerie",
+    "type": "FOUGHT",
+    "note": "Rukia shattered the Glotoneria capsule using San no Mai Shirafune"
+  },
+  {
+    "sourceSlug": "renji-abarai",
+    "targetSlug": "szayelaporro-granz",
+    "type": "FOUGHT",
+    "note": "Renji and Uryu struggled against Szayelaporro's voodoo doll clones"
+  },
+  {
+    "sourceSlug": "uryu-ishida",
+    "targetSlug": "szayelaporro-granz",
+    "type": "FOUGHT",
+    "note": "Uryu used Sprenger in a coordinated trap against Szayelaporro"
+  },
+  {
+    "sourceSlug": "mayuri-kurotsuchi",
+    "targetSlug": "szayelaporro-granz",
+    "type": "FOUGHT",
+    "note": "Mayuri injected the Superhuman Drug into Szayelaporro, causing centuries of paralysis"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "nnoitra-gilga",
+    "type": "FOUGHT",
+    "note": "Brutal slugfest concluding with Kenpachi using two-handed Kendo"
+  },
+  {
+    "sourceSlug": "byakuya-kuchiki",
+    "targetSlug": "zommari-rureaux",
+    "type": "FOUGHT",
+    "note": "Byakuya overcame Zommari's Amor with Gokei Senbonzakura Kageyoshi"
+  },
+  {
+    "sourceSlug": "byakuya-kuchiki",
+    "targetSlug": "yammy-llargo",
+    "type": "FOUGHT",
+    "note": "Byakuya and Kenpachi bickered while annihilating Cero Espada Yammy"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "yammy-llargo",
+    "type": "FOUGHT",
+    "note": "Kenpachi and Byakuya bickered while annihilating Cero Espada Yammy"
+  },
+  {
+    "sourceSlug": "yumichika-ayasegawa",
+    "targetSlug": "charlotte-chuhlhourne",
+    "type": "FOUGHT",
+    "note": "Yumichika secretly released true Shikai Ruri'iro Kujaku to drain Charlotte's Reishi"
+  },
+  {
+    "sourceSlug": "izuru-kira",
+    "targetSlug": "abirama-redder",
+    "type": "FOUGHT",
+    "note": "Kira weighed down Abirama's heavy wings with Wabisuke before decapitation"
+  },
+  {
+    "sourceSlug": "shuhei-hisagi",
+    "targetSlug": "findorr-calius",
+    "type": "FOUGHT",
+    "note": "Hisagi embraced fear to unleash the scythe Kazeshini against Findorr"
+  },
+  {
+    "sourceSlug": "sajin-komamura",
+    "targetSlug": "choe-neng-poww",
+    "type": "FOUGHT",
+    "note": "Komamura crushed the giant whale Arrancar with Kokujo Tengen Myo'o"
+  },
+  {
+    "sourceSlug": "soi-fon",
+    "targetSlug": "ggio-vega",
+    "type": "FOUGHT",
+    "note": "Soi-Fon struck Ggio with Suzumebachi's Nigeki Kessatsu death-in-two-steps"
+  },
+  {
+    "sourceSlug": "genryusai-shigekuni-yamamoto",
+    "targetSlug": "ayon",
+    "type": "FOUGHT",
+    "note": "Yamamoto cleaved and burned the Tres Bestias chimera Ayon with Ryujin Jakka"
+  },
+  {
+    "sourceSlug": "genryusai-shigekuni-yamamoto",
+    "targetSlug": "wonderweiss-margela",
+    "type": "FOUGHT",
+    "note": "Yamamoto obliterated Wonderweiss with bare-handed Sokotsu martial arts"
+  },
+  {
+    "sourceSlug": "soi-fon",
+    "targetSlug": "baraggan-louisenbairn",
+    "type": "FOUGHT",
+    "note": "Soi-Fon fired Jakuho Raikoben point-blank inside Hachi's barrier"
+  },
+  {
+    "sourceSlug": "hachigen-ushoda",
+    "targetSlug": "baraggan-louisenbairn",
+    "type": "FOUGHT",
+    "note": "Hachi teleported his decaying arm inside Baraggan, letting Respira consume the King"
+  },
+  {
+    "sourceSlug": "shunsui-kyoraku",
+    "targetSlug": "coyote-starrk",
+    "type": "FOUGHT",
+    "note": "Shunsui used Kageoni and Irooni to strike Starrk down from the shadows"
+  },
+  {
+    "sourceSlug": "love-aikawa",
+    "targetSlug": "coyote-starrk",
+    "type": "FOUGHT",
+    "note": "Love and Rose countered Starrk's Cero Metralleta with Visored masks"
+  },
+  {
+    "sourceSlug": "rojuro-otoribashi",
+    "targetSlug": "coyote-starrk",
+    "type": "FOUGHT",
+    "note": "Rose used Kinshara to bind and attack Coyote Starrk"
+  },
+  {
+    "sourceSlug": "toshiro-hitsugaya",
+    "targetSlug": "tier-harribel",
+    "type": "FOUGHT",
+    "note": "Hitsugaya froze Harribel with Hyoten Hyakkaso before Aizen intervened"
+  },
+  {
+    "sourceSlug": "lisa-yadomaru",
+    "targetSlug": "tier-harribel",
+    "type": "FOUGHT",
+    "note": "Lisa and Hiyori teamed with Hitsugaya against Harribel"
+  },
+  {
+    "sourceSlug": "hiyori-sarugaki",
+    "targetSlug": "tier-harribel",
+    "type": "FOUGHT",
+    "note": "Hiyori and Lisa teamed with Hitsugaya against Harribel"
+  },
+  {
+    "sourceSlug": "sajin-komamura",
+    "targetSlug": "kaname-tosen",
+    "type": "FOUGHT",
+    "note": "Komamura fought his former friend in his Grillar Grillo Hollow form"
+  },
+  {
+    "sourceSlug": "shuhei-hisagi",
+    "targetSlug": "kaname-tosen",
+    "type": "FOUGHT",
+    "note": "Hisagi struck Tosen from his blind spot to free him from his obsession"
+  },
+  {
+    "sourceSlug": "gin-ichimaru",
+    "targetSlug": "sosuke-aizen",
+    "type": "FOUGHT",
+    "note": "Gin poisoned Aizen with Kamishini no Yari's cellular decay poison"
+  },
+  {
+    "sourceSlug": "kisuke-urahara",
+    "targetSlug": "sosuke-aizen",
+    "type": "FOUGHT",
+    "note": "Urahara bound Aizen with high-level Kido and placed the final sealing seal"
+  },
+  {
+    "sourceSlug": "yoruichi-shihoin",
+    "targetSlug": "sosuke-aizen",
+    "type": "FOUGHT",
+    "note": "Yoruichi battered Chrysalis Aizen with Anti-Hierro armor and Shunko"
+  },
+  {
+    "sourceSlug": "isshin-kurosaki",
+    "targetSlug": "sosuke-aizen",
+    "type": "FOUGHT",
+    "note": "Isshin pushed Aizen to his evolutionary limit with Getsuga Tensho"
+  },
+  {
+    "sourceSlug": "byakuya-kuchiki",
+    "targetSlug": "shukuro-tsukishima",
+    "type": "FOUGHT",
+    "note": "Byakuya caught Tsukishima off-guard by dropping Senbonzakura petals from his hand"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "giriko-kutsuzawa",
+    "type": "FOUGHT",
+    "note": "Kenpachi bisected Giriko's giant form in a single casual strike"
+  },
+  {
+    "sourceSlug": "renji-abarai",
+    "targetSlug": "jackie-tristan",
+    "type": "FOUGHT",
+    "note": "Renji withstood Jackie's Dirty Boots strikes with brute physical toughness"
+  },
+  {
+    "sourceSlug": "ikkaku-madarame",
+    "targetSlug": "moe-shishigawara",
+    "type": "FOUGHT",
+    "note": "Ikkaku traded headbutts and punches against Moe's Jackpot Gauntlet"
+  },
+  {
+    "sourceSlug": "toshiro-hitsugaya",
+    "targetSlug": "yukio-hans-vorarlberna",
+    "type": "FOUGHT",
+    "note": "Hitsugaya froze Yukio's Invaders Must Die console and body"
+  },
+  {
+    "sourceSlug": "rukia-kuchiki",
+    "targetSlug": "riruka-dokugamine",
+    "type": "FOUGHT",
+    "note": "Rukia was trapped in Riruka's plush dollhouse before being freed"
+  },
+  {
+    "sourceSlug": "genryusai-shigekuni-yamamoto",
+    "targetSlug": "driscoll-berci",
+    "type": "FOUGHT",
+    "note": "Yamamoto incinerated Driscoll with raw reiatsu for stealing Sasakibe's Bankai"
+  },
+  {
+    "sourceSlug": "genryusai-shigekuni-yamamoto",
+    "targetSlug": "royd-lloyd",
+    "type": "FOUGHT",
+    "note": "Yamamoto unleashed all four directions of Bankai Zanka no Tachi against the Yhwach double"
+  },
+  {
+    "sourceSlug": "genryusai-shigekuni-yamamoto",
+    "targetSlug": "yhwach",
+    "type": "FOUGHT",
+    "note": "Yhwach stole Yamamoto's Bankai with a Medallion and bisected him"
+  },
+  {
+    "sourceSlug": "byakuya-kuchiki",
+    "targetSlug": "as-nodt",
+    "type": "FOUGHT",
+    "note": "As Nodt stole Senbonzakura and overwhelmed Byakuya with Tartarforas"
+  },
+  {
+    "sourceSlug": "rukia-kuchiki",
+    "targetSlug": "as-nodt",
+    "type": "FOUGHT",
+    "note": "Rukia activated Hakka no Togame to freeze As Nodt to absolute zero"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "retsu-unohana",
+    "type": "FOUGHT",
+    "note": "Unohana killed and healed Kenpachi thousands of times in Muken to unleash his true strength"
+  },
+  {
+    "sourceSlug": "kenpachi-zaraki",
+    "targetSlug": "gremmy-thoumeaux",
+    "type": "FOUGHT",
+    "note": "Kenpachi sliced Gremmy's meteor with Shikai Nozarashi, breaking Gremmy's imagination"
+  },
+  {
+    "sourceSlug": "renji-abarai",
+    "targetSlug": "mask-de-masculine",
+    "type": "FOUGHT",
+    "note": "Renji incinerated Mask and James with true Bankai Soo Zabimaru Zaga Teppo"
+  },
+  {
+    "sourceSlug": "kensei-muguruma",
+    "targetSlug": "mask-de-masculine",
+    "type": "FOUGHT",
+    "note": "Kensei used Tekken Tachikaze before Mask was powered up by cheers"
+  },
+  {
+    "sourceSlug": "rojuro-otoribashi",
+    "targetSlug": "mask-de-masculine",
+    "type": "FOUGHT",
+    "note": "Rose used Kinshara Butodan before Mask punctured his own eardrums"
+  },
+  {
+    "sourceSlug": "sajin-komamura",
+    "targetSlug": "bambietta-basterbine",
+    "type": "FOUGHT",
+    "note": "Komamura sacrificed his heart in Dangai Joe to reflect Bambietta's The Explode"
+  },
+  {
+    "sourceSlug": "mayuri-kurotsuchi",
+    "targetSlug": "pernida-parnkgjas",
+    "type": "FOUGHT",
+    "note": "Mayuri and Nemu used Konjiki Ashisogi Jizo Matafuku Fukuin Shotai against the Soul King's Left Arm"
+  },
+  {
+    "sourceSlug": "nemu-kurotsuchi",
+    "targetSlug": "pernida-parnkgjas",
+    "type": "FOUGHT",
+    "note": "Nemu sacrificed her 0.8% soul limit to disintegrate Pernida with Giju Reoho"
+  },
+  {
+    "sourceSlug": "shunsui-kyoraku",
+    "targetSlug": "lille-barro",
+    "type": "FOUGHT",
+    "note": "Shunsui unleashed Katen Kyokotsu Karamatsu Shinju against Lille's Jilliel form"
+  },
+  {
+    "sourceSlug": "nanao-ise",
+    "targetSlug": "lille-barro",
+    "type": "FOUGHT",
+    "note": "Nanao wielded Shinken Hakkyoken to reflect Lille's Trompete god light"
+  },
+  {
+    "sourceSlug": "kisuke-urahara",
+    "targetSlug": "askin-nakk-le-vaar",
+    "type": "FOUGHT",
+    "note": "Urahara activated Kannonbiraki Benihime Arata and guided Grimmjow's fatal sneak attack"
+  },
+  {
+    "sourceSlug": "yoruichi-shihoin",
+    "targetSlug": "askin-nakk-le-vaar",
+    "type": "FOUGHT",
+    "note": "Yoruichi entered Shunshin Raiju Senkei Raijin Senki against The Deathdealing"
+  },
+  {
+    "sourceSlug": "grimmjow-jaegerjaquez",
+    "targetSlug": "askin-nakk-le-vaar",
+    "type": "FOUGHT",
+    "note": "Grimmjow crushed Askin's heart through Urahara's restructured spatial path"
+  },
+  {
+    "sourceSlug": "oetsu-nimaiya",
+    "targetSlug": "lille-barro",
+    "type": "FOUGHT",
+    "note": "Nimaiya cut down Lille with the edge of Sayafushi"
+  },
+  {
+    "sourceSlug": "oetsu-nimaiya",
+    "targetSlug": "gerard-valkyrie",
+    "type": "FOUGHT",
+    "note": "Nimaiya pierced Gerard's neck with Sayafushi"
+  },
+  {
+    "sourceSlug": "oetsu-nimaiya",
+    "targetSlug": "pernida-parnkgjas",
+    "type": "FOUGHT",
+    "note": "Nimaiya sliced Pernida with Sayafushi"
+  },
+  {
+    "sourceSlug": "oetsu-nimaiya",
+    "targetSlug": "askin-nakk-le-vaar",
+    "type": "FOUGHT",
+    "note": "Nimaiya bled out Askin's Lethal Dose with Sayafushi"
+  },
+  {
+    "sourceSlug": "jugram-haschwalth",
+    "targetSlug": "bazz-b",
+    "type": "FOUGHT",
+    "note": "Haschwalth used The Balance to execute his childhood friend Bazz-B"
+  },
+  {
+    "sourceSlug": "uryu-ishida",
+    "targetSlug": "jugram-haschwalth",
+    "type": "FOUGHT",
+    "note": "Uryu turned damage back with The Antithesis against Haschwalth's Freund Schild"
+  },
+  {
+    "sourceSlug": "sosuke-aizen",
+    "targetSlug": "yhwach",
+    "type": "FOUGHT",
+    "note": "Aizen distorted Yhwach's The Almighty with Kyoka Suigetsu illusions in the final battle"
   }
 ];
