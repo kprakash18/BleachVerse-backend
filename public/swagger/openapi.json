@@ -63,6 +63,10 @@
     {
       "name": "Appearances",
       "description": "Character debut tracking"
+    },
+    {
+      "name": "Relationships",
+      "description": "Graph relationship queries, mutations, and path traversals"
     }
   ],
   "paths": {
@@ -3010,6 +3014,507 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/relationships": {
+      "post": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Create a graph relationship between entities",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "sourceSlug",
+                  "targetSlug",
+                  "relationshipType"
+                ],
+                "properties": {
+                  "sourceSlug": {
+                    "type": "string",
+                    "example": "ichigo-kurosaki"
+                  },
+                  "targetSlug": {
+                    "type": "string",
+                    "example": "kisuke-urahara"
+                  },
+                  "relationshipType": {
+                    "type": "string",
+                    "enum": [
+                      "TRAINED_BY",
+                      "BETRAYED",
+                      "ALLIED_WITH",
+                      "FOUGHT",
+                      "MEMBER_OF",
+                      "RIVAL_OF",
+                      "SUBORDINATE_TO",
+                      "KILLED_BY",
+                      "CREATED_BY",
+                      "FAMILY_OF",
+                      "MARRIED_TO"
+                    ],
+                    "example": "TRAINED_BY"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "example": {
+                      "note": "Bankai training"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Relationship created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "type": "object"
+                        },
+                        "relationship": {
+                          "type": "string",
+                          "example": "TRAINED_BY"
+                        },
+                        "target": {
+                          "type": "object"
+                        },
+                        "metadata": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/characters/{slug}/relationships": {
+      "get": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Get character direct relationships",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SlugParam"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by relationship type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "TRAINED_BY",
+                "BETRAYED",
+                "ALLIED_WITH",
+                "FOUGHT",
+                "MEMBER_OF",
+                "RIVAL_OF",
+                "SUBORDINATE_TO",
+                "KILLED_BY",
+                "CREATED_BY",
+                "FAMILY_OF",
+                "MARRIED_TO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get character direct relationships",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "character": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "relationships": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "example": "TRAINED_BY"
+                              },
+                              "target": {
+                                "type": "object",
+                                "properties": {
+                                  "label": {
+                                    "type": "string",
+                                    "example": "Character"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "Kisuke Urahara"
+                                  },
+                                  "slug": {
+                                    "type": "string",
+                                    "example": "kisuke-urahara"
+                                  }
+                                }
+                              },
+                              "properties": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/characters/{slug}/trainers": {
+      "get": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Get character trainers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SlugParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get character trainers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "character": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "trainers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/characters/{slug}/betrayed": {
+      "get": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Get characters betrayed by this character",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SlugParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get characters betrayed by this character",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "character": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "betrayed": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/characters/{slug}/opponents": {
+      "get": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Get character opponents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SlugParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get character opponents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "character": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "opponents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/characters/{slug}/organizations": {
+      "get": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Get organizations this character belongs to",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SlugParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get organizations this character belongs to",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "character": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "organizations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/graph/path": {
+      "get": {
+        "tags": [
+          "Relationships"
+        ],
+        "summary": "Find shortest relationship path between two entities",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "ichigo-kurosaki"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "byakuya-kuchiki"
+            }
+          },
+          {
+            "name": "depth",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 2,
+              "minimum": 1,
+              "maximum": 3
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Path traversal result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "connected": {
+                          "type": "boolean"
+                        },
+                        "from": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
+                        },
+                        "length": {
+                          "type": "integer"
+                        },
+                        "nodes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "relationships": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }

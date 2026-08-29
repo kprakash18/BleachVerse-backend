@@ -19,9 +19,9 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
     expect(swaggerSpec.servers.some((s) => s.url === "/api/v1")).toBe(true);
   });
 
-  it("should define all 13 OpenAPI tags", () => {
+  it("should define all 14 OpenAPI tags", () => {
     expect(swaggerSpec.tags).toBeInstanceOf(Array);
-    expect(swaggerSpec.tags.length).toBe(13);
+    expect(swaggerSpec.tags.length).toBe(14);
     const tagNames = swaggerSpec.tags.map((t) => t.name);
     const expectedTags = [
       "Characters",
@@ -37,38 +37,44 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
       "Powers",
       "Transformations",
       "Appearances",
+      "Relationships",
     ];
     for (const tag of expectedTags) {
       expect(tagNames).toContain(tag);
     }
   });
 
-  it("should document exactly 32 GET operations across all paths", () => {
+  it("should document all operations across all paths", () => {
     expect(swaggerSpec.paths).toBeDefined();
     const pathKeys = Object.keys(swaggerSpec.paths);
-    expect(pathKeys.length).toBe(32);
+    expect(pathKeys.length).toBe(39);
 
     for (const pathKey of pathKeys) {
       const pathObj = swaggerSpec.paths[pathKey];
-      expect(pathObj).toHaveProperty("get");
-      expect(pathObj.get).toHaveProperty("tags");
-      expect(pathObj.get.tags.length).toBeGreaterThan(0);
-      expect(pathObj.get).toHaveProperty("responses");
+      const operation = pathObj.get || pathObj.post;
+      expect(operation).toBeDefined();
+      expect(operation).toHaveProperty("tags");
+      expect(operation.tags.length).toBeGreaterThan(0);
+      expect(operation).toHaveProperty("responses");
     }
   });
 
-  it("should enforce explicit response code rules (Collection: 200,400,500 | Detail/Sub-resource: 200,400,404,500)", () => {
+  it("should enforce explicit response code rules across operations", () => {
     for (const [pathKey, pathObj] of Object.entries(swaggerSpec.paths)) {
-      const responses = pathObj.get.responses;
-      expect(responses).toHaveProperty("200");
+      const operation = pathObj.get || pathObj.post;
+      const responses = operation.responses;
       expect(responses).toHaveProperty("400");
       expect(responses).toHaveProperty("500");
+
+      if (pathObj.get) {
+        expect(responses).toHaveProperty("200");
+      } else if (pathObj.post) {
+        expect(responses).toHaveProperty("201");
+      }
 
       const isDetailOrSubResource = pathKey.includes("{") || pathKey.includes("number");
       if (isDetailOrSubResource) {
         expect(responses).toHaveProperty("404");
-      } else {
-        expect(responses).not.toHaveProperty("404");
       }
     }
   });

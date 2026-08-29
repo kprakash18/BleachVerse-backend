@@ -60,9 +60,9 @@ describe("OpenAPI 3.0.3 Runtime Contract Verification (32/32 Endpoints)", () => 
     { path: "/api/v1/appearances", type: "collection" },
   ];
 
-  it("should have 32 paths documented in master OpenAPI specification", () => {
+  it("should have 39 paths documented in master OpenAPI specification", () => {
     const specPaths = Object.keys(swaggerSpec.paths);
-    expect(specPaths.length).toBe(32);
+    expect(specPaths.length).toBe(39);
   });
 
   // Test dynamic fetching of UUIDs for ID-based detail routes (quotes, powers, transformations, appearances)

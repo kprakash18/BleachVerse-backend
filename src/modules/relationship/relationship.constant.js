@@ -1,0 +1,19 @@
+export const RELATIONSHIP_TYPES = [
+  "TRAINED_BY",
+  "BETRAYED",
+  "ALLIED_WITH",
+  "FOUGHT",
+  "MEMBER_OF",
+  "RIVAL_OF",
+  "SUBORDINATE_TO",
+  "KILLED_BY",
+  "CREATED_BY",
+  "FAMILY_OF",
+  "MARRIED_TO",
+];
+
+export const TRAVERSAL_LIMITS = {
+  MIN_DEPTH: 1,
+  MAX_DEPTH: 3,
+  DEFAULT_DEPTH: 2,
+};
