@@ -1,36 +1,56 @@
 import prisma from "../../database/prisma.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
+import { normalizeSlug } from "../../common/utils/slug.js";
 import * as relationshipRepo from "./relationship.repository.js";
 
 const ensureCharacterExists = async (slug) => {
+  const normalizedSlug = normalizeSlug(slug);
   const character = await prisma.character.findUnique({
-    where: { slug },
+    where: { slug: normalizedSlug },
     select: { slug: true, name: true },
   });
+
   if (!character) {
-    throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, `Character with slug '${slug}' not found`);
+    throw new ApiError(
+      404,
+      errorCodes.RESOURCE_NOT_FOUND,
+      "Character not found",
+    );
   }
+
   return character;
 };
 
 const ensureTargetExists = async (slug, relationshipType) => {
+  const normalizedSlug = normalizeSlug(slug);
   if (relationshipType === "MEMBER_OF") {
-    const org = await prisma.organization.findUnique({
-      where: { slug },
+    const organization = await prisma.organization.findUnique({
+      where: { slug: normalizedSlug },
       select: { slug: true, name: true },
     });
-    if (!org) {
-      throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, `Organization with slug '${slug}' not found`);
+
+    if (!organization) {
+      throw new ApiError(
+        404,
+        errorCodes.RESOURCE_NOT_FOUND,
+        "Organization not found",
+      );
     }
-    return org;
+
+    return organization;
   }
-  return ensureCharacterExists(slug);
+
+  return ensureCharacterExists(normalizedSlug);
 };
 
 const getTraversal = async (slug, key, fetcher) => {
   const character = await ensureCharacterExists(slug);
-  return { character: character.name, slug: character.slug, [key]: await fetcher(slug) };
+  return {
+    character: character.name,
+    slug: character.slug,
+    [key]: await fetcher(character.slug),
+  };
 };
 
 export const createRelationship = async ({ sourceSlug, targetSlug, relationshipType, metadata }) => {
@@ -38,7 +58,13 @@ export const createRelationship = async ({ sourceSlug, targetSlug, relationshipT
     ensureCharacterExists(sourceSlug),
     ensureTargetExists(targetSlug, relationshipType),
   ]);
-  return relationshipRepo.createRelationship(source.slug, target.slug, relationshipType, metadata);
+
+  return relationshipRepo.createRelationship(
+    source.slug,
+    target.slug,
+    relationshipType,
+    metadata,
+  );
 };
 
 export const getCharacterRelationships = (slug, type) =>
@@ -57,10 +83,28 @@ export const getCharacterOrganizations = (slug) =>
   getTraversal(slug, "organizations", relationshipRepo.getCharacterOrganizations);
 
 export const getShortestPath = async (fromSlug, toSlug, depth = 2) => {
-  await Promise.all([ensureCharacterExists(fromSlug), ensureTargetExists(toSlug, "ALLIED_WITH")]);
-  const path = await relationshipRepo.findShortestPath(fromSlug, toSlug, depth);
+  const [from, to] = await Promise.all([
+    ensureCharacterExists(fromSlug),
+    ensureTargetExists(toSlug, "ALLIED_WITH"),
+  ]);
+
+  const path = await relationshipRepo.findShortestPath(from.slug, to.slug, depth);
   if (!path) {
-    return { connected: false, from: fromSlug, to: toSlug, maxDepthSearched: depth, path: null };
+    return {
+      connected: false,
+      from: from.slug,
+      to: to.slug,
+      maxDepthSearched: depth,
+      path: null,
+    };
   }
-  return { connected: true, from: fromSlug, to: toSlug, length: path.length, nodes: path.nodes, relationships: path.relationships };
+
+  return {
+    connected: true,
+    from: from.slug,
+    to: to.slug,
+    length: path.length,
+    nodes: path.nodes,
+    relationships: path.relationships,
+  };
 };
