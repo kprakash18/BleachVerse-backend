@@ -7,7 +7,9 @@
     "test": "vitest run",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "docs:build": "node scripts/build-swagger-docs.js"
+    "docs:build": "node scripts/build-swagger-docs.js",
+    "graph:init": "node scripts/init-neo4j-schema.js",
+    "graph:sync": "node scripts/sync-neo4j.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

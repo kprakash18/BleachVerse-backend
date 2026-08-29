@@ -20,7 +20,7 @@ export const verifyNeo4jConnection = async () => {
 export const runCypher = async (query, params = {}) => {
   const driver = getNeo4jDriver();
   if (!driver) throw new Error("Neo4j driver is not configured.");
-  const session = driver.session({ database: process.env.NEO4J_DATABASE || "neo4j" });
+  const session = driver.session(process.env.NEO4J_DATABASE ? { database: process.env.NEO4J_DATABASE } : {});
   try {
     return await session.run(query, params);
   } finally {
