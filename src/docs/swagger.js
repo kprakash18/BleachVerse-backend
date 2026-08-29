@@ -11,6 +11,7 @@ import { eventPaths, eventSchemas } from "../modules/event/event.swagger.js";
 import { powerPaths, powerSchemas } from "../modules/power/power.swagger.js";
 import { transformationPaths, transformationSchemas } from "../modules/transformation/transformation.swagger.js";
 import { appearancePaths, appearanceSchemas } from "../modules/appearance/appearance.swagger.js";
+import { relationshipPaths } from "../modules/relationship/relationship.swagger.js";
 
 const commonParameters = {
   PageParam: {
@@ -185,6 +186,7 @@ const swaggerSpec = {
     { name: "Powers", description: "Abilities and techniques" },
     { name: "Transformations", description: "Forms and Bankai releases" },
     { name: "Appearances", description: "Character debut tracking" },
+    { name: "Relationships", description: "Graph relationship queries, mutations, and path traversals" },
   ],
   paths: {
     ...characterPaths,
@@ -200,6 +202,7 @@ const swaggerSpec = {
     ...powerPaths,
     ...transformationPaths,
     ...appearancePaths,
+    ...relationshipPaths,
   },
   components: {
     parameters: commonParameters,
