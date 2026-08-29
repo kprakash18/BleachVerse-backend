@@ -2,6 +2,7 @@ import prisma from "../../database/prisma.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
 import { normalizeSlug } from "../../common/utils/slug.js";
+import { calculatePaginationParams, buildPaginatedResponse } from "../../common/utils/pagination.js";
 import * as relationshipRepo from "./relationship.repository.js";
 
 const ensureCharacterExists = async (slug) => {
@@ -106,5 +107,72 @@ export const getShortestPath = async (fromSlug, toSlug, depth = 2) => {
     length: path.length,
     nodes: path.nodes,
     relationships: path.relationships,
+  };
+};
+
+// Community Submissions
+export const submitRelationship = async ({ sourceSlug, targetSlug, relationshipType, note, submittedBy }) => {
+  const [source, target] = await Promise.all([
+    ensureCharacterExists(sourceSlug),
+    ensureTargetExists(targetSlug, relationshipType),
+  ]);
+
+  return relationshipRepo.createSubmission({
+    sourceSlug: source.slug,
+    targetSlug: target.slug,
+    relationshipType,
+    note: note || null,
+    submittedBy: submittedBy || "Anonymous Fan",
+    status: "PENDING",
+  });
+};
+
+export const getSubmissions = async (query) => {
+  const { page, limit, skip } = calculatePaginationParams(query);
+  const where = query.status ? { status: query.status } : {};
+  const orderBy = { createdAt: "desc" };
+
+  const [submissions, totalItems] = await Promise.all([
+    relationshipRepo.findSubmissions({ where, skip, take: limit, orderBy }),
+    relationshipRepo.countSubmissions(where),
+  ]);
+
+  return buildPaginatedResponse({
+    data: submissions,
+    totalItems,
+    page,
+    limit,
+  });
+};
+
+export const reviewSubmission = async (id, { status, reviewerNotes }) => {
+  const submission = await relationshipRepo.findSubmissionById(id);
+  if (!submission) {
+    throw new ApiError(404, errorCodes.RESOURCE_NOT_FOUND, "Submission not found");
+  }
+
+  if (submission.status !== "PENDING") {
+    throw new ApiError(400, errorCodes.VALIDATION_ERROR, `Submission has already been ${submission.status.toLowerCase()}`);
+  }
+
+  let createdRelationship = null;
+  if (status === "APPROVED") {
+    createdRelationship = await createRelationship({
+      sourceSlug: submission.sourceSlug,
+      targetSlug: submission.targetSlug,
+      relationshipType: submission.relationshipType,
+      metadata: submission.note ? { note: submission.note } : {},
+    });
+  }
+
+  const updatedSubmission = await relationshipRepo.updateSubmission(id, {
+    status,
+    reviewerNotes: reviewerNotes || null,
+    reviewedAt: new Date(),
+  });
+
+  return {
+    submission: updatedSubmission,
+    graphRelationship: createdRelationship,
   };
 };

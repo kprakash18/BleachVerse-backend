@@ -311,6 +311,20 @@ Table EventParticipant {
   }
 }
 
+Table RelationshipSubmission {
+  id String [pk]
+  sourceSlug String [not null]
+  targetSlug String [not null]
+  relationshipType String [not null]
+  note String
+  status SubmissionStatus [not null, default: 'PENDING']
+  submittedBy String [default: 'Anonymous Fan']
+  reviewerNotes String
+  reviewedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Enum Sex {
   MALE
   FEMALE
@@ -453,6 +467,12 @@ Enum EventType {
   RESCUE
   INVASION
   OTHER
+}
+
+Enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 Ref: CharacterAlias.characterId > Character.id [delete: Cascade]

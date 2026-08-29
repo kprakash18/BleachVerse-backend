@@ -653,3 +653,32 @@ model EventParticipant {
   @@index([characterId])
   @@index([eventId])
 }
+
+// ---------------------------------------------------------------------------
+// Community Submissions & Moderation Queue
+// ---------------------------------------------------------------------------
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model RelationshipSubmission {
+  id               String           @id @default(uuid())
+  sourceSlug       String
+  targetSlug       String
+  relationshipType String
+  note             String?
+  status           SubmissionStatus @default(PENDING)
+  submittedBy      String?          @default("Anonymous Fan")
+  reviewerNotes    String?
+  reviewedAt       DateTime?
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([status])
+  @@index([sourceSlug])
+  @@index([targetSlug])
+}

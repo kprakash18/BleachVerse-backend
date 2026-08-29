@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
+import { requireAdmin } from "../../common/middleware/auth.js";
 import * as relationshipController from "./relationship.controller.js";
 import {
   createRelationshipSchema,
+  submitRelationshipSchema,
+  reviewSubmissionSchema,
+  getSubmissionsSchema,
   getRelationshipsSchema,
   getPathSchema,
   characterSlugSchema,
@@ -10,49 +14,71 @@ import {
 
 const router = Router();
 
-// Mutation
+// Community Submissions (Public) & Moderation Queue (Admin)
 router.post(
-  "/relationships",
-  validateRequest(createRelationshipSchema),
-  relationshipController.createRelationship
+  "/relationships/submissions",
+  validateRequest(submitRelationshipSchema),
+  relationshipController.submitRelationship,
 );
 
-// Graph Path Traversal
+router.get(
+  "/relationships/submissions",
+  requireAdmin,
+  validateRequest(getSubmissionsSchema),
+  relationshipController.getSubmissions,
+);
+
+router.patch(
+  "/relationships/submissions/:id/review",
+  requireAdmin,
+  validateRequest(reviewSubmissionSchema),
+  relationshipController.reviewSubmission,
+);
+
+// Admin Direct Graph Mutation
+router.post(
+  "/relationships",
+  requireAdmin,
+  validateRequest(createRelationshipSchema),
+  relationshipController.createRelationship,
+);
+
+// Graph Path Traversal (Public)
 router.get(
   "/graph/path",
   validateRequest(getPathSchema),
-  relationshipController.getShortestPath
+  relationshipController.getShortestPath,
 );
 
-// Character Direct Relationships & Specific Traversals
+// Character Direct Relationships & Specific Traversals (Public)
 router.get(
   "/characters/:slug/relationships",
   validateRequest(getRelationshipsSchema),
-  relationshipController.getCharacterRelationships
+  relationshipController.getCharacterRelationships,
 );
 
 router.get(
   "/characters/:slug/trainers",
   validateRequest(characterSlugSchema),
-  relationshipController.getCharacterTrainers
+  relationshipController.getCharacterTrainers,
 );
 
 router.get(
   "/characters/:slug/betrayed",
   validateRequest(characterSlugSchema),
-  relationshipController.getCharacterBetrayed
+  relationshipController.getCharacterBetrayed,
 );
 
 router.get(
   "/characters/:slug/opponents",
   validateRequest(characterSlugSchema),
-  relationshipController.getCharacterOpponents
+  relationshipController.getCharacterOpponents,
 );
 
 router.get(
   "/characters/:slug/organizations",
   validateRequest(characterSlugSchema),
-  relationshipController.getCharacterOrganizations
+  relationshipController.getCharacterOrganizations,
 );
 
 export default router;

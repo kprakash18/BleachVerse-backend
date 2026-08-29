@@ -43,3 +43,20 @@ export const getShortestPath = asyncHandler(async (req, res) => {
   const result = await relationshipService.getShortestPath(from, to, depth);
   return successResponse(res, result);
 });
+
+// Community Submissions & Moderation Queue
+export const submitRelationship = asyncHandler(async (req, res) => {
+  const result = await relationshipService.submitRelationship(req.validatedData.body);
+  return successResponse(res, result, 201);
+});
+
+export const getSubmissions = asyncHandler(async (req, res) => {
+  const result = await relationshipService.getSubmissions(req.validatedData.query);
+  return successResponse(res, result.data, 200, result.pagination);
+});
+
+export const reviewSubmission = asyncHandler(async (req, res) => {
+  const { id } = req.validatedData.params;
+  const result = await relationshipService.reviewSubmission(id, req.validatedData.body);
+  return successResponse(res, result);
+});
