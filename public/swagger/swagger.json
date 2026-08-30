@@ -3815,6 +3815,14 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "Admin API Key for privileged operations"
+      }
+    },
     "parameters": {
       "PageParam": {
         "name": "page",
@@ -3904,6 +3912,16 @@
       },
       "NotFoundError": {
         "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Unauthorized - Admin API Key missing or invalid",
         "content": {
           "application/json": {
             "schema": {
