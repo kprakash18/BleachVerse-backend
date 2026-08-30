@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { EmbeddingService } from "../../../src/services/embeddings/embedding.service.js";
 import { MockEmbeddingProvider } from "../../../src/services/embeddings/mock-embedding.provider.js";
 import { GeminiEmbeddingProvider } from "../../../src/services/embeddings/gemini-embedding.provider.js";
-import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constants.js";
+import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constant.js";
 
 describe("GeminiEmbeddingProvider", () => {
   it("should throw error if apiKey is missing", async () => {

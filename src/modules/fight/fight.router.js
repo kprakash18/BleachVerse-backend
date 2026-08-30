@@ -2,7 +2,7 @@ import { Router } from "express";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
 import { getFightsSchema, getFightBySlugSchema } from "./fight.validator.js";
 import * as fightController from "./fight.controller.js";
-import {expensiveApiRateLimiter} from "../../common/middleware/rateLimmiter.js"
+import {expensiveApiRateLimiter} from "../../common/middleware/rateLimiter.js"
 
 const router = Router();
 

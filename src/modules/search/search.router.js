@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { searchController } from "./search.controller.js";
-import { semanticSearchSchema } from "./search.validation.js";
-import { unifiedSearchSchema } from "./unified-search.validation.js";
+import { semanticSearchSchema } from "./search.validator.js";
+import { unifiedSearchSchema } from "./unified-search.validator.js";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
 import { semanticSearchRateLimiter } from "../../common/middleware/redisRateLimiter.js";
 

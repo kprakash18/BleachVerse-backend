@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { redisCircuitBreaker } from "../../../src/services/embeddings/redis-circuit-breaker.js";
+import { redisCircuitBreaker } from "../../../src/services/embeddings/redis-circuit-breaker.service.js";
 import { getRedisClient } from "../../../src/config/redis.js";
 
 describe("RedisCircuitBreaker", () => {

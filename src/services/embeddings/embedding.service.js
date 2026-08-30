@@ -1,6 +1,6 @@
 import { MockEmbeddingProvider } from "./mock-embedding.provider.js";
 import { GeminiEmbeddingProvider } from "./gemini-embedding.provider.js";
-import { MAX_TEXT_LENGTH } from "./embedding.constants.js";
+import { MAX_TEXT_LENGTH } from "./embedding.constant.js";
 
 export class EmbeddingService {
   /**

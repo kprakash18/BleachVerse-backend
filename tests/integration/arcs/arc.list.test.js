@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { request, app, expectPaginationContract } from "../../helpers/test-helpers.js";
-import { ARC_TYPES, ARC_SORT_FIELDS, SORT_ORDERS } from "../../../src/modules/arc/arc.constants.js";
+import { ARC_TYPES, ARC_SORT_FIELDS, SORT_ORDERS } from "../../../src/modules/arc/arc.constant.js";
 
 describe("Arcs Module — GET /api/v1/arcs (Collection)", () => {
   it("should return paginated list of arcs with defaults", async () => {

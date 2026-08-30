@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import characterRoutes from "../modules/character/character.routes.js";
-import arcRoutes from "../modules/arc/arc.routes.js";
+import characterRoutes from "../modules/character/character.router.js";
+import arcRoutes from "../modules/arc/arc.router.js";
 import episodeRoutes from "../modules/episode/episode.router.js";
 import fightRoutes from "../modules/fight/fight.router.js";
 import organizationRoutes from "../modules/organization/organization.router.js";
@@ -14,7 +14,7 @@ import powerRoutes from "../modules/power/power.router.js";
 import transformationRoutes from "../modules/transformation/transformation.router.js";
 import appearanceRoutes from "../modules/appearance/appearance.router.js";
 import relationshipRoutes from "../modules/relationship/relationship.router.js";
-import searchRoutes from "../modules/search/search.routes.js";
+import searchRoutes from "../modules/search/search.router.js";
 
 const router = Router();
 

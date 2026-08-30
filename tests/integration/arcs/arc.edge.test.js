@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { request, app, expectErrorContract } from "../../helpers/test-helpers.js";
-import { ARC_TYPES, ARC_SORT_FIELDS } from "../../../src/modules/arc/arc.constants.js";
+import { ARC_TYPES, ARC_SORT_FIELDS } from "../../../src/modules/arc/arc.constant.js";
 
 describe("Arcs Module — Edge & Validation Cases", () => {
   it("should return 400 VALIDATION_ERROR for invalid type enum value not present in ARC_TYPES", async () => {

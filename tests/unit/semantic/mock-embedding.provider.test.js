@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { MockEmbeddingProvider } from "../../../src/services/embeddings/mock-embedding.provider.js";
-import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constants.js";
+import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constant.js";
 
 describe("MockEmbeddingProvider", () => {
   const provider = new MockEmbeddingProvider();

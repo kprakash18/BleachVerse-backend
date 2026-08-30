@@ -1,4 +1,4 @@
-import { normalizeQuery } from "../semantic/query-normalizer.js";
+import { normalizeQuery } from "../semantic/query-normalizer.service.js";
 
 // Canonical relationship dictionary
 export const GRAPH_RELATIONSHIPS = {

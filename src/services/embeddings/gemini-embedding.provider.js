@@ -2,7 +2,7 @@ import {
   EMBEDDING_DIMENSIONS,
   GEMINI_EMBEDDING_MODEL,
   MAX_BATCH_SIZE,
-} from "./embedding.constants.js";
+} from "./embedding.constant.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
 

@@ -203,7 +203,7 @@ describe("Rate Limiting & Abuse Protection (Phase 3.5)", () => {
       const currentEnv = (process.env.NODE_ENV || "development").toLowerCase();
       expect(currentEnv).toBe("test");
       
-      // Look up defaults just like rateLimmiter.js does
+      // Look up defaults just like rateLimiter.js does
       const activeDefaults = RATE_LIMIT_DEFAULTS[currentEnv] || RATE_LIMIT_DEFAULTS.development;
       
       // It should fall back to development defaults (high limits)

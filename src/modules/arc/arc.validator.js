@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ARC_TYPES, ARC_SORT_FIELDS, SORT_ORDERS } from "./arc.constants.js";
+import { ARC_TYPES, ARC_SORT_FIELDS, SORT_ORDERS } from "./arc.constant.js";
 import { basePaginationSchema, slugSchema } from "../../common/utils/commonValidation.js";
 
 export const getArcsSchema = z.object({

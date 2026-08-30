@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { getRedisClient } from "../../config/redis.js";
-import { normalizeQuery } from "./query-normalizer.js";
+import { normalizeQuery } from "./query-normalizer.service.js";
 import { embeddingCacheService } from "./embedding-cache.service.js";
 
 const KEY_PREFIX = "semantic:embedding:v1:";

@@ -1,4 +1,4 @@
-import { EMBEDDING_DIMENSIONS } from "./embedding.constants.js";
+import { EMBEDDING_DIMENSIONS } from "./embedding.constant.js";
 
 /**
  * 32-bit FNV-1a hash function for strings

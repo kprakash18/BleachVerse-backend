@@ -4,7 +4,7 @@ import { getCharacters, getCharacterBySlug } from "./character.controller.js";
 import { validateRequest } from "../../common/middleware/validateRequest.js";
 import { getCharactersSchema, getCharacterBySlugSchema } from "./character.validator.js";
 
-import {expensiveApiRateLimiter} from '../../common/middleware/rateLimmiter.js'
+import {expensiveApiRateLimiter} from '../../common/middleware/rateLimiter.js'
 
 
 const router = Router();

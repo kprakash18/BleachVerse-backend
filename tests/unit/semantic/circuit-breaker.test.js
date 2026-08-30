@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { CircuitBreaker, CIRCUIT_STATE } from "../../../src/services/embeddings/circuit-breaker.js";
+import { CircuitBreaker, CIRCUIT_STATE } from "../../../src/services/embeddings/circuit-breaker.service.js";
 import ApiError from "../../../src/common/errors/ApiError.js";
 
 describe("CircuitBreaker", () => {

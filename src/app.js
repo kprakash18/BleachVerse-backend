@@ -6,7 +6,7 @@ import cors from 'cors' ;
 import swaggerSpec from "./docs/swagger.js";
 import apiRoutes from "./routes/index.js";
 import { errorHandler } from "./common/errors/errorHandler.js";
-import { globalRateLimiter } from "./common/middleware/rateLimmiter.js";
+import { globalRateLimiter } from "./common/middleware/rateLimiter.js";
 import { requestCorrelation } from "./common/middleware/requestCorrelation.js";
 import { ApiError } from "./common/errors/ApiError.js";
 import errorCodes from "./common/errors/errorCodes.js";

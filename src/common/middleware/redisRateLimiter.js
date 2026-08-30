@@ -1,5 +1,5 @@
 import { getRedisClient } from "../../config/redis.js";
-import { expensiveApiRateLimiter } from "./rateLimmiter.js";
+import { expensiveApiRateLimiter } from "./rateLimiter.js";
 import ApiError from "../errors/ApiError.js";
 import errorCodes from "../errors/errorCodes.js";
 

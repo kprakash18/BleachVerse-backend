@@ -1,7 +1,7 @@
 import { embeddingService } from "../embeddings/embedding.service.js";
-import { redisCircuitBreaker } from "../embeddings/redis-circuit-breaker.js";
+import { redisCircuitBreaker } from "../embeddings/redis-circuit-breaker.service.js";
 import { redisEmbeddingCacheService } from "./redis-embedding-cache.service.js";
-import { normalizeQuery } from "./query-normalizer.js";
+import { normalizeQuery } from "./query-normalizer.service.js";
 import { semanticDocumentRepository } from "../../repositories/semantic-document.repository.js";
 import { semanticHydrationService } from "./semantic-hydration.service.js";
 

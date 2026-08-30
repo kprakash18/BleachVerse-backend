@@ -1,5 +1,5 @@
 import { getRedisClient } from "../../config/redis.js";
-import { embeddingCircuitBreaker } from "./circuit-breaker.js";
+import { embeddingCircuitBreaker } from "./circuit-breaker.service.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
 

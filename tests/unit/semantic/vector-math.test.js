@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import prisma from "../../../src/database/prisma.js";
-import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constants.js";
+import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constant.js";
 
 // Helper to create a 768-dimensional unit vector
 const createVector = (nonZeroIndex, value = 1.0) => {

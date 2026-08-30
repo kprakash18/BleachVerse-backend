@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { request, app, expectErrorContract } from "../../helpers/test-helpers.js";
 import { embeddingCacheService } from "../../../src/services/semantic/embedding-cache.service.js";
 import { redisEmbeddingCacheService } from "../../../src/services/semantic/redis-embedding-cache.service.js";
-import { embeddingCircuitBreaker } from "../../../src/services/embeddings/circuit-breaker.js";
-import { redisCircuitBreaker } from "../../../src/services/embeddings/redis-circuit-breaker.js";
+import { embeddingCircuitBreaker } from "../../../src/services/embeddings/circuit-breaker.service.js";
+import { redisCircuitBreaker } from "../../../src/services/embeddings/redis-circuit-breaker.service.js";
 
 describe("Unified Search API — GET /api/v1/search (Hybrid Engine)", () => {
   beforeEach(async () => {

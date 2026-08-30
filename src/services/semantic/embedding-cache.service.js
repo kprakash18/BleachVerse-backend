@@ -1,4 +1,4 @@
-import { normalizeQuery } from "./query-normalizer.js";
+import { normalizeQuery } from "./query-normalizer.service.js";
 
 const DEFAULT_MAX_SIZE = 500;
 const DEFAULT_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours

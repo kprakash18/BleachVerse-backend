@@ -5,7 +5,7 @@ import {
   getOrganizationBySlugSchema,
 } from "./organization.validator.js";
 import * as organizationController from "./organization.controller.js";
-import {expensiveApiRateLimiter} from "../../common/middleware/rateLimmiter.js"
+import {expensiveApiRateLimiter} from "../../common/middleware/rateLimiter.js"
 
 const router = Router();
 
