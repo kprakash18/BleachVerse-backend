@@ -14,6 +14,7 @@ import powerRoutes from "../modules/power/power.router.js";
 import transformationRoutes from "../modules/transformation/transformation.router.js";
 import appearanceRoutes from "../modules/appearance/appearance.router.js";
 import relationshipRoutes from "../modules/relationship/relationship.router.js";
+import searchRoutes from "../modules/search/search.routes.js";
 
 const router = Router();
 
@@ -31,5 +32,6 @@ router.use("/", transformationRoutes);
 router.use("/", appearanceRoutes);
 router.use("/", relationshipRoutes);
 router.use("/arcs", arcRoutes);
+router.use("/search", searchRoutes);
 
 export default router;
