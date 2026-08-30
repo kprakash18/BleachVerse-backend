@@ -682,3 +682,21 @@ model RelationshipSubmission {
   @@index([sourceSlug])
   @@index([targetSlug])
 }
+
+// ---------------------------------------------------------------------------
+// Semantic Documents (pgvector Store)
+// ---------------------------------------------------------------------------
+
+model SemanticDocument {
+  id         String   @id @default(uuid())
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  content    String   @db.Text
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([entityType, entityId])
+  @@index([entityType])
+  @@map("semantic_documents")
+}
