@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { redisCircuitBreaker } from "../../../src/services/embeddings/redis-circuit-breaker.js";
-import { redisService } from "../../../src/services/cache/redis.service.js";
+import { getRedisClient } from "../../../src/config/redis.js";
 
 describe("RedisCircuitBreaker", () => {
   beforeEach(async () => {
@@ -27,7 +27,8 @@ describe("RedisCircuitBreaker", () => {
     const isOpen = await redisCircuitBreaker.isCircuitOpen();
     expect(isOpen).toBe(true);
 
-    const redisVal = await redisService.get("semantic:circuit:gemini");
+    const raw = await getRedisClient().get("semantic:circuit:gemini");
+    const redisVal = raw ? JSON.parse(raw) : null;
     expect(redisVal).toBe("OPEN");
   });
 

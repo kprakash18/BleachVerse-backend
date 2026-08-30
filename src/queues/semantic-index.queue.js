@@ -71,10 +71,16 @@ export async function queueDeleteEntity(entityType, entityId) {
   if (!entityType || !entityId) return null;
   try {
     const queue = getSemanticIndexQueue();
-    return await queue.add("delete-entity", {
-      entityType: entityType.toUpperCase(),
-      entityId,
-    });
+    return await queue.add(
+      "delete-entity",
+      {
+        entityType: entityType.toUpperCase(),
+        entityId,
+      },
+      {
+        jobId: `delete:${entityType.toUpperCase()}:${entityId}`,
+      }
+    );
   } catch (err) {
     console.warn(`[BullMQ] Failed to enqueue delete job for ${entityType} (${entityId}):`, err.message);
     return null;

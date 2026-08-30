@@ -4,13 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "vitest run",
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
-    "docs:build": "node scripts/build-swagger-docs.js",
-    "graph:init": "node scripts/init-neo4j-schema.js",
-    "graph:sync": "node scripts/sync-neo4j.js",
-    "semantic:index": "node scripts/index-semantic-data.js"
+    "dev":            "nodemon --env-file=.env src/server.js",
+    "start":          "node --env-file=.env.production src/server.js",
+    "test":           "vitest run",
+    "docs:build":     "node --env-file=.env scripts/build-swagger-docs.js",
+    "graph:init":     "node --env-file=.env scripts/init-neo4j-schema.js",
+    "graph:sync":     "node --env-file=.env scripts/sync-neo4j.js",
+    "semantic:index": "node --env-file=.env scripts/index-semantic-data.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

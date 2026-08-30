@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { redisEmbeddingCacheService } from "../../../src/services/semantic/redis-embedding-cache.service.js";
-import { redisService } from "../../../src/services/cache/redis.service.js";
 
 describe("RedisEmbeddingCacheService", () => {
   beforeEach(async () => {

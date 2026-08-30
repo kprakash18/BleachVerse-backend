@@ -1,4 +1,4 @@
-import { redisService } from "../cache/redis.service.js";
+import { getRedisClient } from "../../config/redis.js";
 import { embeddingCircuitBreaker } from "./circuit-breaker.js";
 import ApiError from "../../common/errors/ApiError.js";
 import errorCodes from "../../common/errors/errorCodes.js";
@@ -13,9 +13,13 @@ export class RedisCircuitBreaker {
    */
   async isCircuitOpen() {
     try {
-      const state = await redisService.get(CIRCUIT_KEY);
-      if (state === "OPEN") {
-        return true;
+      const client = getRedisClient();
+      const raw = await client.get(CIRCUIT_KEY);
+      if (raw) {
+        const state = JSON.parse(raw);
+        if (state === "OPEN") {
+          return true;
+        }
       }
     } catch {
       // If Redis is unreachable, fallback to local circuit breaker state
@@ -31,7 +35,8 @@ export class RedisCircuitBreaker {
    */
   async tripCircuit(cooldownSeconds = DEFAULT_COOLDOWN_SECONDS) {
     try {
-      await redisService.set(CIRCUIT_KEY, "OPEN", cooldownSeconds);
+      const client = getRedisClient();
+      await client.set(CIRCUIT_KEY, JSON.stringify("OPEN"), "EX", cooldownSeconds);
     } catch {
       // Local fallback
     }
@@ -44,7 +49,8 @@ export class RedisCircuitBreaker {
    */
   async resetCircuit() {
     try {
-      await redisService.del(CIRCUIT_KEY);
+      const client = getRedisClient();
+      await client.del(CIRCUIT_KEY);
     } catch {
       // Local fallback
     }

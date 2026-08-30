@@ -1,4 +1,3 @@
-import { EmbeddingProvider } from "./embedding-provider.interface.js";
 import {
   EMBEDDING_DIMENSIONS,
   GEMINI_EMBEDDING_MODEL,
@@ -24,7 +23,7 @@ function normalizeVector(values, targetDimensions = EMBEDDING_DIMENSIONS) {
   return values.map((val) => val / magnitude);
 }
 
-export class GeminiEmbeddingProvider extends EmbeddingProvider {
+export class GeminiEmbeddingProvider {
   /**
    * @param {Object} [options]
    * @param {string} [options.apiKey]
@@ -35,7 +34,6 @@ export class GeminiEmbeddingProvider extends EmbeddingProvider {
    * @param {Function} [options.fetchFn] Optional custom fetch for unit testing
    */
   constructor(options = {}) {
-    super();
     this.apiKey = options.apiKey || process.env.GEMINI_API_KEY;
     this.model = options.model || process.env.GEMINI_EMBEDDING_MODEL || GEMINI_EMBEDDING_MODEL;
     this.dimensions =

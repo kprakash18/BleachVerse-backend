@@ -1,4 +1,3 @@
-import { EmbeddingProvider } from "./embedding-provider.interface.js";
 import { EMBEDDING_DIMENSIONS } from "./embedding.constants.js";
 
 /**
@@ -25,34 +24,15 @@ function mulberry32(seed) {
   };
 }
 
-export class MockEmbeddingProvider extends EmbeddingProvider {
+export class MockEmbeddingProvider {
   /**
-   * Generates a deterministic, L2-normalized 1536-dimensional embedding vector based on input text.
+   * Generates a deterministic, L2-normalized 768-dimensional embedding vector based on input text.
    * @param {string} text
    * @returns {Promise<number[]>}
    */
   async generateEmbedding(text) {
-    if (typeof text !== "string" || text.trim().length === 0) {
-      throw new Error("Input text must be a non-empty string");
-    }
-
-    const seed = hashString(text.trim());
-    const rng = mulberry32(seed);
-
-    const rawVector = new Array(EMBEDDING_DIMENSIONS);
-    let sumSquares = 0;
-
-    for (let i = 0; i < EMBEDDING_DIMENSIONS; i++) {
-      // Map uniformly from [-1.0, 1.0]
-      const val = rng() * 2 - 1;
-      rawVector[i] = val;
-      sumSquares += val * val;
-    }
-
-    const magnitude = Math.sqrt(sumSquares);
-    const normalizedVector = rawVector.map((val) => val / magnitude);
-
-    return normalizedVector;
+    const [vector] = await this.generateEmbeddings([text]);
+    return vector;
   }
 
   /**
@@ -64,6 +44,27 @@ export class MockEmbeddingProvider extends EmbeddingProvider {
     if (!Array.isArray(texts)) {
       throw new Error("Input texts must be an array");
     }
-    return Promise.all(texts.map((text) => this.generateEmbedding(text)));
+    return Promise.all(
+      texts.map(async (text) => {
+        if (typeof text !== "string" || text.trim().length === 0) {
+          throw new Error("Input text must be a non-empty string");
+        }
+
+        const seed = hashString(text.trim());
+        const rng = mulberry32(seed);
+
+        const rawVector = new Array(EMBEDDING_DIMENSIONS);
+        let sumSquares = 0;
+
+        for (let i = 0; i < EMBEDDING_DIMENSIONS; i++) {
+          const val = rng() * 2 - 1;
+          rawVector[i] = val;
+          sumSquares += val * val;
+        }
+
+        const magnitude = Math.sqrt(sumSquares);
+        return rawVector.map((val) => val / magnitude);
+      })
+    );
   }
 }

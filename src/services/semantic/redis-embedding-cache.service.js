@@ -1,8 +1,7 @@
 import crypto from "crypto";
-import { redisService } from "../cache/redis.service.js";
+import { getRedisClient } from "../../config/redis.js";
 import { normalizeQuery } from "./query-normalizer.js";
 import { embeddingCacheService } from "./embedding-cache.service.js";
-import { GEMINI_EMBEDDING_MODEL, EMBEDDING_DIMENSIONS } from "../embeddings/embedding.constants.js";
 
 const KEY_PREFIX = "semantic:embedding:v1:";
 const DEFAULT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
@@ -30,12 +29,16 @@ export class RedisEmbeddingCacheService {
 
     // 1. Try Redis
     try {
+      const client = getRedisClient();
       const key = this.getCacheKey(normalized);
-      const cached = await redisService.get(key);
-      if (cached && Array.isArray(cached.embedding)) {
-        // Also populate local in-memory cache for fast hot-path retrieval
-        embeddingCacheService.set(normalized, cached.embedding);
-        return cached.embedding;
+      const raw = await client.get(key);
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (cached && Array.isArray(cached.embedding)) {
+          // Also populate local in-memory cache for fast hot-path retrieval
+          embeddingCacheService.set(normalized, cached.embedding);
+          return cached.embedding;
+        }
       }
     } catch {
       // Fallback to local memory
@@ -49,10 +52,9 @@ export class RedisEmbeddingCacheService {
    * Stores an embedding vector in Redis (and local in-memory cache) with a 24h TTL.
    * @param {string} query
    * @param {number[]} vector
-   * @param {string} [model]
    * @returns {Promise<void>}
    */
-  async set(query, vector, model = GEMINI_EMBEDDING_MODEL) {
+  async set(query, vector) {
     const normalized = normalizeQuery(query);
     if (!normalized || !Array.isArray(vector) || vector.length === 0) return;
 
@@ -61,15 +63,12 @@ export class RedisEmbeddingCacheService {
 
     // Store in distributed Redis
     try {
+      const client = getRedisClient();
       const key = this.getCacheKey(normalized);
-      await redisService.set(
+      await client.set(
         key,
-        {
-          model,
-          dimensions: vector.length || EMBEDDING_DIMENSIONS,
-          embedding: vector,
-          cachedAt: new Date().toISOString(),
-        },
+        JSON.stringify({ embedding: vector }),
+        "EX",
         DEFAULT_TTL_SECONDS
       );
     } catch {
@@ -91,8 +90,9 @@ export class RedisEmbeddingCacheService {
 
     // Delete from distributed Redis
     try {
+      const client = getRedisClient();
       const key = this.getCacheKey(normalized);
-      await redisService.del(key);
+      await client.del(key);
     } catch {
       // Non-blocking
     }

@@ -15,7 +15,7 @@ export class CircuitBreaker {
    */
   constructor(options = {}) {
     this.failureThreshold = options.failureThreshold ?? 2;
-    this.cooldownMs = options.cooldownMs ?? 30000;
+    this.cooldownMs = options.cooldownMs ?? 60000;
     this.state = CIRCUIT_STATE.CLOSED;
     this.consecutiveFailures = 0;
     this.lastStateChange = Date.now();

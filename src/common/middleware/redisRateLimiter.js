@@ -18,7 +18,7 @@ export const redisSemanticRateLimiter = (options = {}) => {
 
     try {
       const client = getRedisClient();
-      const ip = req.ip || req.headers["x-forwarded-for"] || "127.0.0.1";
+      const ip = req.ip || "127.0.0.1";
       const key = `rate-limit:semantic:${ip}`;
 
       const current = await client.incr(key);

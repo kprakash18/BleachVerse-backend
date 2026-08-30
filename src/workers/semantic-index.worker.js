@@ -140,7 +140,8 @@ export function startSemanticIndexWorker() {
         return { status: "deleted", entityType, entityId };
       }
 
-      throw new Error(`Unknown job name: ${job.name}`);
+      console.warn(`[BullMQ Worker] Unrecognized job name: ${job.name}, skipping`);
+      return { status: "skipped_unknown" };
     },
     {
       connection,

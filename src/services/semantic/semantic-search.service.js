@@ -29,9 +29,6 @@ export class SemanticSearchService {
       return { query, count: 0, threshold, cached: false, results: [] };
     }
 
-    const similarityThreshold = Number(threshold) || 0.5;
-    const queryLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
-
     // 1. Check distributed Redis embedding cache
     let queryVector = await redisEmbeddingCacheService.get(normalizedQuery);
     let isCached = queryVector !== null;
@@ -48,15 +45,15 @@ export class SemanticSearchService {
     const candidates = await semanticDocumentRepository.searchSimilar({
       vector: queryVector,
       entityType: type,
-      threshold: similarityThreshold,
-      limit: queryLimit,
+      threshold,
+      limit,
     });
 
     if (candidates.length === 0) {
       return {
         query,
         count: 0,
-        threshold: similarityThreshold,
+        threshold,
         cached: isCached,
         results: [],
       };
@@ -71,7 +68,7 @@ export class SemanticSearchService {
     return {
       query,
       count: results.length,
-      threshold: similarityThreshold,
+      threshold,
       cached: isCached,
       results,
     };
