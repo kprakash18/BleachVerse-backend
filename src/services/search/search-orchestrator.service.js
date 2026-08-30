@@ -16,102 +16,29 @@ export class SearchOrchestratorService {
    * @param {boolean} [params.hydrate=true]
    * @returns {Promise<Object>}
    */
-  async search({
-    query,
-    mode = "AUTO",
-    limit = 10,
-    threshold = 0.4,
-    hydrate = true,
-  }) {
-    // 1. Classify query intent
+  async search({ query, mode = "AUTO", limit = 10, threshold = 0.4, hydrate = true }) {
     const intent = queryClassifierService.classify(query);
+    const resolvedMode = mode && mode.toUpperCase() !== "AUTO" ? mode.toUpperCase() : intent.mode;
 
-    // 2. Resolve active mode
-    const resolvedMode =
-      mode && mode.toUpperCase() !== "AUTO" ? mode.toUpperCase() : intent.mode;
+    const runSemantic = ["SEMANTIC", "HYBRID"].includes(resolvedMode) || (resolvedMode === "AUTO" && intent.intents.semantic);
+    const runGraph = ["GRAPH", "HYBRID"].includes(resolvedMode) || (resolvedMode === "AUTO" && intent.intents.graph);
 
-    const runSemantic =
-      resolvedMode === "SEMANTIC" ||
-      resolvedMode === "HYBRID" ||
-      (resolvedMode === "AUTO" && intent.intents.semantic);
+    const [semanticRes, graphRes] = await Promise.allSettled([
+      runSemantic ? semanticSearchService.searchSemantic({ query: intent.semanticQuery || query, limit: limit * 2, threshold, hydrate: false }) : Promise.resolve(null),
+      runGraph ? graphSearchService.searchGraphCandidates({ graphConstraints: intent.graphConstraints, limit: limit * 2 }) : Promise.resolve(null),
+    ]);
 
-    const runGraph =
-      resolvedMode === "GRAPH" ||
-      resolvedMode === "HYBRID" ||
-      (resolvedMode === "AUTO" && intent.intents.graph);
+    const semanticCandidates = semanticRes.status === "fulfilled" ? semanticRes.value?.results || [] : [];
+    const graphCandidates = graphRes.status === "fulfilled" ? graphRes.value || [] : [];
 
-    // 3. Execute parallel retrieval via Promise.allSettled for failure resilience
-    const tasks = [];
-    let semanticTaskIndex = -1;
-    let graphTaskIndex = -1;
-
-    if (runSemantic) {
-      semanticTaskIndex = tasks.length;
-      tasks.push(
-        semanticSearchService.searchSemantic({
-          query: intent.semanticQuery || query,
-          limit: limit * 2, // Fetch slightly wider candidate pool before aggregation
-          threshold,
-          hydrate: false,
-        })
-      );
-    }
-
-    if (runGraph) {
-      graphTaskIndex = tasks.length;
-      tasks.push(
-        graphSearchService.searchGraphCandidates({
-          graphConstraints: intent.graphConstraints,
-          structuredFilters: intent.structuredFilters,
-          limit: limit * 2,
-        })
-      );
-    }
-
-    const settled = await Promise.allSettled(tasks);
-
-    let semanticCandidates = [];
-    if (semanticTaskIndex >= 0 && settled[semanticTaskIndex]?.status === "fulfilled") {
-      semanticCandidates = settled[semanticTaskIndex].value?.results || [];
-    }
-
-    let graphCandidates = [];
-    if (graphTaskIndex >= 0 && settled[graphTaskIndex]?.status === "fulfilled") {
-      graphCandidates = settled[graphTaskIndex].value || [];
-    }
-
-    // 4. Candidate Aggregation
-    const aggregated = candidateAggregatorService.aggregate({
-      semanticCandidates,
-      graphCandidates,
-      aggregationMode: intent.aggregationMode,
-    });
-
-    // 5. Ranking & Sorting
+    const aggregated = candidateAggregatorService.aggregate({ semanticCandidates, graphCandidates, aggregationMode: intent.aggregationMode });
     const ranked = searchRankingService.rank(aggregated, intent.aggregationMode, limit);
 
-    // 6. Entity Hydration
     let finalResults = ranked;
     if (hydrate && ranked.length > 0) {
-      const candidatesForHydration = ranked.map((r) => ({
-        entityId: r.entityId,
-        entityType: r.entityType,
-        similarity: r.scores.final,
-        metadata: r.metadata,
-      }));
-
-      const hydratedList = await semanticHydrationService.hydrateCandidates(
-        candidatesForHydration
-      );
-
-      finalResults = ranked.map((r, i) => ({
-        entityId: r.entityId,
-        entityType: r.entityType,
-        scores: r.scores,
-        matchedBy: r.matchedBy,
-        metadata: r.metadata,
-        entity: hydratedList[i]?.entity || null,
-      }));
+      const candidatesForHydration = ranked.map((r) => ({ entityId: r.entityId, entityType: r.entityType, similarity: r.scores.final, metadata: r.metadata }));
+      const hydratedList = await semanticHydrationService.hydrateCandidates(candidatesForHydration);
+      finalResults = ranked.map((r, i) => ({ ...r, entity: hydratedList[i]?.entity || null }));
     }
 
     return {
