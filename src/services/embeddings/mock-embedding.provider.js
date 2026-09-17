@@ -26,7 +26,7 @@ function mulberry32(seed) {
 
 export class MockEmbeddingProvider {
   /**
-   * Generates a deterministic, L2-normalized 768-dimensional embedding vector based on input text.
+   * Generates a deterministic, L2-normalized embedding vector based on input text.
    * @param {string} text
    * @returns {Promise<number[]>}
    */

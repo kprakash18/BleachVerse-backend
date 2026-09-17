@@ -4,53 +4,79 @@ export class CandidateAggregatorService {
    * @param {Object} params
    * @param {Array<Object>} [params.semanticCandidates]
    * @param {Array<Object>} [params.graphCandidates]
+   * @param {Array<Object>} [params.structuredCandidates]
    * @param {string} [params.aggregationMode="UNION"] INTERSECTION | UNION
    * @returns {Array<Object>} Aggregated candidate list
    */
-  aggregate({ semanticCandidates = [], graphCandidates = [], aggregationMode = "UNION" }) {
+  aggregate({
+    semanticCandidates = [],
+    graphCandidates = [],
+    structuredCandidates = [],
+    aggregationMode = "UNION",
+  }) {
     const candidateMap = new Map();
-    const semanticSet = new Set();
-    const graphSet = new Set();
+    const sourceSets = {
+      SEMANTIC: new Set(),
+      GRAPH: new Set(),
+      STRUCTURED: new Set(),
+    };
+
+    const ensureCandidate = (candidate, source, scorePatch = {}, metadataPatch = {}) => {
+      if (!candidate?.entityId || !candidate?.entityType) return;
+      const key = `${candidate.entityType}:${candidate.entityId}`;
+      sourceSets[source].add(key);
+
+      if (!candidateMap.has(key)) {
+        candidateMap.set(key, {
+          entityId: candidate.entityId,
+          entityType: candidate.entityType,
+          metadata: candidate.metadata || {},
+          scores: { semantic: null, graph: null, structured: null },
+          matchedBy: [],
+        });
+      }
+
+      const item = candidateMap.get(key);
+      item.metadata = {
+        ...item.metadata,
+        ...metadataPatch,
+      };
+      item.scores = {
+        ...item.scores,
+        ...scorePatch,
+      };
+      if (!item.matchedBy.includes(source)) item.matchedBy.push(source);
+    };
 
     for (const c of semanticCandidates) {
-      if (!c?.entityId || !c?.entityType) continue;
-      const key = `${c.entityType}:${c.entityId}`;
-      semanticSet.add(key);
-      candidateMap.set(key, {
-        entityId: c.entityId,
-        entityType: c.entityType,
-        metadata: c.metadata || {},
-        scores: { semantic: typeof c.similarity === "number" ? c.similarity : null, graph: null, structured: null },
-        matchedBy: ["SEMANTIC"],
-      });
+      ensureCandidate(
+        c,
+        "SEMANTIC",
+        { semantic: typeof c.similarity === "number" ? c.similarity : null },
+        c.metadata || {},
+      );
     }
 
     for (const c of graphCandidates) {
-      if (!c?.entityId || !c?.entityType) continue;
-      const key = `${c.entityType}:${c.entityId}`;
-      graphSet.add(key);
       const graphScore = typeof c.graphScore === "number" ? c.graphScore : 1.0;
+      ensureCandidate(c, "GRAPH", { graph: graphScore }, c.graphMetadata || {});
+    }
 
-      if (candidateMap.has(key)) {
-        const item = candidateMap.get(key);
-        item.scores.graph = graphScore;
-        if (!item.matchedBy.includes("GRAPH")) item.matchedBy.push("GRAPH");
-      } else {
-        candidateMap.set(key, {
-          entityId: c.entityId,
-          entityType: c.entityType,
-          metadata: c.metadata || {},
-          scores: { semantic: null, graph: graphScore, structured: null },
-          matchedBy: ["GRAPH"],
-        });
-      }
+    for (const c of structuredCandidates) {
+      const structuredScore = typeof c.structuredScore === "number" ? c.structuredScore : 1.0;
+      ensureCandidate(c, "STRUCTURED", { structured: structuredScore }, c.structuredMetadata || {});
     }
 
     if (aggregationMode === "INTERSECTION") {
-      if (semanticSet.size > 0 && graphSet.size > 0) {
-        return [...semanticSet].filter((k) => graphSet.has(k)).map((k) => candidateMap.get(k));
+      const activeSets = Object.values(sourceSets).filter((set) => set.size > 0);
+      if (activeSets.length > 1) {
+        return [...activeSets[0]]
+          .filter((key) => activeSets.every((set) => set.has(key)))
+          .map((key) => candidateMap.get(key));
       }
-      return Array.from(graphSet.size > 0 ? graphSet : semanticSet, (k) => candidateMap.get(k));
+      return activeSets.length === 1
+        ? [...activeSets[0]].map((key) => candidateMap.get(key))
+        : [];
     }
 
     return Array.from(candidateMap.values());

@@ -1,6 +1,7 @@
 import { queryClassifierService } from "./query-classifier.service.js";
 import { graphSearchService } from "./graph-search.service.js";
 import { semanticSearchService } from "../semantic/semantic-search.service.js";
+import { structuredSearchService } from "./structured-search.service.js";
 import { candidateAggregatorService } from "./candidate-aggregator.service.js";
 import { searchRankingService } from "./search-ranking.service.js";
 import { semanticHydrationService } from "../semantic/semantic-hydration.service.js";
@@ -22,16 +23,24 @@ export class SearchOrchestratorService {
 
     const runSemantic = ["SEMANTIC", "HYBRID"].includes(resolvedMode) || (resolvedMode === "AUTO" && intent.intents.semantic);
     const runGraph = ["GRAPH", "HYBRID"].includes(resolvedMode) || (resolvedMode === "AUTO" && intent.intents.graph);
+    const runStructured = intent.intents.structured;
 
-    const [semanticRes, graphRes] = await Promise.allSettled([
+    const [semanticRes, graphRes, structuredRes] = await Promise.allSettled([
       runSemantic ? semanticSearchService.searchSemantic({ query: intent.semanticQuery || query, limit: limit * 2, threshold, hydrate: false }) : Promise.resolve(null),
       runGraph ? graphSearchService.searchGraphCandidates({ graphConstraints: intent.graphConstraints, limit: limit * 2 }) : Promise.resolve(null),
+      runStructured ? structuredSearchService.searchStructuredCandidates({ structuredFilters: intent.structuredFilters, limit: limit * 2 }) : Promise.resolve(null),
     ]);
 
     const semanticCandidates = semanticRes.status === "fulfilled" ? semanticRes.value?.results || [] : [];
     const graphCandidates = graphRes.status === "fulfilled" ? graphRes.value || [] : [];
+    const structuredCandidates = structuredRes.status === "fulfilled" ? structuredRes.value || [] : [];
 
-    const aggregated = candidateAggregatorService.aggregate({ semanticCandidates, graphCandidates, aggregationMode: intent.aggregationMode });
+    const aggregated = candidateAggregatorService.aggregate({
+      semanticCandidates,
+      graphCandidates,
+      structuredCandidates,
+      aggregationMode: intent.aggregationMode,
+    });
     const ranked = searchRankingService.rank(aggregated, intent.aggregationMode, limit);
 
     let finalResults = ranked;
@@ -47,8 +56,17 @@ export class SearchOrchestratorService {
         mode: resolvedMode,
         semanticUsed: runSemantic,
         graphUsed: runGraph,
-        structuredUsed: intent.intents.structured,
+        structuredUsed: runStructured,
         aggregationMode: intent.aggregationMode,
+        sourcesUsed: [
+          runSemantic ? "PGVECTOR" : null,
+          runGraph ? "NEO4J" : null,
+          runStructured ? "POSTGRES" : null,
+        ].filter(Boolean),
+        detected: {
+          graphConstraints: intent.graphConstraints,
+          structuredFilters: intent.structuredFilters,
+        },
       },
       count: finalResults.length,
       results: finalResults,

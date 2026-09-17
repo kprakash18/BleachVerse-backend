@@ -41,4 +41,23 @@ describe("SearchRankingService", () => {
     expect(ranked[0].scores.final).toBe(0.75);
     expect(ranked[1].scores.final).toBe(0.25); // 1.0 * 0.25 = 0.25
   });
+
+  it("should include structured score when present", () => {
+    const candidates = [
+      {
+        entityId: "1",
+        entityType: "CHARACTER",
+        scores: { semantic: 0.7, graph: 1.0, structured: 1.0 },
+      },
+      {
+        entityId: "2",
+        entityType: "CHARACTER",
+        scores: { semantic: 0.8, graph: null, structured: null },
+      },
+    ];
+
+    const ranked = searchRankingService.rank(candidates, "UNION");
+    expect(ranked[0].entityId).toBe("1");
+    expect(ranked[0].scores.final).toBe(0.805);
+  });
 });

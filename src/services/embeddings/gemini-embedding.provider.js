@@ -45,7 +45,7 @@ export class GeminiEmbeddingProvider {
   }
 
   /**
-   * Generates a 768-dimensional embedding vector for a single text.
+   * Generates an embedding vector for a single text.
    * @param {string} text
    * @param {Object} [options]
    * @param {boolean} [options.isInteractive=false] Fast failure on 429 without long sleeps
@@ -60,7 +60,7 @@ export class GeminiEmbeddingProvider {
   }
 
   /**
-   * Generates 768-dimensional embedding vectors for an array of texts in batches.
+   * Generates embedding vectors for an array of texts in batches.
    * @param {string[]} texts
    * @param {Object} [options]
    * @param {boolean} [options.isInteractive=false] Fast failure on 429 without long sleeps

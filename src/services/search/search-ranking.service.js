@@ -13,10 +13,14 @@ export class SearchRankingService {
     const scored = candidates.map((c) => {
       const s = c.scores?.semantic ?? null;
       const g = c.scores?.graph ?? null;
+      const st = c.scores?.structured ?? null;
 
+      const hasStructured = st !== null;
       const finalScore = isIntersection
-        ? Math.min((s ?? 0.5) + (g ? 0.1 : 0), 1.0)
-        : (s ?? 0) * 0.75 + (g ?? 0) * 0.25;
+        ? Math.min((s ?? 0.5) + (g ? 0.1 : 0) + (st ? 0.1 : 0), 1.0)
+        : hasStructured
+          ? (s ?? 0) * 0.65 + (g ?? 0) * 0.2 + (st ?? 0) * 0.15
+          : (s ?? 0) * 0.75 + (g ?? 0) * 0.25;
 
       return {
         ...c,

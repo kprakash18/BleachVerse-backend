@@ -8,6 +8,7 @@ export class EmbeddingService {
    * @param {import("./embedding-provider.interface.js").EmbeddingProvider} [options.provider]
    */
   constructor(options = {}) {
+    this.fallbackProvider = new MockEmbeddingProvider();
     if (options.provider) {
       this.provider = options.provider;
     } else {
@@ -29,7 +30,7 @@ export class EmbeddingService {
   }
 
   /**
-   * Generates a 768-dimensional embedding vector for a single text.
+   * Generates an embedding vector for a single text.
    * @param {string} text
    * @param {Object} [options]
    * @returns {Promise<number[]>}
@@ -44,11 +45,21 @@ export class EmbeddingService {
         `Input text exceeds maximum allowed length of ${MAX_TEXT_LENGTH} characters`
       );
     }
-    return this.provider.generateEmbedding(sanitized, options);
+    try {
+      return await this.provider.generateEmbedding(sanitized, options);
+    } catch (err) {
+      if (this.provider !== this.fallbackProvider) {
+        console.warn(
+          `[EmbeddingService] Primary embedding provider failed (${err.message}). Falling back to Mock provider.`
+        );
+        return this.fallbackProvider.generateEmbedding(sanitized, options);
+      }
+      throw err;
+    }
   }
 
   /**
-   * Generates 768-dimensional embedding vectors for an array of texts.
+   * Generates embedding vectors for an array of texts.
    * @param {string[]} texts
    * @param {Object} [options]
    * @returns {Promise<number[][]>}
@@ -71,7 +82,17 @@ export class EmbeddingService {
       return sanitized;
     });
 
-    return this.provider.generateEmbeddings(sanitizedTexts, options);
+    try {
+      return await this.provider.generateEmbeddings(sanitizedTexts, options);
+    } catch (err) {
+      if (this.provider !== this.fallbackProvider) {
+        console.warn(
+          `[EmbeddingService] Primary embedding provider failed (${err.message}). Falling back to Mock provider.`
+        );
+        return this.fallbackProvider.generateEmbeddings(sanitizedTexts, options);
+      }
+      throw err;
+    }
   }
 }
 

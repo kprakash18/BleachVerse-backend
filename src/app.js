@@ -92,6 +92,13 @@ app.use('/api/v1', globalRateLimiter)
 
 app.use(express.json({ limit: "10kb" }));
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "bleachverse-api",
+  });
+});
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1", apiRoutes);
 

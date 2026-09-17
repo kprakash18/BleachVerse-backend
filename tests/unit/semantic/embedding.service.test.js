@@ -12,8 +12,8 @@ describe("GeminiEmbeddingProvider", () => {
     );
   });
 
-  it("should successfully call batchEmbedContents and pad/normalize to 1536 dimensions", async () => {
-    const mockValues = new Array(768).fill(0.1);
+  it("should successfully call batchEmbedContents and normalize configured-dimension vectors", async () => {
+    const mockValues = new Array(EMBEDDING_DIMENSIONS).fill(0.1);
 
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,

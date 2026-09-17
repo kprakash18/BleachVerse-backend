@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import prisma from "../../../src/database/prisma.js";
 import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constant.js";
 
-// Helper to create a 768-dimensional unit vector
+// Helper to create a unit vector matching the configured embedding dimension
 const createVector = (nonZeroIndex, value = 1.0) => {
   const vec = new Array(EMBEDDING_DIMENSIONS).fill(0);
   if (Array.isArray(nonZeroIndex)) {

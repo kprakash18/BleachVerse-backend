@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { semanticDocumentRepository } from "../../../src/repositories/semantic-document.repository.js";
+import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constant.js";
 
 describe("SemanticDocumentRepository", () => {
   it("should return empty array when query vector is empty or not an array", async () => {
@@ -11,8 +12,8 @@ describe("SemanticDocumentRepository", () => {
   });
 
   it("should execute searchSimilar and return structured candidate objects", async () => {
-    // Generate sample 768-dimensional unit vector
-    const vector = new Array(768).fill(0).map((_, i) => (i === 0 ? 1.0 : 0.0));
+    // Generate sample unit vector matching the configured embedding dimension
+    const vector = new Array(EMBEDDING_DIMENSIONS).fill(0).map((_, i) => (i === 0 ? 1.0 : 0.0));
 
     const candidates = await semanticDocumentRepository.searchSimilar({
       vector,
@@ -32,7 +33,7 @@ describe("SemanticDocumentRepository", () => {
   });
 
   it("should filter candidates by entityType", async () => {
-    const vector = new Array(768).fill(0).map((_, i) => (i === 0 ? 1.0 : 0.0));
+    const vector = new Array(EMBEDDING_DIMENSIONS).fill(0).map((_, i) => (i === 0 ? 1.0 : 0.0));
 
     const candidates = await semanticDocumentRepository.searchSimilar({
       vector,

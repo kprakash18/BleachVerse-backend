@@ -18,7 +18,7 @@ export class EmbeddingCacheService {
   }
 
   /**
-   * Retrieves a cached 768-dimensional embedding vector for a query.
+   * Retrieves a cached embedding vector for a query.
    * @param {string} query
    * @returns {number[] | null}
    */

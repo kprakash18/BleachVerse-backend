@@ -4,7 +4,7 @@ export class SemanticDocumentRepository {
   /**
    * Performs vector similarity search against the semantic_documents store.
    * @param {Object} params
-   * @param {number[]} params.vector 768-dimensional query vector
+   * @param {number[]} params.vector Query embedding vector matching the pgvector column dimension
    * @param {string} [params.entityType] Optional entity type filter
    * @param {number} [params.threshold=0.5] Minimum similarity score (0.0 to 1.0)
    * @param {number} [params.limit=10] Maximum results to return

@@ -1,19 +1,24 @@
 import app from "./app.js";
 import prisma from "./database/prisma.js";
 import { verifyNeo4jConnection, closeNeo4jDriver } from "./database/neo4j.js";
-import { startSemanticIndexWorker, closeSemanticIndexWorker } from "./workers/semantic-index.worker.js";
 
 const PORT = process.env.PORT || 5000;
+const requireNeo4j = process.env.REQUIRE_NEO4J === "true";
 
 try {
   await prisma.$connect();
   console.log("PostgreSQL connected successfully");
 
-  const neo4jInfo = await verifyNeo4jConnection();
-  console.log(`Neo4j connected successfully (${neo4jInfo.agent || "Neo4j"})`);
-
-  if (process.env.ENABLE_SEMANTIC_WORKER !== "false") {
-    startSemanticIndexWorker();
+  try {
+    const neo4jInfo = await verifyNeo4jConnection();
+    console.log(`Neo4j connected successfully (${neo4jInfo.agent || "Neo4j"})`);
+  } catch (error) {
+    if (requireNeo4j) {
+      throw error;
+    }
+    console.warn(
+      `Neo4j unavailable; graph endpoints will fail until it is reachable: ${error.message}`
+    );
   }
 
   const server = app.listen(PORT, () => {
@@ -24,7 +29,6 @@ try {
     console.log(`\nReceived ${signal}. Gracefully shutting down...`);
     server.close();
     await Promise.allSettled([
-      closeSemanticIndexWorker(),
       closeNeo4jDriver(),
       prisma.$disconnect(),
     ]);
@@ -35,7 +39,7 @@ try {
   process.on("SIGINT", () => shutdown("SIGINT"));
   process.on("SIGTERM", () => shutdown("SIGTERM"));
 } catch (error) {
-  console.error("Failed to start server due to database connectivity error:", error.message);
+  console.error("Failed to start server due to required service connectivity error:", error.message);
   await Promise.allSettled([closeNeo4jDriver(), prisma.$disconnect()]);
   process.exit(1);
 }

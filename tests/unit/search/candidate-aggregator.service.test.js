@@ -44,4 +44,30 @@ describe("CandidateAggregatorService", () => {
     expect(aggregated).toHaveLength(2);
     expect(aggregated.map((c) => c.entityId).sort()).toEqual(["1", "2"]);
   });
+
+  it("should intersect semantic, graph, and structured candidates when requested", () => {
+    const semantic = [
+      { entityId: "1", entityType: "CHARACTER", similarity: 0.85 },
+      { entityId: "2", entityType: "CHARACTER", similarity: 0.80 },
+    ];
+    const graph = [
+      { entityId: "2", entityType: "CHARACTER", graphScore: 1.0 },
+      { entityId: "3", entityType: "CHARACTER", graphScore: 1.0 },
+    ];
+    const structured = [
+      { entityId: "2", entityType: "CHARACTER", structuredScore: 1.0 },
+      { entityId: "4", entityType: "CHARACTER", structuredScore: 1.0 },
+    ];
+
+    const aggregated = candidateAggregatorService.aggregate({
+      semanticCandidates: semantic,
+      graphCandidates: graph,
+      structuredCandidates: structured,
+      aggregationMode: "INTERSECTION",
+    });
+
+    expect(aggregated).toHaveLength(1);
+    expect(aggregated[0].entityId).toBe("2");
+    expect(aggregated[0].matchedBy).toEqual(["SEMANTIC", "GRAPH", "STRUCTURED"]);
+  });
 });

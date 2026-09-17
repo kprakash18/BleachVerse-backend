@@ -18,7 +18,7 @@ export class RedisEmbeddingCacheService {
   }
 
   /**
-   * Retrieves a cached 768-dimensional embedding vector.
+   * Retrieves a cached embedding vector.
    * Checks Redis first; falls back to in-memory cache if Redis is cold/offline.
    * @param {string} query
    * @returns {Promise<number[] | null>}
