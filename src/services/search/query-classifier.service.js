@@ -1,6 +1,6 @@
 import { normalizeQuery } from "../semantic/query-normalizer.service.js";
+import { characterEntityResolverService } from "./character-entity-resolver.service.js";
 
-// Canonical relationship dictionary
 export const GRAPH_RELATIONSHIPS = {
   FOUGHT: "FOUGHT",
   TRAINED_BY: "TRAINED_BY",
@@ -8,44 +8,6 @@ export const GRAPH_RELATIONSHIPS = {
   WIELDS: "WIELDS",
 };
 
-// Domain entity alias dictionary mapping colloquial names to canonical slugs
-const KNOWN_TARGET_SLUGS = {
-  kenpachi: "kenpachi-zaraki",
-  "kenpachi zaraki": "kenpachi-zaraki",
-  zaraki: "kenpachi-zaraki",
-  aizen: "sosuke-aizen",
-  "sosuke aizen": "sosuke-aizen",
-  ichigo: "ichigo-kurosaki",
-  "ichigo kurosaki": "ichigo-kurosaki",
-  byakuya: "byakuya-kuchiki",
-  "byakuya kuchiki": "byakuya-kuchiki",
-  rukia: "rukia-kuchiki",
-  "rukia kuchiki": "rukia-kuchiki",
-  urahara: "kisuke-urahara",
-  "kisuke urahara": "kisuke-urahara",
-  yamamoto: "genryusai-shigekuni-yamamoto",
-  "genryusai yamamoto": "genryusai-shigekuni-yamamoto",
-  renji: "renji-abarai",
-  "renji abarai": "renji-abarai",
-  ulquiorra: "ulquiorra-cifer",
-  "ulquiorra cifer": "ulquiorra-cifer",
-  grimmjow: "grimmjow-jaegerjaquez",
-  "grimmjow jaegerjaquez": "grimmjow-jaegerjaquez",
-  yhwach: "yhwach",
-  shunsui: "shunsui-kyoraku",
-  "shunsui kyoraku": "shunsui-kyoraku",
-  toshiro: "toshiro-hitsugaya",
-  hitsugaya: "toshiro-hitsugaya",
-  "toshiro hitsugaya": "toshiro-hitsugaya",
-  gin: "gin-ichimaru",
-  "gin ichimaru": "gin-ichimaru",
-  mayuri: "mayuri-kurotsuchi",
-  "mayuri kurotsuchi": "mayuri-kurotsuchi",
-  unohana: "retsu-unohana",
-  "retsu unohana": "retsu-unohana",
-};
-
-// Structured domain filters allowlist
 const STRUCTURED_TERMS = {
   captain: { role: "CAPTAIN" },
   captains: { role: "CAPTAIN" },
@@ -65,13 +27,65 @@ const STRUCTURED_TERMS = {
   vizard: { group: "VISORED" },
 };
 
+const TARGET_END = "(?=\\s+(?:and|who|that|with|trained|mentored|student|disciple)\\b|$)";
+const RELATIONSHIP_PATTERNS = [
+  {
+    relationship: GRAPH_RELATIONSHIPS.FOUGHT,
+    direction: "BOTH",
+    patterns: [
+      new RegExp(`\\b(?:characters?\\s+)?(?:who\\s+)?(?:fought|battled|faced|defeated|versus|vs|against)\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+      new RegExp(`\\b(?:battles?|fights?)\\s+(?:with|against|involving)\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+      new RegExp(`\\b(?:characters?\\s+)?whose\\s+(?:battles?|fights?)\\s+(?:included|involved)\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+      new RegExp(`\\bopponents?\\s+of\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+    ],
+  },
+  {
+    relationship: GRAPH_RELATIONSHIPS.TRAINED_BY,
+    direction: "OUTGOING",
+    patterns: [
+      new RegExp(`\\b(?:characters?\\s+)?(?:trained|mentored|taught)\\s+by\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+      new RegExp(`\\b(?:students?|disciples?)\\s+of\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+      new RegExp(`\\b(?:characters?\\s+)?who\\s+learned\\s+from\\s+(?<target>[a-z][a-z\\s'-]*?)${TARGET_END}`, "gi"),
+    ],
+  },
+];
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const cleanSemanticText = (value) => value
+  .replace(/\b(who|whose|that|is|are|the|a|an|and|with|of|in|to|for|character|characters)\b/gi, " ")
+  .replace(/\s+/g, " ")
+  .trim();
+
+function findRelationshipMentions(query) {
+  const mentions = [];
+  const occupied = [];
+  for (const definition of RELATIONSHIP_PATTERNS) {
+    for (const pattern of definition.patterns) {
+      pattern.lastIndex = 0;
+      for (const match of query.matchAll(pattern)) {
+        const start = match.index;
+        const end = start + match[0].length;
+        if (occupied.some((range) => start < range.end && end > range.start)) continue;
+        occupied.push({ start, end });
+        mentions.push({
+          relationship: definition.relationship,
+          direction: definition.direction,
+          rawTarget: match.groups.target.trim(),
+          matchedText: match[0],
+          start,
+        });
+      }
+    }
+  }
+  return mentions.sort((a, b) => a.start - b.start);
+}
+
 export class QueryClassifierService {
-  /**
-   * Classifies a user query into structured intent, graph constraints, semantic residuals, and aggregation mode.
-   * @param {string} query
-   * @returns {Object} Intent Model
-   */
-  classify(query) {
+  constructor(options = {}) {
+    this.entityResolver = options.entityResolver || characterEntityResolverService;
+  }
+
+  async classify(query) {
     const normalized = normalizeQuery(query);
     if (!normalized) {
       return {
@@ -80,6 +94,7 @@ export class QueryClassifierService {
         intents: { semantic: true, graph: false, structured: false },
         entityTypes: ["CHARACTER"],
         graphConstraints: [],
+        unresolvedGraphMentions: [],
         structuredFilters: {},
         semanticQuery: "",
         aggregationMode: "UNION",
@@ -88,81 +103,72 @@ export class QueryClassifierService {
 
     let remainingText = normalized;
     const graphConstraints = [];
+    const unresolvedGraphMentions = [];
     const structuredFilters = {};
+    const matchedStructuredTermRegexes = [];
 
-    // 1. Detect Graph Constraints (FOUGHT, TRAINED_BY, MEMBER_OF, WIELDS)
-    // Patterns: "who fought X", "fought X", "battled X", "against X", "vs X"
-    const foughtMatch = remainingText.match(/(?:who\s+)?(?:fought|battled|faced|defeated|vs|versus|against)\s+([a-z\s'-]+?)(?:\s+(?:and|with|who|that)|$)/i);
-    if (foughtMatch) {
-      const rawTarget = foughtMatch[1].trim();
-      const targetSlug = KNOWN_TARGET_SLUGS[rawTarget] || rawTarget.replace(/\s+/g, "-");
+    for (const mention of findRelationshipMentions(normalized)) {
+      const resolution = await this.entityResolver.resolve(mention.rawTarget);
+      if (resolution.status !== "MATCH") {
+        unresolvedGraphMentions.push({
+          relationship: mention.relationship,
+          rawTarget: mention.rawTarget,
+          reason: resolution.status,
+          candidates: resolution.candidates || [],
+        });
+        continue;
+      }
       graphConstraints.push({
-        relationship: GRAPH_RELATIONSHIPS.FOUGHT,
-        targetSlug,
-        direction: "BOTH",
+        relationship: mention.relationship,
+        targetSlug: resolution.slug,
+        direction: mention.direction,
+        resolution: {
+          matchedAlias: resolution.matchedAlias,
+          matchType: resolution.matchType,
+          confidence: resolution.confidence,
+        },
       });
-      remainingText = remainingText.replace(foughtMatch[0], " ").trim();
+      remainingText = remainingText.replace(mention.matchedText, " ").trim();
     }
 
-    // Patterns: "trained by X", "student of X", "disciple of X"
-    const trainedMatch = remainingText.match(/(?:trained\s+by|student\s+of|disciple\s+of)\s+([a-z\s'-]+?)(?:\s+(?:and|with|who|that)|$)/i);
-    if (trainedMatch) {
-      const rawTarget = trainedMatch[1].trim();
-      const targetSlug = KNOWN_TARGET_SLUGS[rawTarget] || rawTarget.replace(/\s+/g, "-");
-      graphConstraints.push({
-        relationship: GRAPH_RELATIONSHIPS.TRAINED_BY,
-        targetSlug,
-        direction: "OUTGOING",
-      });
-      remainingText = remainingText.replace(trainedMatch[0], " ").trim();
-    }
-
-    // 2. Detect Structured Domain Terms
     for (const [term, filters] of Object.entries(STRUCTURED_TERMS)) {
-      const regex = new RegExp(`\\b${term}\\b`, "i");
+      const regex = new RegExp(`\\b${escapeRegex(term)}\\b`, "i");
       if (regex.test(remainingText)) {
         Object.assign(structuredFilters, filters);
-        // Do not completely strip the term from semantic query so vector context is retained
+        matchedStructuredTermRegexes.push(regex);
       }
     }
 
-    // 3. Clean up residual semantic query
-    const semanticQuery = remainingText
-      .replace(/\b(who|that|is|are|the|a|an|and|with|of|in|to|for|character|characters)\b/gi, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+    const semanticTextWithStructuredTerms = remainingText;
+    if (graphConstraints.length > 0) {
+      for (const regex of matchedStructuredTermRegexes) remainingText = remainingText.replace(regex, " ").trim();
+    }
 
-    // 4. Intent and Aggregation Mode Resolution
+    const semanticQuery = cleanSemanticText(remainingText);
     const hasGraph = graphConstraints.length > 0;
     const hasStructured = Object.keys(structuredFilters).length > 0;
     const hasSemantic = semanticQuery.length > 0;
+    const semanticQueryWithContext = hasGraph && hasStructured && hasSemantic
+      ? cleanSemanticText(semanticTextWithStructuredTerms)
+      : semanticQuery;
 
     let mode = "SEMANTIC";
-    if (hasGraph && hasSemantic) {
-      mode = "HYBRID";
-    } else if (hasGraph) {
-      mode = "GRAPH";
-    } else {
-      mode = "SEMANTIC";
-    }
+    if (hasGraph && (hasSemantic || hasStructured)) mode = "HYBRID";
+    else if (hasGraph) mode = "GRAPH";
+    else if (hasStructured && hasSemantic) mode = "HYBRID";
 
-    // If query has explicit graph constraint + semantic traits -> INTERSECTION
-    // If query is broad (e.g. "characters related to X") -> UNION
     const isBroadDiscovery = /(?:related\s+to|connected\s+to|all\s+about)/i.test(normalized);
     const aggregationMode = isBroadDiscovery || (!hasGraph && hasSemantic) ? "UNION" : "INTERSECTION";
 
     return {
       query,
       mode,
-      intents: {
-        semantic: hasSemantic,
-        graph: hasGraph,
-        structured: hasStructured,
-      },
+      intents: { semantic: hasSemantic, graph: hasGraph, structured: hasStructured },
       entityTypes: ["CHARACTER"],
       graphConstraints,
+      unresolvedGraphMentions,
       structuredFilters,
-      semanticQuery: hasSemantic ? semanticQuery : normalized,
+      semanticQuery: hasSemantic ? semanticQueryWithContext : normalized,
       aggregationMode,
     };
   }

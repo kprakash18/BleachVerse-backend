@@ -8,8 +8,12 @@ import { redisCircuitBreaker } from "../../../src/services/embeddings/redis-circ
 describe("Unified Search API — GET /api/v1/search (Hybrid Engine)", () => {
   beforeEach(async () => {
     embeddingCacheService.clear();
+    await redisEmbeddingCacheService.del("bankai getsuga tensho");
     await redisEmbeddingCacheService.del("substitute soul reaper");
     await redisEmbeddingCacheService.del("who fought kenpachi");
+    await redisEmbeddingCacheService.del("espada brutal");
+    await redisEmbeddingCacheService.del("espada who fought ichigo");
+    await redisEmbeddingCacheService.del("espada who fought ichigo and are brutal");
     await redisEmbeddingCacheService.del("espada who fought kenpachi and are brutal");
     embeddingCircuitBreaker.reset();
     await redisCircuitBreaker.resetCircuit();
@@ -30,42 +34,143 @@ describe("Unified Search API — GET /api/v1/search (Hybrid Engine)", () => {
     expectErrorContract(res, 400, "VALIDATION_ERROR");
   });
 
-  it("should execute unified search and return structured execution metadata", async () => {
-    const res = await request(app).get("/api/v1/search?q=substitute+soul+reaper&mode=AUTO&limit=5");
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("data");
-    expect(res.body.data).toHaveProperty("query", "substitute soul reaper");
-    expect(res.body.data).toHaveProperty("execution");
-    expect(res.body.data.execution).toHaveProperty("mode");
-    expect(res.body.data.execution).toHaveProperty("semanticUsed", true);
-    expect(res.body.data.execution).toHaveProperty("aggregationMode");
-    expect(res.body.data).toHaveProperty("count");
-    expect(Array.isArray(res.body.data.results)).toBe(true);
+  it("should route pure semantic queries only to pgvector", async () => {
+    const res = await request(app).get("/api/v1/search?q=bankai+getsuga+tensho&mode=AUTO&limit=5");
 
-    if (res.body.data.results.length > 0) {
-      const first = res.body.data.results[0];
-      expect(first).toHaveProperty("entityId");
-      expect(first).toHaveProperty("entityType");
-      expect(first).toHaveProperty("scores");
-      expect(first.scores).toHaveProperty("final");
-      expect(first).toHaveProperty("matchedBy");
-      expect(Array.isArray(first.matchedBy)).toBe(true);
+    expect(res.status).toBe(200);
+    expect(res.body.data.execution).toMatchObject({
+      mode: "SEMANTIC",
+      semanticUsed: true,
+      graphUsed: false,
+      structuredUsed: false,
+      aggregationMode: "UNION",
+      sourcesUsed: ["PGVECTOR"],
+    });
+    expect(res.body.data.count).toBeGreaterThan(0);
+
+    for (const item of res.body.data.results) {
+      expect(item.entityId).toEqual(expect.any(String));
+      expect(item.entityType).toEqual(expect.any(String));
+      expect(item.matchedBy).toEqual(["SEMANTIC"]);
+      expect(item.scores.semantic).toEqual(expect.any(Number));
+      expect(item.scores.graph).toBeNull();
+      expect(item.scores.structured).toBeNull();
+      expect(item.scores.final).toEqual(expect.any(Number));
     }
   });
 
-  it("should execute hybrid search query for relationship constraints", async () => {
-    const res = await request(app).get("/api/v1/search?q=espada+who+fought+kenpachi+and+are+brutal&mode=HYBRID&limit=5");
+  it("should report semantic plus structured domain filters as hybrid", async () => {
+    const res = await request(app).get("/api/v1/search?q=substitute+soul+reaper&mode=AUTO&limit=5");
+
     expect(res.status).toBe(200);
-    expect(res.body.data.execution.mode).toBe("HYBRID");
-    expect(res.body.data.execution.semanticUsed).toBe(true);
-    expect(res.body.data.execution.graphUsed).toBe(true);
+    expect(res.body.data.execution).toMatchObject({
+      mode: "HYBRID",
+      semanticUsed: true,
+      graphUsed: false,
+      structuredUsed: true,
+      aggregationMode: "UNION",
+      sourcesUsed: ["PGVECTOR", "POSTGRES"],
+    });
+    expect(res.body.data.execution.detected.structuredFilters).toEqual({ race: "SHINIGAMI" });
+    expect(res.body.data.count).toBeGreaterThan(0);
+
+    const matchedBy = res.body.data.results.flatMap((item) => item.matchedBy);
+    expect(matchedBy).toContain("SEMANTIC");
+    expect(matchedBy).toContain("STRUCTURED");
+  });
+
+  it("should route relationship-only queries only to Neo4j graph search", async () => {
+    const res = await request(app).get("/api/v1/search?q=who+fought+kenpachi&mode=AUTO&limit=5");
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.execution).toMatchObject({
+      mode: "GRAPH",
+      semanticUsed: false,
+      graphUsed: true,
+      structuredUsed: false,
+      aggregationMode: "INTERSECTION",
+      sourcesUsed: ["NEO4J"],
+    });
+    expect(res.body.data.count).toBeGreaterThan(0);
+    expect(res.body.data.results.map((item) => item.entity?.slug)).toContain("ichigo-kurosaki");
+
+    for (const item of res.body.data.results) {
+      expect(item.matchedBy).toEqual(["GRAPH"]);
+      expect(item.metadata).toMatchObject({
+        relationship: "FOUGHT",
+        targetSlug: "kenpachi-zaraki",
+        hops: 1,
+      });
+      expect(item.scores).toMatchObject({
+        semantic: null,
+        graph: 1,
+        structured: null,
+      });
+    }
+  });
+
+  it("should intersect graph and structured filters without adding semantic search when no semantic residue exists", async () => {
+    const res = await request(app).get("/api/v1/search?q=espada+who+fought+ichigo&mode=AUTO&limit=5");
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.execution).toMatchObject({
+      mode: "HYBRID",
+      semanticUsed: false,
+      graphUsed: true,
+      structuredUsed: true,
+      aggregationMode: "INTERSECTION",
+      sourcesUsed: ["NEO4J", "POSTGRES"],
+    });
+    expect(res.body.data.count).toBe(1);
+    expect(res.body.data.results).toHaveLength(1);
+
+    const [result] = res.body.data.results;
+    expect(result.entity?.slug).toBe("grimmjow-jaegerjaquez");
+    expect(result.matchedBy).toEqual(["GRAPH", "STRUCTURED"]);
+    expect(result.metadata).toMatchObject({
+      relationship: "FOUGHT",
+      targetSlug: "ichigo-kurosaki",
+      race: "Arrancar",
+      organization: "Espada",
+      slug: "grimmjow-jaegerjaquez",
+    });
+    expect(result.scores).toMatchObject({
+      semantic: null,
+      graph: 1,
+      structured: 1,
+    });
+  });
+
+  it("should require semantic, graph, and structured agreement for descriptive hybrid queries", async () => {
+    const res = await request(app).get("/api/v1/search?q=espada+who+fought+ichigo+and+are+brutal&mode=AUTO&limit=5");
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.execution).toMatchObject({
+      mode: "HYBRID",
+      semanticUsed: true,
+      graphUsed: true,
+      structuredUsed: true,
+      aggregationMode: "INTERSECTION",
+      sourcesUsed: ["PGVECTOR", "NEO4J", "POSTGRES"],
+    });
+    expect(res.body.data.count).toBe(1);
+
+    const [result] = res.body.data.results;
+    expect(result.entity?.slug).toBe("grimmjow-jaegerjaquez");
+    expect(result.matchedBy).toEqual(["SEMANTIC", "GRAPH", "STRUCTURED"]);
+    expect(result.scores.semantic).toEqual(expect.any(Number));
+    expect(result.scores.semantic).toBeGreaterThanOrEqual(0.4);
+    expect(result.scores.graph).toBe(1);
+    expect(result.scores.structured).toBe(1);
   });
 
   it("should respect hydrate=false and return unhydrated results", async () => {
     const res = await request(app).get("/api/v1/search?q=ichigo&hydrate=false&limit=2");
     expect(res.status).toBe(200);
-    if (res.body.data.results.length > 0) {
-      expect(res.body.data.results[0]).not.toHaveProperty("entity");
+    expect(res.body.data.count).toBeGreaterThan(0);
+
+    for (const item of res.body.data.results) {
+      expect(item).not.toHaveProperty("entity");
     }
   });
 });

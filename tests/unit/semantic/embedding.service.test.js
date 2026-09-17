@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { EmbeddingService } from "../../../src/services/embeddings/embedding.service.js";
 import { MockEmbeddingProvider } from "../../../src/services/embeddings/mock-embedding.provider.js";
 import { GeminiEmbeddingProvider } from "../../../src/services/embeddings/gemini-embedding.provider.js";
+import { TransformersEmbeddingProvider } from "../../../src/services/embeddings/transformers-embedding.provider.js";
 import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding.constant.js";
 
 describe("GeminiEmbeddingProvider", () => {
@@ -87,6 +88,30 @@ describe("GeminiEmbeddingProvider", () => {
   });
 });
 
+describe("TransformersEmbeddingProvider", () => {
+  it("should use Transformers.js feature extraction and return normalized vectors", async () => {
+    const mockVector = new Array(EMBEDDING_DIMENSIONS).fill(0.1);
+    const extractor = vi.fn().mockResolvedValue({
+      tolist: () => [mockVector, mockVector],
+    });
+    const pipelineFn = vi.fn().mockResolvedValue(extractor);
+    const provider = new TransformersEmbeddingProvider({ pipelineFn });
+
+    const vectors = await provider.generateEmbeddings(["Ichigo", "Rukia"]);
+
+    expect(pipelineFn).toHaveBeenCalledWith("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+    expect(extractor).toHaveBeenCalledWith(["Ichigo", "Rukia"], {
+      pooling: "mean",
+      normalize: true,
+    });
+    expect(vectors).toHaveLength(2);
+    expect(vectors[0]).toHaveLength(EMBEDDING_DIMENSIONS);
+
+    const sumSquares = vectors[0].reduce((acc, val) => acc + val * val, 0);
+    expect(Math.sqrt(sumSquares)).toBeCloseTo(1.0, 5);
+  });
+});
+
 describe("EmbeddingService", () => {
   it("should use MockEmbeddingProvider by default or when injected", async () => {
     const mockProvider = new MockEmbeddingProvider();
@@ -111,5 +136,14 @@ describe("EmbeddingService", () => {
     expect(vectors).toHaveLength(2);
     expect(vectors[0]).toHaveLength(EMBEDDING_DIMENSIONS);
     expect(vectors[1]).toHaveLength(EMBEDDING_DIMENSIONS);
+  });
+
+  it("should not silently fall back to mock embeddings unless explicitly enabled", async () => {
+    const failingProvider = {
+      generateEmbedding: vi.fn().mockRejectedValue(new Error("provider unavailable")),
+    };
+    const service = new EmbeddingService({ provider: failingProvider });
+
+    await expect(service.generateEmbedding("Zangetsu")).rejects.toThrow("provider unavailable");
   });
 });

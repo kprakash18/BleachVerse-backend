@@ -6,6 +6,7 @@ export class CandidateAggregatorService {
    * @param {Array<Object>} [params.graphCandidates]
    * @param {Array<Object>} [params.structuredCandidates]
    * @param {string} [params.aggregationMode="UNION"] INTERSECTION | UNION
+   * @param {Array<string>} [params.activeSources] Sources that were intentionally queried
    * @returns {Array<Object>} Aggregated candidate list
    */
   aggregate({
@@ -13,6 +14,7 @@ export class CandidateAggregatorService {
     graphCandidates = [],
     structuredCandidates = [],
     aggregationMode = "UNION",
+    activeSources = [],
   }) {
     const candidateMap = new Map();
     const sourceSets = {
@@ -68,7 +70,13 @@ export class CandidateAggregatorService {
     }
 
     if (aggregationMode === "INTERSECTION") {
-      const activeSets = Object.values(sourceSets).filter((set) => set.size > 0);
+      const requestedSources = activeSources
+        .map((source) => source?.toUpperCase?.())
+        .filter((source) => sourceSets[source]);
+      const activeSets = requestedSources.length > 0
+        ? requestedSources.map((source) => sourceSets[source])
+        : Object.values(sourceSets).filter((set) => set.size > 0);
+
       if (activeSets.length > 1) {
         return [...activeSets[0]]
           .filter((key) => activeSets.every((set) => set.has(key)))

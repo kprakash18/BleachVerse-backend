@@ -5,7 +5,7 @@ import { EMBEDDING_DIMENSIONS } from "../../../src/services/embeddings/embedding
 describe("MockEmbeddingProvider", () => {
   const provider = new MockEmbeddingProvider();
 
-  it("should generate a vector of exactly 1536 dimensions", async () => {
+  it("should generate a vector with the configured embedding dimensions", async () => {
     const vector = await provider.generateEmbedding("Ichigo Kurosaki");
     expect(vector).toHaveLength(EMBEDDING_DIMENSIONS);
   });

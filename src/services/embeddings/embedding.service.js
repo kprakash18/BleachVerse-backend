@@ -1,5 +1,6 @@
 import { MockEmbeddingProvider } from "./mock-embedding.provider.js";
 import { GeminiEmbeddingProvider } from "./gemini-embedding.provider.js";
+import { TransformersEmbeddingProvider } from "./transformers-embedding.provider.js";
 import { MAX_TEXT_LENGTH } from "./embedding.constant.js";
 
 export class EmbeddingService {
@@ -15,18 +16,19 @@ export class EmbeddingService {
       const providerType = (process.env.EMBEDDING_PROVIDER || "").toLowerCase();
       if (providerType === "gemini") {
         this.provider = new GeminiEmbeddingProvider();
+      } else if (["transformers", "local", "minilm"].includes(providerType)) {
+        this.provider = new TransformersEmbeddingProvider();
       } else if (providerType === "mock") {
         this.provider = new MockEmbeddingProvider();
       } else if (process.env.NODE_ENV === "test" && !process.env.USE_LIVE_GEMINI) {
         // Default to deterministic Mock provider for fast, reliable unit/integration test runs
         this.provider = new MockEmbeddingProvider();
       } else {
-        // Default to Gemini if GEMINI_API_KEY exists; otherwise default to Mock
-        this.provider = process.env.GEMINI_API_KEY
-          ? new GeminiEmbeddingProvider()
-          : new MockEmbeddingProvider();
+        // Default to Mock unless a real provider is explicitly configured.
+        this.provider = new MockEmbeddingProvider();
       }
     }
+    this.allowMockFallback = process.env.EMBEDDING_ALLOW_MOCK_FALLBACK === "true";
   }
 
   /**
@@ -48,7 +50,7 @@ export class EmbeddingService {
     try {
       return await this.provider.generateEmbedding(sanitized, options);
     } catch (err) {
-      if (this.provider !== this.fallbackProvider) {
+      if (this.allowMockFallback && this.provider !== this.fallbackProvider) {
         console.warn(
           `[EmbeddingService] Primary embedding provider failed (${err.message}). Falling back to Mock provider.`
         );
@@ -85,7 +87,7 @@ export class EmbeddingService {
     try {
       return await this.provider.generateEmbeddings(sanitizedTexts, options);
     } catch (err) {
-      if (this.provider !== this.fallbackProvider) {
+      if (this.allowMockFallback && this.provider !== this.fallbackProvider) {
         console.warn(
           `[EmbeddingService] Primary embedding provider failed (${err.message}). Falling back to Mock provider.`
         );

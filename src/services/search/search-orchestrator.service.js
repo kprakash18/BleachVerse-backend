@@ -18,15 +18,28 @@ export class SearchOrchestratorService {
    * @returns {Promise<Object>}
    */
   async search({ query, mode = "AUTO", limit = 10, threshold = 0.4, hydrate = true }) {
-    const intent = queryClassifierService.classify(query);
-    const resolvedMode = mode && mode.toUpperCase() !== "AUTO" ? mode.toUpperCase() : intent.mode;
+    const intent = await queryClassifierService.classify(query);
+    const requestedMode = mode?.toUpperCase?.() || "AUTO";
+    const resolvedMode = requestedMode !== "AUTO" ? requestedMode : intent.mode;
 
-    const runSemantic = ["SEMANTIC", "HYBRID"].includes(resolvedMode) || (resolvedMode === "AUTO" && intent.intents.semantic);
-    const runGraph = ["GRAPH", "HYBRID"].includes(resolvedMode) || (resolvedMode === "AUTO" && intent.intents.graph);
-    const runStructured = intent.intents.structured;
+    const runSemantic = requestedMode === "SEMANTIC"
+      || (requestedMode === "HYBRID" && (intent.intents.semantic || (!intent.intents.graph && !intent.intents.structured)))
+      || (requestedMode === "AUTO" && intent.intents.semantic);
+    const runGraph = requestedMode === "GRAPH"
+      || (requestedMode === "HYBRID" && intent.intents.graph)
+      || (requestedMode === "AUTO" && intent.intents.graph);
+    const runStructured = requestedMode !== "SEMANTIC" && intent.intents.structured;
+    const activeSources = [
+      runSemantic ? "SEMANTIC" : null,
+      runGraph ? "GRAPH" : null,
+      runStructured ? "STRUCTURED" : null,
+    ].filter(Boolean);
+    const semanticLimit = runSemantic && (runGraph || runStructured)
+      ? Math.min(Math.max(limit * 10, 30), 50)
+      : limit * 2;
 
     const [semanticRes, graphRes, structuredRes] = await Promise.allSettled([
-      runSemantic ? semanticSearchService.searchSemantic({ query: intent.semanticQuery || query, limit: limit * 2, threshold, hydrate: false }) : Promise.resolve(null),
+      runSemantic ? semanticSearchService.searchSemantic({ query: intent.semanticQuery || query, limit: semanticLimit, threshold, hydrate: false }) : Promise.resolve(null),
       runGraph ? graphSearchService.searchGraphCandidates({ graphConstraints: intent.graphConstraints, limit: limit * 2 }) : Promise.resolve(null),
       runStructured ? structuredSearchService.searchStructuredCandidates({ structuredFilters: intent.structuredFilters, limit: limit * 2 }) : Promise.resolve(null),
     ]);
@@ -40,6 +53,7 @@ export class SearchOrchestratorService {
       graphCandidates,
       structuredCandidates,
       aggregationMode: intent.aggregationMode,
+      activeSources,
     });
     const ranked = searchRankingService.rank(aggregated, intent.aggregationMode, limit);
 
@@ -65,6 +79,7 @@ export class SearchOrchestratorService {
         ].filter(Boolean),
         detected: {
           graphConstraints: intent.graphConstraints,
+          unresolvedGraphMentions: intent.unresolvedGraphMentions || [],
           structuredFilters: intent.structuredFilters,
         },
       },

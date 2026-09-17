@@ -70,4 +70,20 @@ describe("CandidateAggregatorService", () => {
     expect(aggregated[0].entityId).toBe("2");
     expect(aggregated[0].matchedBy).toEqual(["SEMANTIC", "GRAPH", "STRUCTURED"]);
   });
+
+  it("should return no intersection when an intentionally queried source is empty", () => {
+    const aggregated = candidateAggregatorService.aggregate({
+      semanticCandidates: [
+        { entityId: "1", entityType: "CHARACTER", similarity: 0.85 },
+      ],
+      graphCandidates: [],
+      structuredCandidates: [
+        { entityId: "1", entityType: "CHARACTER", structuredScore: 1.0 },
+      ],
+      aggregationMode: "INTERSECTION",
+      activeSources: ["SEMANTIC", "GRAPH", "STRUCTURED"],
+    });
+
+    expect(aggregated).toEqual([]);
+  });
 });

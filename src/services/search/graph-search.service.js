@@ -1,3 +1,4 @@
+import neo4j from "neo4j-driver";
 import { runCypher } from "../../database/neo4j.js";
 import { GRAPH_RELATIONSHIPS } from "./query-classifier.service.js";
 
@@ -37,24 +38,23 @@ export class GraphSearchService {
     }
 
     const queryLimit = Math.min(Math.max(Number(limit) || 20, 1), 50);
-    const allCandidates = [];
+    const candidatesByConstraint = [];
 
     for (const constraint of graphConstraints) {
       const { relationship, targetSlug } = constraint;
       const cypher = CYPHER_TEMPLATES[relationship];
 
-      if (!cypher || !targetSlug) {
-        continue;
-      }
+      if (!cypher || !targetSlug) return [];
 
       try {
-        const result = await runCypher(cypher, { targetSlug, limit: queryLimit });
+        const result = await runCypher(cypher, { targetSlug, limit: neo4j.int(queryLimit) });
+        const constraintCandidates = new Map();
 
         if (result?.records) {
           for (const record of result.records) {
             const entityId = record.get("entityId");
             if (entityId) {
-              allCandidates.push({
+              constraintCandidates.set(`${record.get("entityType") || "CHARACTER"}:${entityId}`, {
                 entityId,
                 entityType: record.get("entityType") || "CHARACTER",
                 graphScore: 1.0,
@@ -63,14 +63,29 @@ export class GraphSearchService {
             }
           }
         }
+        candidatesByConstraint.push(constraintCandidates);
       } catch (err) {
         if (process.env.NODE_ENV !== "test") {
           console.warn(`[GraphSearchService] Cypher search notice (${relationship} -> ${targetSlug}):`, err.message);
         }
+        return [];
       }
     }
 
-    return allCandidates;
+    if (candidatesByConstraint.length === 0) return [];
+    const [first, ...rest] = candidatesByConstraint;
+    return [...first.entries()]
+      .filter(([key]) => rest.every((candidateMap) => candidateMap.has(key)))
+      .map(([key, candidate]) => {
+        if (candidatesByConstraint.length === 1) return candidate;
+        return {
+          ...candidate,
+          graphMetadata: {
+            constraints: candidatesByConstraint.map((candidateMap) => candidateMap.get(key).graphMetadata),
+            hops: candidatesByConstraint.length,
+          },
+        };
+      });
   }
 }
 
