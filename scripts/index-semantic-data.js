@@ -190,6 +190,9 @@ async function runSemanticIndexingPipeline() {
     console.log(`\n========================================`);
     console.log(`🎉 Semantic Indexing Pipeline Finished in ${elapsedSec}s!`);
     console.table(summary);
+    if (Object.values(summary).some(({ failed }) => failed > 0)) {
+      throw new Error("Semantic indexing completed with failed documents");
+    }
 
     // Verify row count in database
     const totalDocs = await prisma.$queryRaw`

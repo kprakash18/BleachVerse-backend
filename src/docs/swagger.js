@@ -12,6 +12,7 @@ import { powerPaths, powerSchemas } from "../modules/power/power.swagger.js";
 import { transformationPaths, transformationSchemas } from "../modules/transformation/transformation.swagger.js";
 import { appearancePaths, appearanceSchemas } from "../modules/appearance/appearance.swagger.js";
 import { relationshipPaths } from "../modules/relationship/relationship.swagger.js";
+import { searchPaths, searchSchemas } from "../modules/search/search.swagger.js";
 
 const commonParameters = {
   PageParam: {
@@ -172,7 +173,7 @@ const swaggerSpec = {
     title: "BleachVerse REST API",
     version: "1.0.0",
     description:
-      "Comprehensive API documentation for BleachVerse — exposing 32 GET endpoints across 13 modules.",
+      "BleachVerse REST and hybrid-search API with 44 documented operations.",
   },
   servers: [
     {
@@ -195,6 +196,7 @@ const swaggerSpec = {
     { name: "Transformations", description: "Forms and Bankai releases" },
     { name: "Appearances", description: "Character debut tracking" },
     { name: "Relationships", description: "Graph relationship queries, mutations, and path traversals" },
+    { name: "Search", description: "Semantic, graph, structured, and hybrid retrieval" },
   ],
   paths: {
     ...characterPaths,
@@ -211,6 +213,7 @@ const swaggerSpec = {
     ...transformationPaths,
     ...appearancePaths,
     ...relationshipPaths,
+    ...searchPaths,
   },
   components: {
     securitySchemes: {
@@ -238,6 +241,7 @@ const swaggerSpec = {
       ...powerSchemas,
       ...transformationSchemas,
       ...appearanceSchemas,
+      ...searchSchemas,
     },
   },
 };

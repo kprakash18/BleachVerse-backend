@@ -1,4 +1,22 @@
 services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: bleachverse-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bleachverse}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bleachverse}
+      POSTGRES_DB: ${POSTGRES_DB:-bleachverse}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bleachverse} -d ${POSTGRES_DB:-bleachverse}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   api:
     build:
       context: .
@@ -8,12 +26,16 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bleachverse}:${POSTGRES_PASSWORD:-bleachverse}@postgres:5432/${POSTGRES_DB:-bleachverse}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-bleachverse}:${POSTGRES_PASSWORD:-bleachverse}@postgres:5432/${POSTGRES_DB:-bleachverse}
       NEO4J_URI: bolt://neo4j:7687
       REDIS_URL: redis://redis:6379
       REQUIRE_NEO4J: "false"
     ports:
       - "${API_HOST_PORT:-3001}:3000"
     depends_on:
+      postgres:
+        condition: service_healthy
       neo4j:
         condition: service_healthy
       redis:
@@ -30,6 +52,31 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+
+  setup:
+    build:
+      context: .
+      target: tools
+    profiles: ["setup"]
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bleachverse}:${POSTGRES_PASSWORD:-bleachverse}@postgres:5432/${POSTGRES_DB:-bleachverse}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-bleachverse}:${POSTGRES_PASSWORD:-bleachverse}@postgres:5432/${POSTGRES_DB:-bleachverse}
+      NEO4J_URI: bolt://neo4j:7687
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >-
+      sh -c "npx prisma migrate deploy &&
+      npx prisma db seed &&
+      node scripts/index-semantic-data.js &&
+      node scripts/sync-neo4j.js"
 
   neo4j:
     image: neo4j:5.26.0-community
@@ -64,6 +111,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  postgres_data:
   neo4j_data:
   neo4j_logs:
   redis_data:

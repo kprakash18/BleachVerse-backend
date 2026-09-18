@@ -19,9 +19,9 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
     expect(swaggerSpec.servers.some((s) => s.url === "/api/v1")).toBe(true);
   });
 
-  it("should define all 14 OpenAPI tags", () => {
+  it("should define all 15 OpenAPI tags", () => {
     expect(swaggerSpec.tags).toBeInstanceOf(Array);
-    expect(swaggerSpec.tags.length).toBe(14);
+    expect(swaggerSpec.tags.length).toBe(15);
     const tagNames = swaggerSpec.tags.map((t) => t.name);
     const expectedTags = [
       "Characters",
@@ -38,6 +38,7 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
       "Transformations",
       "Appearances",
       "Relationships",
+      "Search",
     ];
     for (const tag of expectedTags) {
       expect(tagNames).toContain(tag);
@@ -47,7 +48,7 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
   it("should document all operations across all paths", () => {
     expect(swaggerSpec.paths).toBeDefined();
     const pathKeys = Object.keys(swaggerSpec.paths);
-    expect(pathKeys.length).toBe(41);
+    expect(pathKeys.length).toBe(43);
 
     for (const pathKey of pathKeys) {
       const pathObj = swaggerSpec.paths[pathKey];
@@ -57,6 +58,13 @@ describe("OpenAPI 3.0.3 Specification Integrity Tests (Static Validation)", () =
       expect(operation.tags.length).toBeGreaterThan(0);
       expect(operation).toHaveProperty("responses");
     }
+  });
+
+  it("should document unified search execution metadata and semantic search", () => {
+    expect(swaggerSpec.paths["/search"].get.tags).toContain("Search");
+    expect(swaggerSpec.paths["/search/semantic"].get.tags).toContain("Search");
+    expect(swaggerSpec.components.schemas).toHaveProperty("SearchExecution");
+    expect(swaggerSpec.components.schemas).toHaveProperty("SearchCandidate");
   });
 
   it("should enforce explicit response code rules across operations", () => {

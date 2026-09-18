@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { request, app } from "../helpers/test-helpers.js";
 import swaggerSpec from "../../src/docs/swagger.js";
 
-describe("OpenAPI 3.0.3 Runtime Contract Verification (32/32 Endpoints)", () => {
+describe("OpenAPI 3.0.3 Runtime Contract Verification", () => {
   // Master catalog of all 32 GET operations
   const endpointsToVerify = [
     // Characters (2)
@@ -60,9 +60,10 @@ describe("OpenAPI 3.0.3 Runtime Contract Verification (32/32 Endpoints)", () => 
     { path: "/api/v1/appearances", type: "collection" },
   ];
 
-  it("should have 41 paths documented in master OpenAPI specification", () => {
+  it("should document the complete route catalog including both search endpoints", () => {
     const specPaths = Object.keys(swaggerSpec.paths);
-    expect(specPaths.length).toBe(41);
+    expect(specPaths).toHaveLength(43);
+    expect(specPaths).toEqual(expect.arrayContaining(["/search", "/search/semantic"]));
   });
 
   // Test dynamic fetching of UUIDs for ID-based detail routes (quotes, powers, transformations, appearances)

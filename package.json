@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "nodemon --env-file=.env src/server.js",
     "start": "node --env-file=.env.production src/server.js",
     "test": "vitest run",
@@ -11,7 +12,10 @@
     "graph:init": "node --env-file=.env scripts/init-neo4j-schema.js",
     "graph:sync": "node --env-file=.env scripts/sync-neo4j.js",
     "semantic:reset": "node --env-file=.env scripts/reset-semantic-vector-dimension.js",
-    "semantic:index": "node --env-file=.env scripts/index-semantic-data.js"
+    "semantic:index": "node --env-file=.env scripts/index-semantic-data.js",
+    "docker:up": "docker compose up -d postgres redis neo4j",
+    "docker:setup": "docker compose --profile setup run --rm setup",
+    "docker:api": "docker compose up -d api"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -22,8 +26,8 @@
   "type": "module",
   "dependencies": {
     "@huggingface/transformers": "^4.3.0",
-    "@prisma/adapter-pg": "^7.9.1",
-    "@prisma/client": "^7.9.1",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -40,7 +44,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.2.0",
     "nodemon": "^3.1.14",
-    "prisma": "^7.9.1",
+    "prisma": "^7.10.0",
     "prisma-dbml-generator": "^0.12.0",
     "supertest": "^7.2.2",
     "vitest": "^4.1.10"
